@@ -11,10 +11,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List; 
+import org.springframework.security.core.GrantedAuthority; 
+import org.springframework.security.core.authority.SimpleGrantedAuthority; 
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -71,88 +76,66 @@ public class User {
         this.estado = estado;
         this.bio = bio;
     }
-
-    // Getters
-    public Long getId() {
-        return id;
+    
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {        
+        if (this.tipoPerfil.equals("ADMIN")) { 
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        } else { 
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
+    }
+    
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+    
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+      
+    @Override
+    public boolean isAccountNonExpired() {
+        return true; 
+    }
+    
+    @Override
+    public boolean isAccountNonLocked() {
+        return true; 
+    }
+    
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true; 
+    }
+    
+    @Override
+    public boolean isEnabled() {
+        return true; 
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public String getTipoPerfil() {
-        return tipoPerfil;
-    }
-
-    public LocalDate getDataNascimento() {
-        return dataNascimento;
-    }
-
-    public String getDeficiencia() {
-        return deficiencia;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    // Setters
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public void setTipoPerfil(String tipoPerfil) {
-        this.tipoPerfil = tipoPerfil;
-    }
-
-    public void setDataNascimento(LocalDate dataNascimento) {
-        this.dataNascimento = dataNascimento;
-    }
-
-    public void setDeficiencia(String deficiencia) {
-        this.deficiencia = deficiencia;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
+ // --- Getters e Setters 
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+    public String getSenha() { return senha; }
+    public void setSenha(String senha) { this.senha = senha; }
+    public String getTipoPerfil() { return tipoPerfil; }
+    public void setTipoPerfil(String tipoPerfil) { this.tipoPerfil = tipoPerfil; }
+    public LocalDate getDataNascimento() { return dataNascimento; }
+    public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
+    public String getDeficiencia() { return deficiencia; }
+    public void setDeficiencia(String deficiencia) { this.deficiencia = deficiencia; }
+    public String getCidade() { return cidade; }
+    public void setCidade(String cidade) { this.cidade = cidade; }
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+    public String getBio() { return bio; }
+    public void setBio(String bio) { this.bio = bio; }
     
 }

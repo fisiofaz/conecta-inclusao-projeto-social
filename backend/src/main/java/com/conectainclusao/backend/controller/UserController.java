@@ -4,9 +4,12 @@ import com.conectainclusao.backend.dto.UserRequestDTO;
 import com.conectainclusao.backend.dto.UserResponseDTO;
 import com.conectainclusao.backend.model.User;
 import com.conectainclusao.backend.repository.UserRepository;
+
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid; 
 import java.util.List;
@@ -15,41 +18,36 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users") 
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired 
     private UserRepository userRepository;
+    
+    @Autowired
+    private PasswordEncoder passwordEncoder; 
   
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-              
+        
+    	if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+    	
         User user = new User();
-        user.setNome(userRequestDTO.getNome());
-        user.setEmail(userRequestDTO.getEmail());
-        user.setSenha(userRequestDTO.getSenha()); 
-        user.setTipoPerfil(userRequestDTO.getTipoPerfil());
-        user.setDataNascimento(userRequestDTO.getDataNascimento());
-        user.setDeficiencia(userRequestDTO.getDeficiencia());
-        user.setCidade(userRequestDTO.getCidade());
-        user.setEstado(userRequestDTO.getEstado());
-        user.setBio(userRequestDTO.getBio());
-
+        BeanUtils.copyProperties(userRequestDTO, user);
+        
+        String encryptedPassword = passwordEncoder.encode(userRequestDTO.getSenha());
+        user.setSenha(encryptedPassword);
         
         User savedUser = userRepository.save(user);
-
-        UserResponseDTO responseDTO = new UserResponseDTO();
-        responseDTO.setId(savedUser.getId());
-        responseDTO.setNome(savedUser.getNome());
-        responseDTO.setEmail(savedUser.getEmail());
-        responseDTO.setTipoPerfil(savedUser.getTipoPerfil());
-        responseDTO.setDataNascimento(savedUser.getDataNascimento());
-        responseDTO.setDeficiencia(savedUser.getDeficiencia());
-        responseDTO.setCidade(savedUser.getCidade());
-        responseDTO.setEstado(savedUser.getEstado());
-        responseDTO.setBio(savedUser.getBio());
         
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        BeanUtils.copyProperties(savedUser, userResponseDTO);
+        
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO);
     }
+       
 
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
