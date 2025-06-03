@@ -40,10 +40,20 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     (Se você estiver usando Maven tradicional, use `mvn spring-boot:run`)
 4.  A aplicação estará disponível em `http://localhost:8080` (porta padrão do Spring Boot).
 
-## Próximos Passos
-* Implementação da entidade `User` e seu repositório.
-* Criação da API REST para `User`.
-* Implementação de segurança com Spring Security.
+### Segurança (Spring Security & JWT):
+1.  Autenticação de usuários via JWT.
+2.  Endpoint de login (POST /api/auth/login) para obtenção do token.
+3. Senhas armazenadas criptografadas com BCrypt.
+4. Rotas protegidas que exigem um token JWT válido no cabeçalho 
+    ```bash
+    Authorization: Bearer <token>
+     ```.
+5. Endpoints de cadastro (POST /api/users) e login abertos ao público.
 
----
+## Próximos Passos
+**Modelagem das Entidades:** Criar as classes Java (`Opportunity` e `ComplaintReport`) com seus atributos e anotações JPA.
+**Criação dos Repositórios:** Definir as interfaces de repositório para cada entidade, utilizando o Spring Data JPA.
+**Criação dos DTOs:** Desenvolver os DTOs de requisição e resposta para cada entidade, garantindo que as validações e os dados expostos/recebidos sejam apropriados.
+**Criação dos Controllers:** Implementar os controllers RESTful para cada entidade, expondo os endpoints CRUD e aplicando as regras de segurança do Spring Security (como a necessidade de um token JWT para acessar certas operações).
+
 **Desenvolvido por:** [Faábio André Zatta]
