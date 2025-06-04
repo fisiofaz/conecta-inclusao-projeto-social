@@ -62,6 +62,52 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 
 [Lick dos Teste de API no Postman}(https://documenter.getpostman.com/view/14093940/2sB2x2HtSk)
 
+---
+### Fase 4: Desenvolvimento do Frontend com React
+
+#### 1. Configuração do Ambiente React
+* **Status:** ✅ Concluída.
+    * Ambiente configurado (Node.js/npm, VS Code, extensões).
+    * Projeto React inicializado com Vite.
+
+#### 2. Estrutura Básica da Aplicação React e Roteamento
+* **Status:** ✅ Concluída.
+    * Estrutura de pastas organizada (`src/components`, `src/pages`, `src/services`, etc.).
+    * Roteamento básico configurado com `react-router-dom`.
+
+---
+
+## Como Rodar o Projeto (Frontend)
+
+### Pré-requisitos
+Certifique-se de ter as seguintes ferramentas instaladas:
+* **Node.js (versão LTS ou superior):** [Node.js Downloads](https://nodejs.org/en/download)
+* **npm (Node Package Manager):** Vem com o Node.js.
+* **IDE:** Visual Studio Code (ou sua IDE de preferência para desenvolvimento frontend).
+
+### Executando o Frontend
+1.  Navegue até a pasta do projeto frontend no seu terminal:
+    ```bash
+    cd conectainclusao-frontend
+    ```
+    (Substitua `conectainclusao-frontend` pelo nome da sua pasta React, se for diferente).
+2.  Instale as dependências do projeto:
+    ```bash
+    npm install
+    ```
+3.  Inicie o servidor de desenvolvimento:
+    ```bash
+    npm run dev
+    ```
+4.  A aplicação React estará disponível em `http://localhost:5173/` (ou a porta que o Vite indicar no terminal).
+
+### Estrutura de Rotas Atuais
+* `/` - Home Page
+* `/login` - Página de Login
+* `/register` - Página de Cadastro
+* `/opportunities` - Lista de Oportunidades
+* `/complaints` - Lista de Denúncias
+
 ## Próximos Passos
 
 1.  Fase de Expansão e Robustez (Backend & Frontend):
