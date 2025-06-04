@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Routes, Route } from 'react-router-dom'; 
+import HomePage from './pages/HomePage'; 
+import LoginPage from './pages/Auth/LoginPage'; 
+import RegisterPage from './pages/Auth/RegisterPage'; 
+import OpportunityListPage from './pages/Opportunities/OpportunityListPage'; 
+import ComplaintListPage from './pages/Complaints/ComplaintListPage'; 
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      <header>
+        {/* Aqui podemos ter um Navbar global no futuro */}
+        <h1>Conecta Inclusão</h1>
+      </header>
+      <main>
+        <Routes> {/* Container para todas as rotas */}
+          <Route path="/" element={<HomePage />} /> {/* Rota para a Home Page */}
+          <Route path="/login" element={<LoginPage />} /> {/* Rota para a página de Login */}
+          <Route path="/register" element={<RegisterPage />} /> {/* Rota para a página de Registro */}
+          <Route path="/opportunities" element={<OpportunityListPage />} /> {/* Rota para listar oportunidades */}
+          <Route path="/complaints" element={<ComplaintListPage />} /> {/* Rota para listar denúncias */}
+          {/* Rotas para detalhes (com :id) e outras operações virão depois */}
+          <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} /> {/* Rota para páginas não encontradas */}
+        </Routes>
+      </main>
+      <footer>
+        {/* Rodapé global */}
+        <p>&copy; 2025 Conecta Inclusão. Todos os direitos reservados.</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
