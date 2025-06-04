@@ -19,7 +19,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 * **PostgreSQL 16 ou superior:** [PostgreSQL Downloads](https://www.postgresql.org/download/windows/)
 * **IDE:** Eclipse IDE for Enterprise Java and Web Developers (ou IntelliJ IDEA, VS Code com extensões Java/Spring)
 
-### Configuração do Banco de Dados
+### Fase 0: Configuração do Banco de Dados ✅ Concluída:
+
 1.  Instale o PostgreSQL localmente.
 2.  Crie um banco de dados chamado `conecta_inclusao_db` (ou o nome que preferir) em sua instância local do PostgreSQL.
 3.  No arquivo `src/main/resources/application.properties`, configure as credenciais do seu banco de dados local:
@@ -30,7 +31,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     # ... outras configurações JPA ...
     ```
 
-### Executando o Backend
+### Fase 1: Executando o Backend ✅ Concluída:
+
 1.  Clone este repositório para o seu ambiente local.
 2.  Navegue até a raiz do projeto `backend` no seu terminal.
 3.  Execute a aplicação Spring Boot:
@@ -40,7 +42,8 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     (Se você estiver usando Maven tradicional, use `mvn spring-boot:run`)
 4.  A aplicação estará disponível em `http://localhost:8080` (porta padrão do Spring Boot).
 
-### Segurança (Spring Security & JWT):
+### Fase 2: Segurança (Spring Security & JWT) ✅ Concluída:
+
 1.  Autenticação de usuários via JWT.
 2.  Endpoint de login (POST /api/auth/login) para obtenção do token.
 3. Senhas armazenadas criptografadas com BCrypt.
@@ -50,14 +53,27 @@ Certifique-se de ter as seguintes ferramentas instaladas:
      ```.
 5. Endpoints de cadastro (POST /api/users) e login abertos ao público.
 
-### Teste de API no Postman
+### Fase 3: Entidades e Lógica de Negócio do Backend e Teste de API no Postman ✅ Concluída:
+
+1.  **Modelagem das Entidades:** Criar as classes Java (`Opportunity` e `ComplaintReport`) com seus atributos e anotações JPA.
+2.  **Criação dos Repositórios:** Definir as interfaces de repositório para cada entidade, utilizando o Spring Data JPA.
+3.  **Criação dos DTOs:** Desenvolver os DTOs de requisição e resposta para cada entidade, garantindo que as validações e os dados expostos/recebidos sejam apropriados.
+4.  **Criação dos Controllers:** Implementar os controllers RESTful para cada entidade, expondo os endpoints CRUD e aplicando as regras de segurança do Spring Security (como a necessidade de um token JWT para acessar certas operações).
 
 [Lick dos Teste de API no Postman}(https://documenter.getpostman.com/view/14093940/2sB2x2HtSk)
 
 ## Próximos Passos
-**Modelagem das Entidades:** Criar as classes Java (`Opportunity` e `ComplaintReport`) com seus atributos e anotações JPA.
-**Criação dos Repositórios:** Definir as interfaces de repositório para cada entidade, utilizando o Spring Data JPA.
-**Criação dos DTOs:** Desenvolver os DTOs de requisição e resposta para cada entidade, garantindo que as validações e os dados expostos/recebidos sejam apropriados.
-**Criação dos Controllers:** Implementar os controllers RESTful para cada entidade, expondo os endpoints CRUD e aplicando as regras de segurança do Spring Security (como a necessidade de um token JWT para acessar certas operações).
+
+1.  Fase de Expansão e Robustez (Backend & Frontend):
+
+* Uma vez que tenhamos um frontend básico funcionando, podemos voltar a pensar nas funcionalidades adicionais que discutimos para tornar o projeto ainda mais robusto:
+* Gerenciamento de papéis (Roles) mais granular.
+* Paginação e filtros avançados nas listagens.
+* Lógica de negócio mais complexa (ex: atualização de status de denúncias por administradores).
+* Melhorias de Acessibilidade específicas no frontend para PCD.
+
+2.  Deploy e Refinamentos:
+
+* Hospedar sua aplicação online para a entrega final.
 
 **Desenvolvido por:** [Faábio André Zatta]
