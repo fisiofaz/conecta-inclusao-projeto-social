@@ -29,7 +29,7 @@ public class UserController {
   
     @PostMapping
     public ResponseEntity<UserResponseDTO> createUser(@Valid @RequestBody UserRequestDTO userRequestDTO) {
-        
+    	    	
     	if (userRepository.findByEmail(userRequestDTO.getEmail()).isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
@@ -74,7 +74,8 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserResponseDTO> getUserById(@PathVariable Long id) {
-        Optional<User> userOptional = userRepository.findById(id);
+    	System.out.println("DEBUG: UserController - Acessando getUserById para ID: " + id); 
+    	Optional<User> userOptional = userRepository.findById(id);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();

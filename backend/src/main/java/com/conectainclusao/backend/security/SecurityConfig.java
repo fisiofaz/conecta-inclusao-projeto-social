@@ -28,9 +28,11 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll() 
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() 
-                        .requestMatchers(HttpMethod.GET, "/api/users").permitAll() 
-                        
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()                                               
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/complaints").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/complaints/{id}").permitAll()
                         .anyRequest().authenticated() 
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class) 

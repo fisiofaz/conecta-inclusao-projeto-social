@@ -17,8 +17,12 @@ public class AuthorizationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-              
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
+        User user = userRepository.findByEmail(email)
+                            .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
+
+        System.out.println("DEBUG: AuthorizationService - Usuário carregado: " + user.getEmail());
+        System.out.println("DEBUG: AuthorizationService - Tipo de perfil: " + user.getTipoPerfil());
+        System.out.println("DEBUG: AuthorizationService - Autoridades: " + user.getAuthorities()); // Isso chamará o getAuthorities()
+        return user; // O return deve estar aqui, não mude
     }
 }

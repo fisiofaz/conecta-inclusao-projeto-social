@@ -50,6 +50,10 @@ Certifique-se de ter as seguintes ferramentas instaladas:
      ```.
 5. Endpoints de cadastro (POST /api/users) e login abertos ao público.
 
+### Teste de API no Postman
+
+[Lick dos Teste de API no Postman}(https://documenter.getpostman.com/view/14093940/2sB2x2HtSk)
+
 ## Próximos Passos
 **Modelagem das Entidades:** Criar as classes Java (`Opportunity` e `ComplaintReport`) com seus atributos e anotações JPA.
 **Criação dos Repositórios:** Definir as interfaces de repositório para cada entidade, utilizando o Spring Data JPA.

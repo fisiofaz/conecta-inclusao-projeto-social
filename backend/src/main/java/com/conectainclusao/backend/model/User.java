@@ -12,7 +12,9 @@ import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List; 
+import java.util.List;
+import java.util.Objects;
+
 import org.springframework.security.core.GrantedAuthority; 
 import org.springframework.security.core.authority.SimpleGrantedAuthority; 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -79,9 +81,9 @@ public class User implements UserDetails {
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {        
-        if (this.tipoPerfil.equals("ADMIN")) { 
+    	if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ADMIN")) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-        } else { 
+        } else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
