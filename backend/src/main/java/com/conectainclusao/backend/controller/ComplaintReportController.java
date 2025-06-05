@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/complaints")
-@CrossOrigin(origins = "http://localhost:3000") // Permite requisições do frontend React
 public class ComplaintReportController {
 
     @Autowired

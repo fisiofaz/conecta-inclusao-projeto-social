@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import org.springframework.security.core.GrantedAuthority; 
 import org.springframework.security.core.authority.SimpleGrantedAuthority; 
@@ -44,7 +45,8 @@ public class User implements UserDetails {
 
     @Column(nullable = false, length = 50)
     private String tipoPerfil;
-
+    
+  
     @Column
     private LocalDate dataNascimento;
 
