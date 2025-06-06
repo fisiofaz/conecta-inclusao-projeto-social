@@ -3,7 +3,10 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/Auth/LoginPage'; 
 import RegisterPage from './pages/Auth/RegisterPage'; 
 import OpportunityListPage from './pages/Opportunities/OpportunityListPage'; 
+import OpportunityDetailsPage from './pages/Opportunities/OpportunityDetailsPage';
 import ComplaintListPage from './pages/Complaints/ComplaintListPage'; 
+import ComplaintDetailsPage from './pages/Complaints/ComplaintDetailsPage';
+
 
 function App() {
   return (
@@ -13,14 +16,15 @@ function App() {
         <h1>Conecta Inclusão</h1>
       </header>
       <main>
-        <Routes> {/* Container para todas as rotas */}
-          <Route path="/" element={<HomePage />} /> {/* Rota para a Home Page */}
-          <Route path="/login" element={<LoginPage />} /> {/* Rota para a página de Login */}
-          <Route path="/register" element={<RegisterPage />} /> {/* Rota para a página de Registro */}
-          <Route path="/opportunities" element={<OpportunityListPage />} /> {/* Rota para listar oportunidades */}
-          <Route path="/complaints" element={<ComplaintListPage />} /> {/* Rota para listar denúncias */}
-          {/* Rotas para detalhes (com :id) e outras operações virão depois */}
-          <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} /> {/* Rota para páginas não encontradas */}
+         <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/opportunities" element={<OpportunityListPage />} />
+          <Route path="/opportunities/:id" element={<OpportunityDetailsPage />} />
+          <Route path="/complaints" element={<ComplaintListPage />} />
+          <Route path="/complaints/:id" element={<ComplaintDetailsPage />} />
+          <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} />
         </Routes>
       </main>
       <footer>
