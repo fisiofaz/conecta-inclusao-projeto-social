@@ -5,7 +5,7 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
 
 ## Stack Tecnológica
 * **Backend:** Spring Boot (Java 17), Spring MVC, Spring Data JPA, Spring Security, PostgreSQL
-* **Frontend:** React (com Vite, Axios, React Router DOM)
+* **Frontend:** React (com Vite, Axios, React Router DOM) e Tailwind CSS
 * **Banco de Dados:** PostgreSQL (local para desenvolvimento, Neon para deploy)
 * **Controle de Versão:** Git / GitHub
 * **Deploy (Futuro):** Render (Backend), Netlify (Frontend), Neon (Banco de Dados)
@@ -34,19 +34,26 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
 ### Teste de API (Status: ✅ Completo e Testado Localmente)
 [Lick dos Teste de API no Postman}(https://documenter.getpostman.com/view/14093940/2sB2x2HtSk)
 
-### Frontend (Status: ✅ Funcionalidade Básica Concluída Localmente)
+### Frontend (Status: ✅ Funcionalidade e Estilização Concluídas Localmente)
 * **Estrutura da Aplicação:**
     * Projeto React inicializado com Vite.
     * Estrutura de pastas organizada (`src/components`, `src/pages`, `src/services`, `src/assets`, etc.).
     * Roteamento de página configurado com `react-router-dom`.
+    * **Componente Navbar:** Barra de navegação global para fácil acesso às principais seções.
+    * **Componente Footer:** Rodapé moderno e responsivo presente em todas as páginas.
+* **Estilização e Design:**
+    * Design moderno, elegante e responsivo aplicado a **todas as páginas** utilizando **Tailwind CSS**.
+    * Cores e tipografia consistentes para uma melhor experiência visual.
 * **Módulos de Autenticação:**
-    * **Tela de Registro (`/register`):** Formulário funcional para cadastro de novos usuários, conectando-se ao backend.
-    * **Tela de Login (`/login`):** Formulário funcional para autenticação de usuários, obtendo e armazenando o token JWT no `localStorage`.
+    * **Tela de Registro (`/register`):** Formulário funcional e estilizado para cadastro de novos usuários, conectando-se ao backend.
+    * **Tela de Login (`/login`):** Formulário funcional e estilizado para autenticação de usuários, obtendo e armazenando o token JWT no `localStorage`.
 * **Visualização de Dados:**
-    * **Lista de Oportunidades (`/opportunities`):** Exibe uma lista de oportunidades disponíveis, buscando dados do backend.
-    * **Detalhes da Oportunidade (`/opportunities/:id`):** Exibe informações detalhadas de uma oportunidade específica.
-    * **Lista de Denúncias/Relatos (`/complaints`):** Exibe uma lista de denúncias registradas, buscando dados do backend.
-    * **Detalhes da Denúncia/Relato (`/complaints/:id`):** Exibe informações detalhadas de uma denúncia específica.
+    * **Lista de Oportunidades (`/opportunities`):** Exibe uma lista de oportunidades disponíveis com cards estilizados, buscando dados do backend.
+    * **Detalhes da Oportunidade (`/opportunities/:id`):** Exibe informações detalhadas de uma oportunidade específica com design limpo.
+    * **Lista de Denúncias/Relatos (`/complaints`):** Exibe uma lista de denúncias registradas com status visuais, buscando dados do backend.
+    * **Detalhes da Denúncia/Relato (`/complaints/:id`):** Exibe informações detalhadas de uma denúncia específica com design limpo.
+    * **Lista de Recursos de Saúde (`/health-resources`):** Exibe uma lista de recursos de saúde com cards estilizados, buscando dados do backend.
+    * **Detalhes do Recurso de Saúde (`/health-resources/:id`):** Exibe informações detalhadas de um recurso específico com design limpo.
 
 ## Como Rodar o Projeto
 
