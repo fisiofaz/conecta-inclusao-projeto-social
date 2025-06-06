@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../../services/api'; 
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -54,34 +55,40 @@ function RegisterPage() {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
-      <h2>Cadastro de Usuário</h2>
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input type="text" name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome" required />
-        <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required />
-        <input type="password" name="senha" value={formData.senha} onChange={handleChange} placeholder="Senha" required />
-
-        <label>Tipo de Perfil:</label>
-        <select name="tipoPerfil" value={formData.tipoPerfil} onChange={handleChange}>
-          <option value="PCD">Pessoa com Deficiência</option>
-          <option value="Empresa">Empresa</option>
-          <option value="Orgão_Apoio">Órgão de Apoio</option>
-          {/* Adicione outras opções conforme as roles que planeja ter no backend */}
-        </select>
-
-        <label>Data de Nascimento:</label>
-        <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} />
-
-        <input type="text" name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" />
-        <input type="text" name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" />
-        <input type="text" name="estado" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" />
-        <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows="4"></textarea>
-
-        <button type="submit">Cadastrar</button>
-      </form>
-      <p style={{ marginTop: '10px' }}>Já tem uma conta? <a href="/login">Faça login aqui</a></p>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-lg">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">Cadastro de Usuário</h2>
+        {message && <p className="text-green-500 text-center mb-4">{message}</p>}
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome" required className="col-span-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="col-span-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="password" name="senha" value={formData.senha} onChange={handleChange} placeholder="Senha" required className="col-span-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div className="col-span-full">
+            <label className="block text-gray-700 text-sm font-bold mb-2">Tipo de Perfil:</label>
+            <select name="tipoPerfil" value={formData.tipoPerfil} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option value="PCD">Pessoa com Deficiência</option>
+              <option value="Empresa">Empresa</option>
+              <option value="Orgão_Apoio">Órgão de Apoio</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">Data de Nascimento:</label>
+            <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <input type="text" name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <input type="text" name="estado" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows="4" className="col-span-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+          <button type="submit" className="col-span-full bg-green-600 text-white p-3 rounded-md hover:bg-green-700 transition-colors duration-300 font-semibold">Cadastrar </button>
+        </form>
+        <p className="text-center text-gray-600 mt-6">
+          Já tem uma conta?{' '}
+          <Link to="/login" className="text-blue-600 hover:underline">
+            Faça login aqui
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

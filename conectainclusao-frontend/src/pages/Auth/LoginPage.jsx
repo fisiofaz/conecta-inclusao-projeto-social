@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import api from '../../services/api'; // Importa a instância do axios configurada
 import { useNavigate } from 'react-router-dom'; // Para redirecionar após o login
+import { Link } from 'react-router-dom'; // Importe Link para o link de cadastro
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -16,13 +17,9 @@ function LoginPage() {
       const response = await api.post('/auth/login', { email, senha }); // Envia para /api/auth/login
 
       if (response.data.token) {
-        localStorage.setItem('jwtToken', response.data.token); // Armazena o token no localStorage
-        // Pormenor: Você pode também armazenar informações do usuário (como o tipoPerfil) se o token incluir
-        // ou se você tiver outro endpoint para pegar o perfil após o login.
-        console.log('Login bem-sucedido! Token:', response.data.token);
-        // Redireciona para a página principal ou dashboard
-        navigate('/'); // Redireciona para a Home Page
-        // Você pode adicionar um state ou context aqui para indicar que o usuário está logado
+        localStorage.setItem('jwtToken', response.data.token); 
+        console.log('Login bem-sucedido! Token:', response.data.token);        
+        navigate('/');
       } else {
         setError('Token não recebido. Verifique suas credenciais.');
       }
@@ -37,27 +34,31 @@ function LoginPage() {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '400px', margin: 'auto' }}>
-      <h2>Login</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-        <input 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
-          placeholder="Email" 
-          required 
-        />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">Login</h2>
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Email"
+            required
+            className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
+          />
         <input 
           type="password" 
           value={senha} 
           onChange={(e) => setSenha(e.target.value)} 
           placeholder="Senha" 
           required 
+          className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors duration-300"
         />
-        <button type="submit">Entrar</button>
-      </form>
-      <p style={{ marginTop: '10px' }}>Não tem uma conta? <a href="/register">Cadastre-se aqui</a></p>
+        <button type="submit" className="bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 transition-colors duration-300 font-semibold">Entrar</button>
+        </form>
+        <p className="text-center text-gray-600 mt-6">Não tem uma conta? <Link to="/register" className="text-blue-600 hover:underline">Cadastre-se aqui</Link></p>
+      </div>
     </div>
   );
 }

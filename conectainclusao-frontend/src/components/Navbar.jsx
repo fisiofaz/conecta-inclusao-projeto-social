@@ -1,36 +1,36 @@
 import React from 'react';
 import { Link } from 'react-router-dom'; 
-import './Navbar.css'; 
+
 
 function Navbar() {
   return (
-    <nav className="navbar-container">
-      <Link to="/" className="navbar-brand">
+    <nav className="bg-blue-700 p-4 flex items-center justify-between shadow-md">
+      <Link to="/" className="text-white text-2xl font-bold hover:text-blue-200 transition-colors duration-300">
         Conecta Inclusão
       </Link>
-      <ul className="navbar-links">
+      <ul className="flex space-x-6">
         <li>
-          <Link to="/opportunities" className="navbar-item">
+          <Link to="/opportunities" className="text-white text-lg hover:text-blue-200 transition-colors duration-300">
             Oportunidades
           </Link>
         </li>
         <li>
-          <Link to="/complaints" className="navbar-item">
+          <Link to="/complaints" className="text-white text-lg hover:text-blue-200 transition-colors duration-300">
             Denúncias
           </Link>
         </li>
         <li>
-          <Link to="/health-resources" className="navbar-item">
+          <Link to="/health-resources" className="text-white text-lg hover:text-blue-200 transition-colors duration-300">
             Saúde & Bem-Estar
           </Link>
         </li>
         <li>
-          <Link to="/login" className="navbar-item">
+          <Link to="/login" className="text-white text-lg hover:text-blue-200 transition-colors duration-300">
             Login
           </Link>
         </li>
         <li>
-          <Link to="/register" className="navbar-item">
+          <Link to="/register" className="text-white text-lg hover:text-blue-200 transition-colors duration-300">
             Cadastro
           </Link>
         </li>

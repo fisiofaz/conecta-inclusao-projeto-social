@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api'; 
-import './HealthResourceListPage.css'; 
 import { Link } from 'react-router-dom'; 
 
 function HealthResourceListPage() {
@@ -26,33 +25,37 @@ function HealthResourceListPage() {
 
     fetchHealthResources();
   }, []);
+  
 
   if (loading) {
-    return <div className="health-resource-list-container">Carregando recursos de saúde...</div>;
+    return <div className="container mx-auto p-4 text-center">Carregando recursos de saúde...</div>;
   }
 
   if (error) {
-    return <div className="health-resource-list-container"><p className="health-resource-error-message">{error}</p></div>;
+    return <div className="container mx-auto p-4 text-center text-red-600 font-bold">{error}</div>;
   }
 
   return (
-    <div className="health-resource-list-container">
-      <h2 className="health-resource-list-title">Recursos de Saúde e Bem-Estar</h2>
+    <div className="container mx-auto p-6 bg-gray-50 rounded-lg shadow-lg my-8">
+      <h2 className="text-4xl font-extrabold text-green-700 text-center mb-10">Recursos de Saúde e Bem-Estar</h2>
       {resources.length === 0 ? (
-        <p className="health-resource-no-found-message">Nenhum recurso de saúde encontrado.</p>
+        <p className="text-center text-gray-600 text-lg">Nenhum recurso de saúde encontrado.</p>
       ) : (
-        <div className="health-resource-list-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {resources.map((resource) => (
-            <div key={resource.id} className="health-resource-card">
-              <h3 className="health-resource-card-title">{resource.nome}</h3>
-              <p><strong>Tipo:</strong> {resource.tipoRecurso}</p>
-              <p><strong>Especialidade:</strong> {resource.especialidade}</p>
-              <p><strong>Endereço:</strong> {resource.endereco}</p>
-              <p><strong>Telefone:</strong> {resource.telefone}</p>
-              <p><strong>Acessibilidade:</strong> {resource.acessibilidadeDetalhes}</p>
-              <p className="health-resource-card-website">Website: <a href={resource.website} target="_blank" rel="noopener noreferrer">{resource.website}</a></p>
-              <p className="health-resource-card-hours">Horário: {resource.horarioFuncionamento}</p>
-              <Link to={`/health-resources/${resource.id}`} className="health-resource-details-button">Ver Detalhes</Link>
+            <div key={resource.id} className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-green-600 mb-3">{resource.nome}</h3>
+              <p className="text-sm text-gray-700 mb-2"><strong>Tipo:</strong> {resource.tipoRecurso}</p>
+              <p className="text-sm text-gray-700 mb-2"><strong>Especialidade:</strong> {resource.especialidade || 'Não especificado'}</p>
+              <p className="text-sm text-gray-700 mb-4"><strong>Endereço:</strong> {resource.endereco}</p>
+              <p className="text-xs text-gray-500 mb-2">Tel: {resource.telefone || 'N/A'}</p>
+              <p className="text-xs text-gray-500 mb-4 flex-grow">Acessibilidade: {resource.acessibilidadeDetalhes}</p>
+              <Link
+                to={`/health-resources/${resource.id}`}
+                className="mt-4 bg-green-500 text-white py-2 px-4 rounded-md text-center hover:bg-green-600 transition-colors duration-300 self-start"
+              >
+                Ver Detalhes
+              </Link>
             </div>
           ))}
         </div>

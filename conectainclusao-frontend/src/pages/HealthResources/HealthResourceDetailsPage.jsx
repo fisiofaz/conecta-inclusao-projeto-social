@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import './HealthResourceDetailsPage.css'; // Importa os estilos para esta página
 
 function HealthResourceDetailsPage() {
   const { id } = useParams(); // Obtém o parâmetro 'id' da URL (ex: /health-resources/1)
@@ -38,27 +37,27 @@ function HealthResourceDetailsPage() {
   }, [id]); // Dependência: o efeito é re-executado se o 'id' da URL mudar
 
   // Renderização condicional baseada nos estados de carregamento e erro
-  if (loading) {
-    return <div className="health-resource-details-container">Carregando detalhes do recurso de saúde...</div>;
+ if (loading) {
+    return <div className="container mx-auto p-4 text-center">Carregando detalhes do recurso de saúde...</div>;
   }
 
   if (error) {
     return (
-      <div className="health-resource-details-container">
-        <p className="health-resource-details-error">{error}</p>
-        <button onClick={() => navigate('/health-resources')} className="health-resource-details-back-button">
+      <div className="container mx-auto p-4 text-center">
+        <p className="text-red-600 font-bold mb-4">{error}</p>
+        <button onClick={() => navigate('/health-resources')} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-300">
           Voltar para a lista
         </button>
       </div>
     );
   }
 
-  // Se o recurso não foi encontrado (mas não houve erro de rede/servidor)
+  // Se o recurso não foi encontrado (mas não houve erro de rede/servidor)  
   if (!resource) {
     return (
-      <div className="health-resource-details-container">
-        <p className="health-resource-details-not-found">Recurso de saúde não encontrado.</p>
-        <button onClick={() => navigate('/health-resources')} className="health-resource-details-back-button">
+      <div className="container mx-auto p-4 text-center">
+        <p className="text-gray-600 text-lg mb-4">Recurso de saúde não encontrado.</p>
+        <button onClick={() => navigate('/health-resources')} className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-300">
           Voltar para a lista
         </button>
       </div>
@@ -67,21 +66,20 @@ function HealthResourceDetailsPage() {
 
   // Renderização dos detalhes do recurso de saúde
   return (
-    <div className="health-resource-details-container">
-      <h2 className="health-resource-details-title">{resource.nome}</h2>
-      <p><strong>Tipo de Recurso:</strong> {resource.tipoRecurso}</p>
-      <p><strong>Especialidade:</strong> {resource.especialidade || 'Não especificado'}</p> {/* Exibe se existir */}
-      <p><strong>Endereço:</strong> {resource.endereco}</p>
-      <p><strong>Telefone:</strong> {resource.telefone || 'Não disponível'}</p>
-      <p><strong>Website:</strong> {resource.website ? <a href={resource.website} target="_blank" rel="noopener noreferrer">{resource.website}</a> : 'Não disponível'}</p>
-      <div className="health-resource-details-accessibility">
-        <h3>Detalhes de Acessibilidade:</h3>
-        <p>{resource.acessibilidadeDetalhes}</p>
+    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg my-8 border border-gray-200">
+      <h2 className="text-3xl font-bold text-green-700 text-center mb-6">{resource.nome}</h2>
+      <p className="mb-2 text-gray-700"><strong>Tipo de Recurso:</strong> {resource.tipoRecurso}</p>
+      <p className="mb-2 text-gray-700"><strong>Especialidade:</strong> {resource.especialidade || 'Não especificado'}</p>
+      <p className="mb-2 text-gray-700"><strong>Endereço:</strong> {resource.endereco}</p>
+      <p className="mb-2 text-gray-700"><strong>Telefone:</strong> {resource.telefone || 'Não disponível'}</p>
+      <p className="mb-4 text-gray-700"><strong>Website:</strong> {resource.website ? <a href={resource.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{resource.website}</a> : 'Não disponível'}</p>
+      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6">
+        <h3 className="text-xl font-semibold text-gray-800 mb-3">Detalhes de Acessibilidade:</h3>
+        <p className="text-gray-700">{resource.acessibilidadeDetalhes}</p>
       </div>
-      <p><strong>Horário de Funcionamento:</strong> {resource.horarioFuncionamento || 'Não informado'}</p>
+      <p className="text-gray-700"><strong>Horário de Funcionamento:</strong> {resource.horarioFuncionamento || 'Não informado'}</p>
 
-      {/* Botão para voltar à lista de recursos de saúde */}
-      <button onClick={() => navigate('/health-resources')} className="health-resource-details-back-button">
+      <button onClick={() => navigate('/health-resources')} className="mt-8 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-300">
         Voltar para a lista
       </button>
     </div>

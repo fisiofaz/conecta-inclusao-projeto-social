@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import './OpportunityListPage.css';
 import { Link } from 'react-router-dom';
 
 function OpportunityListPage() {
@@ -36,23 +35,25 @@ function OpportunityListPage() {
   }
 
   return (
-    <div className="opportunity-list-container">
-      <h2 className="opportunity-list-title">Oportunidades Disponíveis</h2>
+    <div className="container mx-auto p-6 bg-gray-50 rounded-lg shadow-lg my-8">
+      <h2 className="text-4xl font-extrabold text-blue-700 text-center mb-10">Oportunidades Disponíveis</h2>
       {opportunities.length === 0 ? (
-        <p className="opportunity-no-found-message">Nenhuma oportunidade encontrada. Cadastre uma!</p>
+        <p className="text-center text-gray-600 text-lg">Nenhuma oportunidade encontrada. Cadastre uma!</p>
       ) : (
-        <div className="opportunity-list-grid">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {opportunities.map((opportunity) => (
-            <div key={opportunity.id} className="opportunity-card">
-              <h3 className="opportunity-card-title">{opportunity.titulo}</h3>
-              <p><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
-              <p><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
-              <p><strong>Local:</strong> {opportunity.localizacao}</p>
-              <p><strong>Acessibilidade:</strong> {opportunity.requisitosAcessibilidade}</p>
-              <p className="opportunity-card-description">{opportunity.descricao}</p>
-              <p className="opportunity-card-contact">Contato: {opportunity.contato}</p>
-              <p className="opportunity-card-date">Publicado em: {opportunity.dataPublicacao}</p>
-              <Link to={`/opportunities/${opportunity.id}`} className="opportunity-details-button">Ver Detalhes</Link>
+            <div key={opportunity.id} className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between border border-gray-200 hover:shadow-xl transition-shadow duration-300">
+              <h3 className="text-xl font-semibold text-blue-600 mb-3">{opportunity.titulo}</h3>
+              <p className="text-sm text-gray-700 mb-2"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
+              <p className="text-sm text-gray-700 mb-2"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
+              <p className="text-sm text-gray-700 mb-4"><strong>Local:</strong> {opportunity.localizacao}</p>
+              <p className="text-xs text-gray-500 mb-4 flex-grow">{opportunity.requisitosAcessibilidade}</p>
+              <Link
+                to={`/opportunities/${opportunity.id}`}
+                className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-md text-center hover:bg-blue-600 transition-colors duration-300 self-start"
+              >
+                Ver Detalhes
+              </Link>
             </div>
           ))}
         </div>
