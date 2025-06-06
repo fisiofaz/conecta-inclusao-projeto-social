@@ -6,13 +6,16 @@ import OpportunityListPage from './pages/Opportunities/OpportunityListPage';
 import OpportunityDetailsPage from './pages/Opportunities/OpportunityDetailsPage';
 import ComplaintListPage from './pages/Complaints/ComplaintListPage'; 
 import ComplaintDetailsPage from './pages/Complaints/ComplaintDetailsPage';
+import HealthResourceListPage from './pages/HealthResources/HealthResourceListPage';
+import HealthResourceDetailsPage from './pages/HealthResources/HealthResourceDetailsPage';
+import Navbar from './components/Navbar';
 
 
 function App() {
   return (
     <div className="App">
-      <header>
-        {/* Aqui podemos ter um Navbar global no futuro */}
+      <Navbar /> 
+      <header>        
         <h1>Conecta Inclusão</h1>
       </header>
       <main>
@@ -24,6 +27,9 @@ function App() {
           <Route path="/opportunities/:id" element={<OpportunityDetailsPage />} />
           <Route path="/complaints" element={<ComplaintListPage />} />
           <Route path="/complaints/:id" element={<ComplaintDetailsPage />} />
+          <Route path="/health-resources" element={<HealthResourceListPage />} />
+          <Route path="/health-resources/:id" element={<HealthResourceDetailsPage />} />
+          
           <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} />
         </Routes>
       </main>

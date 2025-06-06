@@ -11,6 +11,7 @@ function HomePage() {
           <li><a href="/register">Cadastre-se</a></li>
           <li><a href="/opportunities">Ver Oportunidades</a></li>
           <li><a href="/complaints">Ver Denúncias</a></li>
+          <li><a href="/health-resources">Recursos de Saúde e Bem-Estar</a></li>
         </ul>
       </nav>
     </div>
