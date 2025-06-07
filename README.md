@@ -50,10 +50,13 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
 * **Visualização de Dados:**
     * **Lista de Oportunidades (`/opportunities`):** Exibe uma lista de oportunidades disponíveis com cards estilizados, buscando dados do backend.
     * **Detalhes da Oportunidade (`/opportunities/:id`):** Exibe informações detalhadas de uma oportunidade específica com design limpo.
+    * ***Formulário de Oportunidades (`/opportunities/new`, `/opportunities/edit/:id`):** Permite criar e editar oportunidades.**
     * **Lista de Denúncias/Relatos (`/complaints`):** Exibe uma lista de denúncias registradas com status visuais, buscando dados do backend.
     * **Detalhes da Denúncia/Relato (`/complaints/:id`):** Exibe informações detalhadas de uma denúncia específica com design limpo.
+    * **Formulário de Denúncias (`/complaints/new`, `/complaints/edit/:id`):** Permite registrar e editar denúncias/relatos.**
     * **Lista de Recursos de Saúde (`/health-resources`):** Exibe uma lista de recursos de saúde com cards estilizados, buscando dados do backend.
     * **Detalhes do Recurso de Saúde (`/health-resources/:id`):** Exibe informações detalhadas de um recurso específico com design limpo.
+    * **Formulário de Recursos de Saúde (`/health-resources/new`, `/health-resources/edit/:id`):** Permite criar e editar recursos de saúde.**
 
 ## Como Rodar o Projeto
 
