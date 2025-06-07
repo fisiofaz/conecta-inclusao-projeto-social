@@ -1,43 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 
 function HealthResourceDetailsPage() {
-  const { id } = useParams(); // Obtém o parâmetro 'id' da URL (ex: /health-resources/1)
-  const navigate = useNavigate(); // Hook para navegação programática (ex: botão de voltar)
+  const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [resource, setResource] = useState(null); // Estado para armazenar o recurso de saúde
-  const [loading, setLoading] = useState(true);   // Estado para controle de carregamento
-  const [error, setError] = useState(null);     // Estado para armazenar mensagens de erro
+  const [resource, setResource] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // useEffect para buscar os detalhes do recurso de saúde quando o componente é montado ou o ID muda
   useEffect(() => {
     const fetchHealthResource = async () => {
       try {
-        setLoading(true); // Inicia o carregamento
-        setError(null);   // Limpa erros anteriores
-
-        // Faz a requisição GET para o endpoint de detalhes do recurso de saúde
+        setLoading(true);
+        setError(null);
         const response = await api.get(`/health-resources/${id}`);
-        setResource(response.data); // Atualiza o estado com os dados do recurso
+        setResource(response.data);
       } catch (err) {
         console.error('Erro ao buscar detalhes do recurso de saúde:', err);
-        // Se o erro foi 404 (Not Found) do backend
         if (err.response && err.response.status === 404) {
           setError('Recurso de saúde não encontrado.');
         } else {
           setError('Não foi possível carregar os detalhes do recurso de saúde. Tente novamente mais tarde.');
         }
       } finally {
-        setLoading(false); // Finaliza o carregamento
+        setLoading(false);
       }
     };
 
-    fetchHealthResource(); // Chama a função de busca
-  }, [id]); // Dependência: o efeito é re-executado se o 'id' da URL mudar
+    fetchHealthResource();
+  }, [id]);
+
+  // Função para lidar com a exclusão
+  const handleDelete = async () => {
+    if (window.confirm('Tem certeza que deseja excluir este recurso de saúde?')) {
+      try {
+        setLoading(true);
+        await api.delete(`/health-resources/${id}`);
+        alert('Recurso de saúde excluído com sucesso!');
+        setTimeout(() => {
+          navigate('/');
+        }, 2000);
+      } catch (err) {
+        console.error('Erro ao excluir recurso de saúde:', err);
+        setError('Não foi possível excluir o recurso de saúde.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   // Renderização condicional baseada nos estados de carregamento e erro
- if (loading) {
+if (loading) {
     return <div className="container mx-auto p-4 text-center">Carregando detalhes do recurso de saúde...</div>;
   }
 
@@ -78,10 +94,23 @@ function HealthResourceDetailsPage() {
         <p className="text-gray-700">{resource.acessibilidadeDetalhes}</p>
       </div>
       <p className="text-gray-700"><strong>Horário de Funcionamento:</strong> {resource.horarioFuncionamento || 'Não informado'}</p>
-
-      <button onClick={() => navigate('/health-resources')} className="mt-8 bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-300">
-        Voltar para a lista
-      </button>
+      <div className="flex justify-between items-center mt-8 space-x-4">
+        <button onClick={() => navigate('/health-resources')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1">
+          Voltar para a lista
+        </button>
+        <Link
+          to={`/health-resources/edit/${resource.id}`}
+          className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
+        >
+          Editar
+        </Link>
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 flex-1"
+        >
+          Excluir
+        </button>
+      </div>
     </div>
   );
 }

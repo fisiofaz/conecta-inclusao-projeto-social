@@ -1,25 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 
 function ComplaintDetailsPage() {
-  const { id } = useParams(); 
-  const navigate = useNavigate(); 
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const [complaint, setComplaint] = useState(null);
-  const [loading, setLoading] = useState(true);   
-  const [error, setError] = useState(null);     
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // useEffect para buscar os detalhes da denúncia quando o componente é montado ou o ID muda
   useEffect(() => {
     const fetchComplaint = async () => {
       try {
-        setLoading(true); 
-        setError(null);  
-
-        // Faz a requisição GET para o endpoint de detalhes da denúncia
+        setLoading(true);
+        setError(null);
         const response = await api.get(`/complaints/${id}`);
-        setComplaint(response.data); 
+        setComplaint(response.data);
       } catch (err) {
         console.error('Erro ao buscar detalhes da denúncia:', err);
         // Verifica se o erro foi 404 (Not Found)
@@ -29,12 +27,29 @@ function ComplaintDetailsPage() {
           setError('Não foi possível carregar os detalhes da denúncia. Tente novamente mais tarde.');
         }
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
-    fetchComplaint(); 
-  }, [id]); 
+    fetchComplaint();
+  }, [id]);
+
+  // Função para lidar com a exclusão
+  const handleDelete = async () => {
+    if (window.confirm('Tem certeza que deseja excluir esta denúncia?')) {
+      try {
+        setLoading(true);
+        await api.delete(`/complaints/${id}`);
+        alert('Denúncia excluída com sucesso!'); // Feedback simples
+        navigate('/complaints'); // Redireciona para a lista após exclusão
+      } catch (err) {
+        console.error('Erro ao excluir denúncia:', err);
+        setError('Não foi possível excluir a denúncia.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
   
   const getStatusClasses = (status) => {
     switch (status ? status.toLowerCase() : '') {
@@ -92,10 +107,23 @@ function ComplaintDetailsPage() {
         <h3 className="text-xl font-semibold text-gray-800 mb-3">Descrição Detalhada:</h3>
         <p className="text-gray-700">{complaint.descricao}</p>
       </div>
-
-      <button onClick={() => navigate('/complaints')} className="mt-8 bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300">
-        Voltar para a lista
-      </button>
+      <div className="flex justify-between items-center mt-8 space-x-4">
+        <button onClick={() => navigate('/complaints')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1">
+          Voltar para a lista
+        </button>
+        <Link
+          to={`/complaints/edit/${complaint.id}`}
+          className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
+        >
+          Editar
+        </Link>
+        <button
+          onClick={handleDelete}
+          className="bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 flex-1"
+        >
+          Excluir
+        </button>
+      </div>
     </div>
   );
 }

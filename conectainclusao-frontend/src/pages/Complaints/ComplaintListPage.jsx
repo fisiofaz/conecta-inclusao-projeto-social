@@ -1,20 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function ComplaintListPage() {
-  const [complaints, setComplaints] = useState([]); 
-  const [loading, setLoading] = useState(true);   
-  const [error, setError] = useState(null);     
+  const [complaints, setComplaints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // useEffect para buscar a lista de denúncias quando o componente for montado
   useEffect(() => {
     const fetchComplaints = async () => {
       try {
         setLoading(true);
-        setError(null);        
+        setError(null);
         const response = await api.get('/complaints');
-        setComplaints(response.data); 
+        setComplaints(response.data);
       } catch (err) {
         console.error('Erro ao buscar denúncias:', err);
         setError('Não foi possível carregar as denúncias. Tente novamente mais tarde.');
@@ -23,23 +25,43 @@ function ComplaintListPage() {
       }
     };
 
-    fetchComplaints(); 
-  }, []); 
+    fetchComplaints();
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir esta denúncia?')) {
+      try {
+        setLoading(true);
+        await api.delete(`/complaints/${id}`);
+        setMessage('Denúncia excluída com sucesso!');
+        // Atualiza a lista após exclusão
+        setComplaints(complaints.filter(comp => comp.id !== id));
+        setTimeout(() => {
+          navigate('/opportunities');
+        }, 1500);
+      } catch (err) {
+        console.error('Erro ao excluir denúncia:', err);
+        setError('Não foi possível excluir a denúncia.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   const getStatusClasses = (status) => {
     switch (status ? status.toLowerCase() : '') {
       case 'aberto':
-        return 'bg-yellow-200 text-yellow-800'; // Tailwind yellow shades
+        return 'bg-yellow-200 text-yellow-800';
       case 'em_analise':
-        return 'bg-blue-200 text-blue-800'; // Tailwind blue shades
+        return 'bg-blue-200 text-blue-800';
       case 'resolvido':
-        return 'bg-green-200 text-green-800'; // Tailwind green shades
+        return 'bg-green-200 text-green-800';
       default:
         return 'bg-gray-200 text-gray-800';
     }
   };
 
- if (loading) {
+if (loading) {
     return <div className="container mx-auto p-4 text-center">Carregando denúncias...</div>;
   }
 
@@ -49,9 +71,18 @@ function ComplaintListPage() {
 
   return (
     <div className="container mx-auto p-6 bg-gray-50 rounded-lg shadow-lg my-8">
-      <h2 className="text-4xl font-extrabold text-red-700 text-center mb-10">Denúncias e Relatos</h2>
+      <div className="flex justify-between items-center mb-10">
+        <h2 className="text-4xl font-extrabold text-red-700">Denúncias e Relatos</h2>
+        <Link
+          to="/complaints/new"
+          className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300"
+        >
+          Registrar Nova Denúncia
+        </Link>
+      </div>
+      {message && <p className="text-green-600 text-center mb-4">{message}</p>} 
       {complaints.length === 0 ? (
-        <p className="text-center text-gray-600 text-lg">Nenhuma denúncia ou relato encontrado. Seja o primeiro a registrar!</p>
+        <p className="text-center text-gray-600 text-lg">Nenhuma denúncia ou relato encontrado. Clique em "Registrar Nova Denúncia" para adicionar uma!</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {complaints.map((complaint) => (
@@ -65,12 +96,26 @@ function ComplaintListPage() {
               <p className="text-xs text-gray-500 mb-4 flex-grow">{complaint.descricao}</p>
               <p className="text-xs text-gray-500 mb-2">Ocorrido em: {complaint.dataOcorrencia}</p>
               <p className="text-xs text-gray-500 mb-4">Registrado por: {complaint.userId ? `ID ${complaint.userId}` : 'Anônimo'}</p>
-              <Link
-                to={`/complaints/${complaint.id}`}
-                className="mt-4 bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 self-start"
-              >
-                Ver Detalhes
-              </Link>
+              <div className="flex justify-between items-center mt-4 space-x-2">
+                <Link
+                  to={`/complaints/${complaint.id}`}
+                  className="bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 flex-1"
+                >
+                  Ver Detalhes
+                </Link>
+                <Link
+                  to={`/complaints/edit/${complaint.id}`}
+                  className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
+                >
+                  Editar
+                </Link>
+                <button
+                  onClick={() => handleDelete(complaint.id)}
+                  className="bg-gray-500 text-white py-2 px-4 rounded-md text-center hover:bg-gray-600 transition-colors duration-300 flex-1"
+                >
+                  Excluir
+                </button>
+              </div>
             </div>
           ))}
         </div>

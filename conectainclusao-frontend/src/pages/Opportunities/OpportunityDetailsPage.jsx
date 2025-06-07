@@ -1,40 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Importe useNavigate também
+import { useParams, useNavigate,  Link } from 'react-router-dom';
 import api from '../../services/api';
 
 function OpportunityDetailsPage() {
-  const { id } = useParams(); // Hook para obter o parâmetro 'id' da URL
-  const navigate = useNavigate(); // Hook para navegação programática (ex: voltar)
+  const { id } = useParams(); 
+  const navigate = useNavigate(); 
 
-  const [opportunity, setOpportunity] = useState(null); // Estado para armazenar a oportunidade
-  const [loading, setLoading] = useState(true);     // Estado para controle de carregamento
-  const [error, setError] = useState(null);       // Estado para mensagens de erro
+  const [opportunity, setOpportunity] = useState(null); 
+  const [loading, setLoading] = useState(true);     
+  const [error, setError] = useState(null);       
 
   // useEffect para buscar os detalhes da oportunidade quando o componente é montado ou o ID muda
   useEffect(() => {
     const fetchOpportunity = async () => {
       try {
-        setLoading(true); // Inicia o carregamento
-        setError(null);   // Limpa erros anteriores
-
-        // Faz a requisição GET para o endpoint de detalhes da oportunidade
+        setLoading(true); 
+        setError(null);  
+                
         const response = await api.get(`/opportunities/${id}`);
-        setOpportunity(response.data); // Atualiza o estado com os dados da oportunidade
+        setOpportunity(response.data); 
       } catch (err) {
         console.error('Erro ao buscar detalhes da oportunidade:', err);
-        // Verifica se o erro foi 404 (Not Found)
         if (err.response && err.response.status === 404) {
           setError('Oportunidade não encontrada.');
         } else {
           setError('Não foi possível carregar os detalhes da oportunidade. Tente novamente mais tarde.');
         }
       } finally {
-        setLoading(false); // Finaliza o carregamento
+        setLoading(false); 
       }
     };
 
-    fetchOpportunity(); // Chama a função de busca
+    fetchOpportunity(); 
   }, [id]); // Dependência: o efeito é re-executado se o 'id' da URL mudar
+
+  // Função para lidar com a exclusão (similar ao da lista)
+  const handleDelete = async () => {
+    if (window.confirm('Tem certeza que deseja excluir esta oportunidade?')) {
+      try {
+        setLoading(true);
+        await api.delete(`/opportunities/${id}`);
+        alert('Oportunidade excluída com sucesso!');
+        navigate('/opportunities'); // Redireciona para a lista após exclusão
+      } catch (err) {
+        console.error('Erro ao excluir oportunidade:', err);
+        setError('Não foi possível excluir a oportunidade.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   // Renderização condicional baseada nos estados de carregamento e erro
   if (loading) {
@@ -78,10 +93,20 @@ function OpportunityDetailsPage() {
         <p className="text-gray-700">{opportunity.descricao}</p>
       </div>
       <p className="text-gray-700"><strong>Contato:</strong> {opportunity.contato}</p>
-
-      <button onClick={() => navigate('/opportunities')} className="mt-8 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300">
-        Voltar para a lista
-      </button>
+      <div className="flex justify-between items-center mt-8 space-x-4">
+        <button onClick={() => navigate('/opportunities')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1">
+          Voltar para a lista
+        </button>
+        <Link
+          to={`/opportunities/edit/${opportunity.id}`}
+          className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
+        >
+          Editar
+        </Link>
+        <button onClick={handleDelete} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300 flex-1">
+          Excluir
+        </button>
+      </div>     
     </div>
   );
 }
