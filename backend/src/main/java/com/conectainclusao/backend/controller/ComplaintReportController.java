@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication; 
 import org.springframework.security.core.context.SecurityContextHolder; 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/complaints")
+@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
 public class ComplaintReportController {
 
     @Autowired
@@ -28,6 +30,7 @@ public class ComplaintReportController {
     // ENDPOINT PARA CRIAR NOVA DENÚNCIA/RELATO (POST /api/complaints)
     // Apenas usuários autenticados podem criar denúncias
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ComplaintReportResponseDTO> createComplaintReport(@RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
         ComplaintReport complaintReport = new ComplaintReport();
         BeanUtils.copyProperties(complaintReportRequestDTO, complaintReport);
@@ -54,8 +57,7 @@ public class ComplaintReportController {
         return ResponseEntity.status(HttpStatus.CREATED).body(complaintReportResponseDTO);
     }
 
-    // ENDPOINT PARA LISTAR TODAS AS DENÚNCIAS/RELATOS (GET /api/complaints)
-    // Acesso para todos (inicialmente), mas pode ser restrito a ADMIN/Orgão_Apoio no futuro
+    // ENDPOINT PARA LISTAR TODAS AS DENÚNCIAS/RELATOS (GET /api/complaints)   
     @GetMapping
     public ResponseEntity<List<ComplaintReportResponseDTO>> getAllComplaintReports() {
         List<ComplaintReport> complaintReports = complaintReportRepository.findAll();
@@ -71,7 +73,6 @@ public class ComplaintReportController {
     }
 
     // ENDPOINT PARA BUSCAR DENÚNCIA/RELATO POR ID (GET /api/complaints/{id})
-    // Acesso para todos (inicialmente)
     @GetMapping("/{id}")
     public ResponseEntity<ComplaintReportResponseDTO> getComplaintReportById(@PathVariable Long id) {
         Optional<ComplaintReport> complaintReportOptional = complaintReportRepository.findById(id);
@@ -85,9 +86,9 @@ public class ComplaintReportController {
     }
 
     // ENDPOINT PARA ATUALIZAR DENÚNCIA/RELATO (PUT /api/complaints/{id})
-    // Apenas usuários autenticados (ex: ADMIN ou o próprio usuário que criou) podem atualizar
-    // Pormenor: O status poderia ser atualizado apenas por um ADMIN/Orgão_Apoio.
+    
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ComplaintReportResponseDTO> updateComplaintReport(@PathVariable Long id, @RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
         Optional<ComplaintReport> complaintReportOptional = complaintReportRepository.findById(id);
         if (complaintReportOptional.isPresent()) {
@@ -105,9 +106,9 @@ public class ComplaintReportController {
         }
     }
 
-    // ENDPOINT PARA DELETAR DENÚNCIA/RELATO (DELETE /api/complaints/{id})
-    // Apenas usuários autenticados (ex: ADMIN ou o próprio usuário que criou) podem deletar
+    // ENDPOINT PARA DELETAR DENÚNCIA/RELATO (DELETE /api/complaints/{id})    
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteComplaintReport(@PathVariable Long id) {
         if (complaintReportRepository.existsById(id)) {
             complaintReportRepository.deleteById(id);

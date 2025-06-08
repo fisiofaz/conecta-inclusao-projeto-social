@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.cors.CorsConfiguration; 
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,15 +19,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/health-resources") 
-
 public class HealthResourceController {
 
     @Autowired
     private HealthResourceRepository healthResourceRepository;
 
     // ENDPOINT PARA CRIAR NOVO RECURSO DE SAÚDE (POST /api/health-resources)
-    // Apenas usuários autenticados podem criar recursos
     @PostMapping
+    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
     public ResponseEntity<HealthResourceResponseDTO> createHealthResource(@RequestBody @Valid HealthResourceRequestDTO healthResourceRequestDTO) {
         HealthResource healthResource = new HealthResource();
         BeanUtils.copyProperties(healthResourceRequestDTO, healthResource);
@@ -40,7 +40,6 @@ public class HealthResourceController {
     }
 
     // ENDPOINT PARA LISTAR TODOS OS RECURSOS DE SAÚDE (GET /api/health-resources)
-    // Acesso público para visualização
     @GetMapping
     public ResponseEntity<List<HealthResourceResponseDTO>> getAllHealthResources() {
         List<HealthResource> healthResources = healthResourceRepository.findAll();
@@ -56,7 +55,6 @@ public class HealthResourceController {
     }
 
     // ENDPOINT PARA BUSCAR RECURSO DE SAÚDE POR ID (GET /api/health-resources/{id})
-    // Acesso público
     @GetMapping("/{id}")
     public ResponseEntity<HealthResourceResponseDTO> getHealthResourceById(@PathVariable Long id) {
         Optional<HealthResource> healthResourceOptional = healthResourceRepository.findById(id);
@@ -70,8 +68,8 @@ public class HealthResourceController {
     }
 
     // ENDPOINT PARA ATUALIZAR RECURSO DE SAÚDE (PUT /api/health-resources/{id})
-    // Apenas usuários autenticados podem atualizar
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
     public ResponseEntity<HealthResourceResponseDTO> updateHealthResource(@PathVariable Long id, @RequestBody @Valid HealthResourceRequestDTO healthResourceRequestDTO) {
         Optional<HealthResource> healthResourceOptional = healthResourceRepository.findById(id);
         if (healthResourceOptional.isPresent()) {
@@ -89,8 +87,8 @@ public class HealthResourceController {
     }
 
     // ENDPOINT PARA DELETAR RECURSO DE SAÚDE (DELETE /api/health-resources/{id})
-    // Apenas usuários autenticados podem deletar
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
     public ResponseEntity<Void> deleteHealthResource(@PathVariable Long id) {
         if (healthResourceRepository.existsById(id)) {
             healthResourceRepository.deleteById(id);

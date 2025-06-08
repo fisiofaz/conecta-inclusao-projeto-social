@@ -1,24 +1,23 @@
 package com.conectainclusao.backend.model;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import org.springframework.security.core.GrantedAuthority; 
-import org.springframework.security.core.authority.SimpleGrantedAuthority; 
-import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name = "users")
@@ -82,12 +81,23 @@ public class User implements UserDetails {
     }
     
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {        
-    	if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ADMIN")) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println("DEBUG: User.getAuthorities - Tipo Perfil: " + this.tipoPerfil);
+        List<SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
+        if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ADMIN")) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "EMPRESA")) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_EMPRESA"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
+        } else if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ORGAO_APOIO")) {
+            authorities.add(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         } else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
+        System.out.println("DEBUG: User.getAuthorities - Authorities retornadas: " + authorities);
+        return authorities;
     }
     
     @Override
