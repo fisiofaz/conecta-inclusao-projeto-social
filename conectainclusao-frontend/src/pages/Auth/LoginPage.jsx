@@ -1,35 +1,27 @@
 import React, { useState } from 'react';
-import api from '../../services/api'; // Importa a instância do axios configurada
-import { useNavigate } from 'react-router-dom'; // Para redirecionar após o login
-import { Link } from 'react-router-dom'; // Importe Link para o link de cadastro
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate(); // Hook para navegação
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Limpa erros anteriores
 
-    try {
-      const response = await api.post('/auth/login', { email, senha }); // Envia para /api/auth/login
+    // Chama a função de login do AuthContext
+    const success = await login(email, senha);
 
-      if (response.data.token) {
-        localStorage.setItem('jwtToken', response.data.token); 
-        console.log('Login bem-sucedido! Token:', response.data.token);        
-        navigate('/');
-      } else {
-        setError('Token não recebido. Verifique suas credenciais.');
-      }
-    } catch (err) {
-      console.error('Erro no login:', err.response || err);
-      if (err.response && err.response.status === 403) { // Status 403 Forbidden para credenciais inválidas
-        setError('Credenciais inválidas. Verifique seu e-mail e senha.');
-      } else {
-        setError('Ocorreu um erro ao fazer login. Tente novamente.');
-      }
+    if (success) {
+      console.log('Login bem-sucedido via AuthContext!');
+      navigate('/'); // Redireciona para a Home Page após login
+    } else {
+      setError('Credenciais inválidas ou erro no servidor. Tente novamente.');
     }
   };
 
