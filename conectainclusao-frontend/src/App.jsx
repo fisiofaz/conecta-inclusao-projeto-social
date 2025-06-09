@@ -13,6 +13,9 @@ import HealthResourceDetailsPage from './pages/HealthResources/HealthResourceDet
 import HealthResourceForm from './pages/HealthResources/HealthResourceForm';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import PrivateRoute from './components/PrivateRoute';
+import UserListPage from './pages/Users/UserListPage';
+import UserForm from './pages/Users/UserForm';
 
 
 function App() {
@@ -23,19 +26,64 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/register" element={<RegisterPage />} />          
+
+           {/* Rotas Protegidas - Exigem Autenticação */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
           <Route path="/opportunities/:id" element={<OpportunityDetailsPage />} />
-          <Route path="/opportunities/new" element={<OpportunityForm />} />
-          <Route path="/opportunities/edit/:id" element={<OpportunityForm />} />
+          <Route path="/opportunities/new" element={
+            <PrivateRoute allowedRoles={['ROLE_EMPRESA', 'ROLE_ADMIN']}>
+              <OpportunityForm />
+            </PrivateRoute>
+          } />
+          <Route path="/opportunities/edit/:id" element={
+            <PrivateRoute allowedRoles={['ROLE_EMPRESA', 'ROLE_ADMIN']}>
+              <OpportunityForm />
+            </PrivateRoute>
+          } />
+
+          {/* Listagem e detalhes de Denúncias são públicos. */}
           <Route path="/complaints" element={<ComplaintListPage />} />
           <Route path="/complaints/:id" element={<ComplaintDetailsPage />} />
-          <Route path="/complaints/new" element={<ComplaintForm />} />
-          <Route path="/complaints/edit/:id" element={<ComplaintForm />} />
+          <Route path="/complaints/new" element={
+            <PrivateRoute allowedRoles={['ROLE_USER', 'ROLE_EMPRESA', 'ROLE_ORGAO_APOIO', 'ROLE_ADMIN']}> 
+              <ComplaintForm />
+            </PrivateRoute>
+          } />
+          <Route path="/complaints/edit/:id" element={
+            <PrivateRoute allowedRoles={['ROLE_ADMIN']}>
+              <ComplaintForm />
+            </PrivateRoute>
+          } />
+          
+          {/* Listagem e detalhes de Recursos de Saúde são públicos. */}
           <Route path="/health-resources" element={<HealthResourceListPage />} />
           <Route path="/health-resources/:id" element={<HealthResourceDetailsPage />} />
-          <Route path="/health-resources/new" element={<HealthResourceForm />} />
-          <Route path="/health-resources/edit/:id" element={<HealthResourceForm />} />
+          <Route path="/health-resources/new" element={
+            <PrivateRoute allowedRoles={['ROLE_ORGAO_APOIO', 'ROLE_ADMIN']}> {/* Apenas ORGAO_APOIO ou ADMIN criam */}
+              <HealthResourceForm />
+            </PrivateRoute>
+          } />
+          <Route path="/health-resources/edit/:id" element={
+            <PrivateRoute allowedRoles={['ROLE_ORGAO_APOIO', 'ROLE_ADMIN']}> {/* Apenas ORGAO_APOIO ou ADMIN editam */}
+              <HealthResourceForm />
+            </PrivateRoute>
+          } />
+          <Route path="/users" element={
+            <PrivateRoute allowedRoles={['ROLE_ADMIN']}> {/* Apenas ADMIN pode ver a lista de usuários */}
+              <UserListPage />
+            </PrivateRoute>
+          } />
+          <Route path="/users" element={
+            <PrivateRoute allowedRoles={['ROLE_ADMIN']}> {/* Apenas ADMIN pode ver a lista de usuários */}
+              <UserListPage />
+            </PrivateRoute>
+          } />
+          <Route path="/users/edit/:id" element={
+            <PrivateRoute allowedRoles={['ROLE_ADMIN']}> {/* Apenas ADMIN pode editar usuários */}
+              <UserForm />
+            </PrivateRoute>
+          } />
           <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} />
         </Routes>
       </main>
