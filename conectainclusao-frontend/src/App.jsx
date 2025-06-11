@@ -20,7 +20,7 @@ import UserForm from './pages/Users/UserForm';
 
 function App() {
   return (
-    <div className="App flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen App">
       <Navbar />
       <main className="flex-grow">
         <Routes>
@@ -28,7 +28,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />          
 
-           {/* Rotas Protegidas - Exigem Autenticação */}
+           {/* Rotas de Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
           <Route path="/opportunities/:id" element={<OpportunityDetailsPage />} />
           <Route path="/opportunities/new" element={
@@ -42,7 +42,7 @@ function App() {
             </PrivateRoute>
           } />
 
-          {/* Listagem e detalhes de Denúncias são públicos. */}
+          {/* Rotas de Denúncias */}
           <Route path="/complaints" element={<ComplaintListPage />} />
           <Route path="/complaints/:id" element={<ComplaintDetailsPage />} />
           <Route path="/complaints/new" element={
@@ -56,7 +56,7 @@ function App() {
             </PrivateRoute>
           } />
           
-          {/* Listagem e detalhes de Recursos de Saúde são públicos. */}
+           {/* Rotas de Recursos de Saúde */}
           <Route path="/health-resources" element={<HealthResourceListPage />} />
           <Route path="/health-resources/:id" element={<HealthResourceDetailsPage />} />
           <Route path="/health-resources/new" element={

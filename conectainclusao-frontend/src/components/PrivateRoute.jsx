@@ -3,7 +3,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 function PrivateRoute({ children, allowedRoles }) {
-const { isAuthenticated, getTipoPerfil } = useAuth();
+  const { isAuthenticated, getTipoPerfil } = useAuth();
 
   // 1. Verifica se o usuário está autenticado
 if (!isAuthenticated()) {
