@@ -101,7 +101,7 @@ return (
 
         <div className="col-span-full">
             <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Recurso:</label>
-            <select name="tipoRecurso" value={formData.tipoRecurso} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500">
+            <select name="tipoRecurso" value={formData.tipoRecurso} onChange={handleChange} className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-green-500">
             <option value="clínica">Clínica</option>
             <option value="hospital">Hospital</option>
             <option value="terapia">Terapia</option>

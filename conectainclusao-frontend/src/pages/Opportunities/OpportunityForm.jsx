@@ -109,7 +109,7 @@ function OpportunityForm() {
 
           <div className="col-span-full">
             <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Oportunidade:</label>
-            <select name="tipoOportunidade" value={formData.tipoOportunidade} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select name="tipoOportunidade" value={formData.tipoOportunidade} onChange={handleChange}  className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
               <option value="emprego">Emprego</option>
               <option value="voluntariado">Voluntariado</option>
               <option value="evento">Evento</option>
@@ -120,13 +120,10 @@ function OpportunityForm() {
           <input type="text" name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização Responsável" required className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           <input type="text" name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização (Ex: Remoto, Cidade-UF)" required className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           <textarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade (Ex: rampas, libras, etc.)" required rows="2" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
-          {/* Data de Publicação não é editável diretamente pelo usuário no front,
-              mas é preenchida para a edição e enviada automaticamente na criação */}
-          {id && ( // Apenas mostra o campo dataPublicacao no modo de edição
+          {id && ( 
             <div>
               <label className="block mb-2 text-sm font-bold text-gray-700">Data de Publicação:</label>
-              <input type="date" name="dataPublicacao" value={formData.dataPublicacao} readOnly className="w-full p-3 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed" />
+              <input type="date" name="dataPublicacao" value={formData.dataPublicacao} readOnly className="w-full p-3 text-gray-700 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed"/>
             </div>
           )}
 

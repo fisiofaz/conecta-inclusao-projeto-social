@@ -105,17 +105,16 @@ return (
 
         <div className="col-span-full">
             <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Problema:</label>
-            <select name="tipoProblema" value={formData.tipoProblema} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500">
+            <select name="tipoProblema" value={formData.tipoProblema} onChange={handleChange} className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-red-500">
             <option value="acessibilidade">Acessibilidade</option>
             <option value="discriminação">Discriminação</option>
             <option value="falta_de_informacao">Falta de Informação</option>
-              {/* Adicione outras opções conforme necessário */}
             </select>
         </div>
 
         <div>
             <label className="block mb-2 text-sm font-bold text-gray-700">Data da Ocorrência:</label>
-            <input type="date" name="dataOcorrencia" value={formData.dataOcorrencia} onChange={handleChange} required className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500" />
+            <input type="date" name="dataOcorrencia" value={formData.dataOcorrencia} onChange={handleChange} required  className="w-full p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"/>
         </div>
 
         <input type="text" name="localizacaoOcorrencia" value={formData.localizacaoOcorrencia} onChange={handleChange} placeholder="Localização da Ocorrência" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-red-500" />

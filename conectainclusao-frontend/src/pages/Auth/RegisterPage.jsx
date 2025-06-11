@@ -76,7 +76,7 @@ function RegisterPage() {
           
           <div className="col-span-full">
             <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Perfil:</label>
-            <select name="tipoPerfil" value={formData.tipoPerfil} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <select name="tipoPerfil" value={formData.tipoPerfil} onChange={handleChange} className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 ">
               <option value="PCD">Pessoa com Deficiência</option>
               <option value="Empresa">Empresa</option>
               <option value="Orgão_Apoio">Órgão de Apoio</option>
@@ -84,7 +84,7 @@ function RegisterPage() {
           </div>
           <div>
             <label className="block mb-2 text-sm font-bold text-gray-700">Data de Nascimento:</label>
-            <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange} className="w-full p-3 text-gray-700 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <input type="text" name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
           <input type="text" name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
