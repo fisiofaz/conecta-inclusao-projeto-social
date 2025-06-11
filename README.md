@@ -44,6 +44,7 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
 * **Estilização e Design:**
     * Design moderno, elegante e responsivo aplicado a **todas as páginas** utilizando **Tailwind CSS**.
     * Cores e tipografia consistentes para uma melhor experiência visual.
+    * Campos como caixas de seleção (select) e seletores de data (input type="date") foram padronizados para um visual moderno e consistente.
 * **Módulos de Autenticação:**
     * **Tela de Registro (`/register`):** Formulário funcional e estilizado para cadastro de novos usuários, conectando-se ao backend.
     * **Tela de Login (`/login`):** Formulário funcional e estilizado para autenticação de usuários, obtendo e armazenando o token JWT no `localStorage`.
