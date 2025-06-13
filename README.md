@@ -41,6 +41,7 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
     * Roteamento de página configurado com `react-router-dom`.
     * **Componente Navbar:** Barra de navegação global para fácil acesso às principais seções.
     * **Componente Footer:** Rodapé moderno e responsivo presente em todas as páginas.
+    * **Mostrar/Ocultar Senha:** Adicionada funcionalidade de alternar a visibilidade da senha nos formulários de login e registro para melhor usabilidade e acessibilidade.
 * **Estilização e Design:**
     * Design moderno, elegante e responsivo aplicado a **todas as páginas** utilizando **Tailwind CSS**.
     * Cores e tipografia consistentes para uma melhor experiência visual.
@@ -58,6 +59,7 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
     * **Lista de Recursos de Saúde (`/health-resources`):** Exibe uma lista de recursos de saúde com cards estilizados, buscando dados do backend.
     * **Detalhes do Recurso de Saúde (`/health-resources/:id`):** Exibe informações detalhadas de um recurso específico com design limpo.
     * **Formulário de Recursos de Saúde (`/health-resources/new`, `/health-resources/edit/:id`):** Permite criar e editar recursos de saúde.**
+    
 
 ## Como Rodar o Projeto
 
@@ -95,7 +97,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
 ### Executando o Frontend
 1.  Navegue até a pasta `conectainclusao-frontend` no seu terminal.
 2.  Instale as dependências do projeto: `npm install`
-3.  Inicie o servidor de desenvolvimento: `npm run dev`
+3.  Inicie o servidor de desenvolvimento:`
 4.  A aplicação React estará disponível em `http://localhost:5173/` (ou a porta que o Vite indicar no terminal).
 
 ### Teste de Comunicação Frontend-Backend
