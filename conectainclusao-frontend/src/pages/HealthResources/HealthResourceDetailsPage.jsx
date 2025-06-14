@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 function HealthResourceDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-
+  const { getTipoPerfil } = useAuth();
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -52,8 +53,11 @@ function HealthResourceDetailsPage() {
     }
   };
 
+  const userTipoPerfil = getTipoPerfil();
+  const canManageHealthResources = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'ORGAO_APOIO';
+
   // Renderização condicional baseada nos estados de carregamento e erro
-if (loading) {
+  if (loading) {
     return <div className="container mx-auto p-4 text-center">Carregando detalhes do recurso de saúde...</div>;
   }
 
@@ -83,33 +87,39 @@ if (loading) {
   // Renderização dos detalhes do recurso de saúde
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg my-8 border border-gray-200">
-      <h2 className="text-3xl font-bold text-green-700 text-center mb-6">{resource.nome}</h2>
-      <p className="mb-2 text-gray-700"><strong>Tipo de Recurso:</strong> {resource.tipoRecurso}</p>
-      <p className="mb-2 text-gray-700"><strong>Especialidade:</strong> {resource.especialidade || 'Não especificado'}</p>
-      <p className="mb-2 text-gray-700"><strong>Endereço:</strong> {resource.endereco}</p>
-      <p className="mb-2 text-gray-700"><strong>Telefone:</strong> {resource.telefone || 'Não disponível'}</p>
-      <p className="mb-4 text-gray-700"><strong>Website:</strong> {resource.website ? <a href={resource.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{resource.website}</a> : 'Não disponível'}</p>
-      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6">
+      <h2 className="text-3xl sm:text-4xl font-bold text-green-700 text-center mb-6">{resource.nome}</h2>
+      <div className="text-gray-700 text-base sm:text-lg">
+        <p className="mb-2"><strong>Tipo de Recurso:</strong> {resource.tipoRecurso}</p>
+        <p className="mb-2"><strong>Especialidade:</strong> {resource.especialidade || 'Não especificado'}</p>
+        <p className="mb-2"><strong>Endereço:</strong> {resource.endereco}</p>
+        <p className="mb-2"><strong>Telefone:</strong> {resource.telefone || 'Não disponível'}</p>
+        <p className="mb-4"><strong>Website:</strong> {resource.website ? <a href={resource.website} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">{resource.website}</a> : 'Não disponível'}</p>
+      </div>
+      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6 text-base sm:text-lg">
         <h3 className="text-xl font-semibold text-gray-800 mb-3">Detalhes de Acessibilidade:</h3>
         <p className="text-gray-700">{resource.acessibilidadeDetalhes}</p>
       </div>
-      <p className="text-gray-700"><strong>Horário de Funcionamento:</strong> {resource.horarioFuncionamento || 'Não informado'}</p>
-      <div className="flex justify-between items-center mt-8 space-x-4">
-        <button onClick={() => navigate('/health-resources')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1">
+      <p className="text-gray-700 text-base sm:text-lg"><strong>Horário de Funcionamento:</strong> {resource.horarioFuncionamento || 'Não informado'}</p>
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
+        <button onClick={() => navigate('/health-resources')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto">
           Voltar para a lista
         </button>
-        <Link
-          to={`/health-resources/edit/${resource.id}`}
-          className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
-        >
-          Editar
-        </Link>
-        <button
-          onClick={handleDelete}
-          className="bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 flex-1"
-        >
-          Excluir
-        </button>
+        {canManageHealthResources && (
+          <>
+            <Link
+              to={`/health-resources/edit/${resource.id}`}
+              className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
+            >
+              Editar
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
+            >
+              Excluir
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { Link, useNavigate } from 'react-router-dom'; // Importe useNavigate
+import { useAuth } from '../../contexts/AuthContext';
 
 function OpportunityListPage() {
   const [opportunities, setOpportunities] = useState([]);
@@ -8,6 +9,9 @@ function OpportunityListPage() {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState('');
   const navigate = useNavigate(); // Para navegação programática
+  const { getTipoPerfil } = useAuth();
+  const userTipoPerfil = getTipoPerfil();
+  const canManageOpportunities = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'EMPRESA';
 
   useEffect(() => {
     const fetchOpportunities = async () => {
@@ -50,58 +54,72 @@ function OpportunityListPage() {
 
 
   if (loading) {
-    return <div className="container mx-auto p-4 text-center">Carregando oportunidades...</div>;
+    return <div className="container p-4 mx-auto text-center">Carregando oportunidades...</div>;
   }
 
   if (error) {
-    return <div className="container mx-auto p-4 text-center text-red-600 font-bold">{error}</div>;
+    return <div className="container p-4 mx-auto font-bold text-center text-red-600">{error}</div>;
   }
 
   return (
-    <div className="container mx-auto p-6 bg-gray-50 rounded-lg shadow-lg my-8">
-      <div className="flex justify-between items-center mb-10"> {/* Flex container para título e botão */}
-        <h2 className="text-4xl font-extrabold text-blue-700">Oportunidades Disponíveis</h2>
-        <Link to="/opportunities/new" className="bg-green-600 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-green-700 transition-colors duration-300">
-          Criar Nova Oportunidade
-        </Link>
-      </div>
-      {message && <p className="text-green-600 text-center mb-4">{message}</p>}
-      {opportunities.length === 0 ? (
-        <p className="text-center text-gray-600 text-lg">Nenhuma oportunidade encontrada. Clique em "Criar Nova Oportunidade" para adicionar uma!</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {opportunities.map((opportunity) => (
-            <div key={opportunity.id} className="bg-white rounded-lg shadow-md p-6 flex flex-col justify-between border border-gray-200 hover:shadow-xl transition-shadow duration-300">
-              <h3 className="text-xl font-semibold text-blue-600 mb-3">{opportunity.titulo}</h3>
-              <p className="text-sm text-gray-700 mb-2"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
-              <p className="text-sm text-gray-700 mb-2"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
-              <p className="text-sm text-gray-700 mb-4"><strong>Local:</strong> {opportunity.localizacao}</p>
-              <p className="text-xs text-gray-500 mb-4 flex-grow">{opportunity.requisitosAcessibilidade}</p>
-              <div className="flex justify-between items-center mt-4 space-x-2">
-                <Link
-                  to={`/opportunities/${opportunity.id}`}
-                  className="bg-blue-500 text-white py-2 px-4 rounded-md text-center hover:bg-blue-600 transition-colors duration-300 flex-1"
-                >
-                  Ver Detalhes
-                </Link>
-                <Link
-                  to={`/opportunities/edit/${opportunity.id}`}
-                  className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
-                >
-                  Editar
-                </Link>
-                <button
-                  onClick={() => handleDelete(opportunity.id)}
-                  className="bg-red-500 text-white py-2 px-4 rounded-md text-center hover:bg-red-600 transition-colors duration-300 flex-1"
-                >
-                  Excluir
-                </button>
-              </div>
-            </div>
-          ))}
+      <div className="container p-6 mx-auto my-8 rounded-lg shadow-lg bg-gray-50">
+        <h2 className="text-4xl font-extrabold text-blue-700 text-center mb-10">
+          Lista de Oportunidades
+        </h2>
+        {canManageOpportunities && (
+        <div className="text-center mb-8"> {/* Centraliza o botão e adiciona margem inferior */}
+          <Link to="/opportunities/new" className="bg-green-600 text-white py-3 px-6 rounded-md text-lg font-semibold hover:bg-green-700 transition-colors duration-300 inline-block"> {/* inline-block para que o text-center funcione */}
+            Criar Nova Oportunidade
+          </Link>
         </div>
-      )}
-    </div>
+        )}
+        {/* Mensagem de sucesso */}
+        {message && <p className="mb-4 text-center text-green-600">{message}</p>}
+
+        {opportunities.length === 0 ? (
+          <p className="text-lg text-center text-gray-600">Nenhuma oportunidade encontrada. Clique em "Criar Nova Oportunidade" para adicionar uma!</p>
+        ) : (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4 md:gap-6"> {/* Ajuste: sm:grid-cols-2, sm:gap-4, md:gap-6 */}
+            {opportunities.map((opportunity) => (
+              <div key={opportunity.id} className="flex flex-col justify-between p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl"> {/* p-6 padrão é bom */}
+                <h3 className="mb-3 text-xl font-semibold text-blue-600 sm:text-lg"> {/* Ajuste: sm:text-lg */}
+                  {opportunity.titulo}
+                </h3>
+                <p className="mb-2 text-sm text-gray-700"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
+                <p className="mb-2 text-sm text-gray-700"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
+                <p className="mb-4 text-sm text-gray-700"><strong>Local:</strong> {opportunity.localizacao}</p>
+                <p className="flex-grow mb-4 text-xs text-gray-500"> {/* Ajuste: mb-4 */}
+                  {opportunity.requisitosAcessibilidade}
+                </p>
+                <div className="flex flex-col items-center justify-between mt-4 space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
+                  <Link
+                    to={`/opportunities/${opportunity.id}`}
+                    className="w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600 sm:w-auto"
+                  >
+                    Ver Detalhes
+                  </Link>
+                  {canManageOpportunities && (
+                    <>
+                      <Link
+                        to={`/opportunities/edit/${opportunity.id}`}
+                        className="w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600 sm:w-auto"
+                      >
+                        Editar
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(opportunity.id)}
+                        className={'w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-red-500 rounded-md hover:bg-red-600 sm:w-auto'}
+                      >
+                        Excluir
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
   );
 }
 

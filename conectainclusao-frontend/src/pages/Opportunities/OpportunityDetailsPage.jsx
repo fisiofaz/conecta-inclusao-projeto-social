@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate,  Link } from 'react-router-dom';
 import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 function OpportunityDetailsPage() {
-  const { id } = useParams(); 
-  const navigate = useNavigate(); 
-
-  const [opportunity, setOpportunity] = useState(null); 
-  const [loading, setLoading] = useState(true);     
-  const [error, setError] = useState(null);       
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { getTipoPerfil } = useAuth();
+  const [opportunity, setOpportunity] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // useEffect para buscar os detalhes da oportunidade quando o componente é montado ou o ID muda
   useEffect(() => {
     const fetchOpportunity = async () => {
       try {
-        setLoading(true); 
-        setError(null);  
-                
+        setLoading(true);
+        setError(null);
         const response = await api.get(`/opportunities/${id}`);
-        setOpportunity(response.data); 
+        setOpportunity(response.data);
       } catch (err) {
         console.error('Erro ao buscar detalhes da oportunidade:', err);
         if (err.response && err.response.status === 404) {
@@ -27,11 +27,10 @@ function OpportunityDetailsPage() {
           setError('Não foi possível carregar os detalhes da oportunidade. Tente novamente mais tarde.');
         }
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
-
-    fetchOpportunity(); 
+    fetchOpportunity();
   }, [id]); // Dependência: o efeito é re-executado se o 'id' da URL mudar
 
   // Função para lidar com a exclusão (similar ao da lista)
@@ -50,6 +49,9 @@ function OpportunityDetailsPage() {
       }
     }
   };
+
+  const userTipoPerfil = getTipoPerfil();
+  const canManage = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'EMPRESA';
 
   // Renderização condicional baseada nos estados de carregamento e erro
   if (loading) {
@@ -82,31 +84,42 @@ function OpportunityDetailsPage() {
   // Renderização dos detalhes da oportunidade
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg my-8 border border-gray-200">
-      <h2 className="text-3xl font-bold text-blue-700 text-center mb-6">{opportunity.titulo}</h2>
-      <p className="mb-2 text-gray-700"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
-      <p className="mb-2 text-gray-700"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
-      <p className="mb-2 text-gray-700"><strong>Localização:</strong> {opportunity.localizacao}</p>
-      <p className="mb-2 text-gray-700"><strong>Publicado em:</strong> {opportunity.dataPublicacao}</p>
-      <p className="mb-4 text-gray-700"><strong>Requisitos de Acessibilidade:</strong> {opportunity.requisitosAcessibilidade}</p>
-      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6">
+      <h2 className="text-3xl sm:text-4xl font-bold text-blue-700 text-center mb-6">
+        {opportunity.titulo}
+      </h2>
+      <div className="text-gray-700 text-base sm:text-lg"> {/* Ajuste de tamanho responsivo para o texto */}
+        <p className="mb-2"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
+        <p className="mb-2"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
+        <p className="mb-2"><strong>Localização:</strong> {opportunity.localizacao}</p>
+        <p className="mb-2"><strong>Publicado em:</strong> {opportunity.dataPublicacao}</p>
+        <p className="mb-4"><strong>Requisitos de Acessibilidade:</strong> {opportunity.requisitosAcessibilidade}</p>
+      </div>
+      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6 text-base sm:text-lg">
         <h3 className="text-xl font-semibold text-gray-800 mb-3">Descrição Detalhada:</h3>
         <p className="text-gray-700">{opportunity.descricao}</p>
       </div>
-      <p className="text-gray-700"><strong>Contato:</strong> {opportunity.contato}</p>
-      <div className="flex justify-between items-center mt-8 space-x-4">
-        <button onClick={() => navigate('/opportunities')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1">
+      <p className="text-gray-700 text-base sm:text-lg"><strong>Contato:</strong> {opportunity.contato}</p>
+      <div className="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
+        <button onClick={() => navigate('/opportunities')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto">
           Voltar para a lista
         </button>
-        <Link
-          to={`/opportunities/edit/${opportunity.id}`}
-          className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1"
-        >
-          Editar
-        </Link>
-        <button onClick={handleDelete} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300 flex-1">
-          Excluir
-        </button>
-      </div>     
+        {canManage && (
+          <>
+            <Link
+              to={`/opportunities/edit/${opportunity.id}`}
+              className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
+            >
+              Editar
+            </Link>
+            <button
+              onClick={handleDelete}
+              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
+            >
+              Excluir
+            </button>
+          </>
+        )}
+      </div>
     </div>
   );
 }
