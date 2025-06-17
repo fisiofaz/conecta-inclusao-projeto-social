@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // URL base do seu backend Spring Boot
 const API_BASE_URL = import.meta.env.PROD
-  ? 'https://SEU_DOMINIO_RENDER.onrender.com/api'
+  ? 'https://conecta-inclusao-backend.onrender.com/api'
   : 'http://127.0.0.1:8081/api';
 
 const api = axios.create({
