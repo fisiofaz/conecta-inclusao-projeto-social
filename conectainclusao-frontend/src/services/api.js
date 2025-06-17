@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // URL base do seu backend Spring Boot
-// Certifique-se de que a porta está correta (8080 é o padrão)
-const API_BASE_URL = 'http://127.0.0.1:8081/api'; // Mude localhost para 127.0.0.1
+const API_BASE_URL = import.meta.env.PROD
+  ? 'https://SEU_DOMINIO_RENDER.onrender.com/api'
+  : 'http://127.0.0.1:8081/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
