@@ -169,4 +169,17 @@ Com o contêiner rodando, você pode acessar a API via Postman ou navegador em `
 
 ---
 
+## Links da Aplicação Online (Deploy)
+
+Sua aplicação "Conecta Inclusão" está deployada e acessível publicamente nos links abaixo:
+
+* **Frontend (Interface do Usuário):** [Link do seu Frontend no Netlify](https://inclusaosocial.netlify.app/)
+* **Backend (API):** [Link do seu Backend no Render](https://conecta-inclusao-backend.onrender.com)
+
+**Importante:**
+* Para testar a aplicação, acesse o link do **Frontend**.
+* O backend pode levar alguns segundos para "acordar" após um período de inatividade (devido ao plano gratuito).
+
+---
+
 **Desenvolvido por:** [Fábio André Zatta]
