@@ -7,6 +7,7 @@ Este projeto visa criar uma plataforma web para conectar Pessoas com Deficiênci
 * **Backend:** Spring Boot (Java 17), Spring MVC, Spring Data JPA, Spring Security, PostgreSQL
 * **Frontend:** React (com Vite, Axios, React Router DOM) e Tailwind CSS
 * **Banco de Dados:** PostgreSQL (local para desenvolvimento, Neon para deploy)
+* **Docker:** Empacotamento do projeto
 * **Controle de Versão:** Git / GitHub
 * **Deploy (Futuro):** Render (Backend), Netlify (Frontend), Neon (Banco de Dados)
 * **Postaman:** Teste de API
@@ -70,6 +71,7 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     * Apache Maven 3.9.x ou superior.
     * PostgreSQL 16 ou superior.
     * IDE: Eclipse IDE for Enterprise Java and Web Developers.
+    * Docker Desktop: Instalado e em execução.
 * **Frontend:**
     * Node.js (versão LTS ou superior).
     * npm (Node Package Manager).
@@ -87,12 +89,72 @@ Certifique-se de ter as seguintes ferramentas instaladas:
     api.security.token.secret=SEU_SEGREDO_LONGO_E_COMPLEXO
     # ... outras configurações JPA ...
     ```
+#### Executando o Backend com Docker (Recomendado)
 
-### Executando o Backend
+Esta é a forma recomendada de executar o backend, pois padroniza o ambiente e facilita o deploy.
+
+**Pré-requisitos Adicionais:**
+* **Docker Desktop:** Instalado e em execução.
+
+**Passos:**
+1.  **Navegue até a pasta `backend`** do projeto no seu terminal:
+    ```bash
+    cd backend
+    ```
+2.  **Construa a imagem Docker** da aplicação:
+    ```bash
+    docker build -t conecta-inclusao-backend .
+    ```
+    * Este comando irá compilar o projeto Java e criar a imagem Docker. Pode demorar alguns minutos na primeira vez.
+3.  **Obtenha suas credenciais do Neon Postgres e a chave JWT:**
+    * No seu dashboard do [Neon.tech](https://neon.tech/), copie a **Connection String (URI)** do seu banco de dados. Ela deve começar com `jdbc:postgresql://`.
+    * Copie sua **chave secreta JWT** (a mesma que você usa no `application.properties` para `api.security.token.secret`).
+4.  **Rode o contêiner Docker**, passando as variáveis de ambiente necessárias:
+    * **Importante:** Substitua os placeholders `SUA_CONNECTION_STRING_REAL`, `SUA_CHAVE_JWT_REAL`.
+    ```bash
+    docker run -p 8081:8081 --name conecta-backend-container \
+      -e DATABASE_URL="SUA_CONNECTION_STRING_REAL" \
+      -e JWT_SECRET_KEY="SUA_CHAVE_JWT_REAL" \
+      conecta-inclusao-backend
+    ```
+    * Onde:
+        * `-p 8081:8081`: Mapeia a porta 8081 do contêiner para a porta 8081 da sua máquina local.
+        * `--name conecta-backend-container`: Atribui um nome ao contêiner para facilitar o gerenciamento.
+        * `-e DATABASE_URL`: Sua Connection String completa do Neon Postgres, **incluindo o prefixo `jdbc:`**.
+        * `-e JWT_SECRET_KEY`: Sua chave secreta JWT.
+    * Se o nome do contêiner já estiver em uso, você pode removê-lo primeiro com `docker rm conecta-backend-container`.
+5.  **Verifique se o backend iniciou:** Observe os logs no seu terminal. Você deverá ver a mensagem `Tomcat started on port 8081` ou similar.
+
+**Testando a API Dockerizada:**
+Com o contêiner rodando, você pode acessar a API via Postman ou navegador em `http://localhost:8081/api/...`.
+
+* * *
+
+#### Executando o Backend Diretamente (Sem Docker)
+
+(Mantenha esta seção caso alguém não queira/possa usar Docker)
+
+**Pré-requisitos:**
+* Java Development Kit (JDK) 17 ou superior.
+* Apache Maven 3.9.x ou superior.
+* PostgreSQL 16 ou superior (servidor local ou credenciais do Neon no `application.properties`).
+* IDE: Eclipse IDE for Enterprise Java and Web Developers.
+
+**Passos:**
 1.  Abra a pasta `backend` do projeto no Eclipse.
-2.  Faça `Project > Clean...` e `Project > Build Project`.
-3.  Clique com o botão direito no arquivo `ConectaInclusaoBackendApplication.java` e selecione `Run As > Spring Boot App`.
-4.  Confirme no console que o servidor Tomcat iniciou na porta configurada (ex: 8081).
+2.  No arquivo `backend/src/main/resources/application.properties`, configure as credenciais do banco de dados (se for usar o Neon, insira-as diretamente aqui com `jdbc:`):
+    ```properties
+    spring.datasource.url=jdbc:postgresql://<USUARIO>:<SENHA>@<HOST>/<DB_NAME>?sslmode=require
+    spring.datasource.username=<USUARIO>
+    spring.datasource.password=<SENHA>
+    server.port=8081 # Ou a porta que você configurou
+    api.security.token.secret=<SUA_CHAVE_JWT_REAL_AQUI_SE_NAO_USAR_VAR_AMBIENTE>
+    # ... outras configurações JPA ...
+    ```
+3.  Faça `Project > Clean...` e `Project > Build Project`.
+4.  Clique com o botão direito no arquivo `ConectaInclusaoBackendApplication.java` e selecione `Run As > Spring Boot App`.
+5.  Confirme no console que o servidor Tomcat iniciou na porta configurada (ex: 8081).
+
 
 ### Executando o Frontend
 1.  Navegue até a pasta `conectainclusao-frontend` no seu terminal.
