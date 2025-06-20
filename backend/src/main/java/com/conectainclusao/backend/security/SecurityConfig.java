@@ -98,9 +98,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "https://inclusaosocial.netlify.app/"
+        	    "http://localhost:5173",
+        	    "http://127.0.0.1:5173",
+        	    "https://inclusaosocial.netlify.app"
         ));
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
