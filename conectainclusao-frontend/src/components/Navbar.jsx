@@ -47,7 +47,7 @@ const isAdmin = userTipoPerfil === 'ADMIN';
           </Link>
         </li>
         <li>
-          <Link to="/health-resources" className="block px-4 py-2 text-lg text-white transition-colors duration-300 hover:text-blue-200 md:px-0" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/saude" className="block px-4 py-2 text-lg text-white transition-colors duration-300 hover:text-blue-200 md:px-0" onClick={() => setIsMenuOpen(false)}>
             Saúde & Bem-Estar
           </Link>
         </li>

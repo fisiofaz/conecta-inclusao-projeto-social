@@ -16,6 +16,8 @@ import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import UserListPage from './pages/Users/UserListPage';
 import UserForm from './pages/Users/UserForm';
+import SaudeBemEstar from "./pages/HealthResources/SaudeBemEstar";
+
 
 
 function App() {
@@ -69,6 +71,9 @@ function App() {
               <HealthResourceForm />
             </PrivateRoute>
           } />
+
+          {/* Página de Saúde & Bem-Estar personalizada */}
+          <Route path="/saude" element={<SaudeBemEstar />} />
           <Route path="/users" element={
             <PrivateRoute allowedRoles={['ROLE_ADMIN']}> {/* Apenas ADMIN pode ver a lista de usuários */}
               <UserListPage />
