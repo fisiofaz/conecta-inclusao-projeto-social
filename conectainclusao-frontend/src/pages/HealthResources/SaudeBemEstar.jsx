@@ -2,18 +2,28 @@ import React, { useState } from "react";
 
 export default function SaudeBemEstar() {
   const [showHelp, setShowHelp] = useState(false);
+  const [showCadastro, setShowCadastro] = useState(false);
+
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
-      {/* Botão de Emergência */}
-      <div className="flex justify-end mb-4">
-        <button
-          onClick={() => setShowHelp(true)}
-          className="bg-red-600 text-white px-6 py-2 rounded-full font-semibold shadow-md hover:bg-red-700 transition"
-        >
-          🚨 Preciso de Ajuda
-        </button>
-      </div>
+      <div className="flex justify-between mb-4">
+  {/* Botão Cadastro no canto esquerdo */}
+  <button
+    onClick={() => navigate('/health-resources/create')}
+    className="bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-700 transition"
+  >
+    ➕ Cadastrar Clínica / Serviço
+  </button>
+
+  {/* Botão de Emergência no canto direito */}
+  <button
+    onClick={() => setShowHelp(true)}
+    className="bg-red-600 text-white px-6 py-2 rounded-full font-semibold shadow-md hover:bg-red-700 transition"
+  >
+    🚨 Preciso de Ajuda
+  </button>
+</div>
 
       <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
         Saúde & Bem-Estar
@@ -30,7 +40,7 @@ export default function SaudeBemEstar() {
         {/* Card Exercícios */}
         <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
           <img
-            src="https://source.unsplash.com/400x250/?wheelchair,sport"
+            src="/Images/Saude/exercicios.jpg"
             alt="Exercícios adaptados"
             className="rounded-xl mb-4 w-full h-48 object-cover"
           />
@@ -55,7 +65,7 @@ export default function SaudeBemEstar() {
         {/* Card Alimentação */}
         <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
           <img
-            src="https://source.unsplash.com/400x250/?healthy-food,vegetables"
+            src="/Images/Saude/alimentacao.jpg"
             alt="Alimentação saudável"
             className="rounded-xl mb-4 w-full h-48 object-cover"
           />
@@ -80,7 +90,7 @@ export default function SaudeBemEstar() {
         {/* Card Saúde Mental */}
         <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
           <img
-            src="/images/saude/saude-mental.jpg"
+            src="/Images/Saude/saude-mental.jpg"
             alt="Saúde mental"
             className="rounded-xl mb-4 w-full h-48 object-cover"
           />
@@ -105,6 +115,7 @@ export default function SaudeBemEstar() {
 
       {/* Modal de Ajuda */}
       {showHelp && (
+        
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full">
             <h2 className="text-2xl font-bold text-red-600 mb-4 text-center">

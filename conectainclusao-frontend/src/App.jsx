@@ -17,6 +17,8 @@ import PrivateRoute from './components/PrivateRoute';
 import UserListPage from './pages/Users/UserListPage';
 import UserForm from './pages/Users/UserForm';
 import SaudeBemEstar from "./pages/HealthResources/SaudeBemEstar";
+import CadastrarClinica from "./pages/HealthResources/Cadastrarclinica";
+
 
 
 

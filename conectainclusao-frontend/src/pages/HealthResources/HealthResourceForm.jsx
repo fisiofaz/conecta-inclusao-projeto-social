@@ -1,135 +1,213 @@
 import React, { useState, useEffect } from 'react';
-import api from '../../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
-import FeedbackMessage from '../../components/FeedbackMessage';
+import api from '../../services/api';
+import { useAuth } from '../../contexts/AuthContext';
 
 function HealthResourceForm() {
-const { id } = useParams();
-const navigate = useNavigate();
+  const { id } = useParams(); // usado para edição
+  const navigate = useNavigate();
+  const { getTipoPerfil } = useAuth();
 
-const [formData, setFormData] = useState({
-    nome: '',
-    tipoRecurso: 'clínica', // Valor padrão
+  const [formData, setFormData] = useState({
+    tipoRecurso: '',
     especialidade: '',
     endereco: '',
     telefone: '',
     website: '',
     acessibilidadeDetalhes: '',
     horarioFuncionamento: '',
-});
+  });
 
-const [feedback, setFeedback] = useState({ type: '', message: '' });
-const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState(null);
 
-useEffect(() => {
+  const userTipoPerfil = getTipoPerfil();
+  const canManageHealthResources = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'ORGAO_APOIO';
+
+  // Buscar dados se for edição
+  useEffect(() => {
     if (id) {
-    setLoading(true);
-    const fetchHealthResource = async () => {
+      const fetchResource = async () => {
         try {
-        const response = await api.get(`/health-resources/${id}`);
-        setFormData(response.data);
+          setLoading(true);
+          const response = await api.get(`/health-resources/${id}`);
+          setFormData(response.data);
         } catch (err) {
-        console.error('Erro ao carregar recurso de saúde para edição:', err);
-        setFeedback({ type: 'error', message: 'Não foi possível carregar o recurso de saúde para edição.' });
+          console.error('Erro ao carregar recurso de saúde:', err);
+          setError('Não foi possível carregar os dados.');
         } finally {
-        setLoading(false);
+          setLoading(false);
         }
-    };
-    fetchHealthResource();
+      };
+      fetchResource();
     }
-}, [id]);
+  }, [id]);
 
-const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-};
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setFeedback({ type: '', message: '' });
-    setLoading(true);
 
     try {
-    let response;
-    if (id) {
-        response = await api.put(`/health-resources/${id}`, formData);
-        setFeedback({ type: 'success', message: 'Recurso de saúde atualizado com sucesso!' });
-    } else {
-        response = await api.post('/health-resources', formData);
-        setFeedback({ type: 'success', message: 'Recurso de saúde criado com sucesso!' });
-    }
+      setLoading(true);
+      setError(null);
 
-    if (response.status === 200 || response.status === 201) {
-        setTimeout(() => {
-        navigate('/health-resources');
-        }, 2000);
-    }
+      if (id) {
+        await api.put(`/health-resources/${id}`, formData);
+        setMessage('Recurso de saúde atualizado com sucesso!');
+      } else {
+        await api.post('/health-resources', formData);
+        setMessage('Recurso de saúde cadastrado com sucesso!');
+      }
+
+      setTimeout(() => navigate('/health-resources'), 2000);
     } catch (err) {
-    console.error('Erro ao salvar recurso de saúde:', err.response || err);
-    let errorMessage = 'Ocorreu um erro ao salvar o recurso de saúde. Verifique os dados e tente novamente.';
-    if (err.response) {
-        if (err.response.data && typeof err.response.data === 'object') {
-            if (err.response.data.message) {
-                errorMessage = err.response.data.message;
-            } else if (Array.isArray(err.response.data.errors)) {
-                const validationErrors = err.response.data.map(e => e.defaultMessage || e.message).join('; ');
-                errorMessage = 'Erros de validação: ' + validationErrors;
-            }
-        } else if (typeof err.response.data === 'string') {
-            errorMessage = err.response.data;
-        }
+      console.error('Erro ao salvar recurso de saúde:', err);
+      setError('Não foi possível salvar o recurso de saúde. Tente novamente.');
+    } finally {
+      setLoading(false);
     }
-    setFeedback({ type: 'error', message: errorMessage });
-    }
-    finally {
-        setLoading(false);
-    }
-};
+  };
 
-if (loading && id) {
-    return <div className="container p-4 mx-auto text-center">Carregando dados do recurso de saúde para edição...</div>;
-}
+  if (!canManageHealthResources) {
+    return (
+      <div className="container mx-auto p-6 text-center">
+        <p className="text-red-600 font-bold text-lg">
+          Você não tem permissão para acessar esta página.
+        </p>
+      </div>
+    );
+  }
 
-return (
-    <div className="flex items-center justify-center min-h-screen p-6 bg-gray-100">
-    <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
-        <h2 className="mb-6 text-3xl font-bold text-center text-green-700">
-        {id ? 'Editar Recurso de Saúde' : 'Criar Novo Recurso de Saúde'}
-        </h2>
-        <FeedbackMessage type={feedback.type} message={feedback.message} />
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <input type="text" name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome do Recurso" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-green-500" />
+  return (
+    <div className="container mx-auto p-8 bg-white rounded-lg shadow-lg my-10 max-w-2xl border border-gray-200">
+      <h2 className="text-3xl font-extrabold text-green-700 text-center mb-8">
+        {id ? 'Editar Recurso de Saúde' : 'Cadastrar Novo Recurso de Saúde'}
+      </h2>
 
-        <div className="col-span-full">
-            <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Recurso:</label>
-            <select name="tipoRecurso" value={formData.tipoRecurso} onChange={handleChange} className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-green-500">
-            <option value="clínica">Clínica</option>
-            <option value="hospital">Hospital</option>
-            <option value="terapia">Terapia</option>
-            <option value="programa">Programa de Saúde</option>
-            <option value="profissional">Profissional de Saúde</option>
-            </select>
+      {message && <p className="text-green-600 text-center mb-4">{message}</p>}
+      {error && <p className="text-red-600 text-center mb-4">{error}</p>}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Tipo de Recurso */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Tipo de Recurso</label>
+          <input
+            type="text"
+            name="tipoRecurso"
+            value={formData.tipoRecurso}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ex: Clínica, Hospital, Centro de Reabilitação..."
+          />
         </div>
 
-        <input type="text" name="especialidade" value={formData.especialidade} onChange={handleChange} placeholder="Especialidade (Ex: Fisioterapia)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input type="text" name="endereco" value={formData.endereco} onChange={handleChange} placeholder="Endereço Completo" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input type="text" name="telefone" value={formData.telefone} onChange={handleChange} placeholder="Telefone (Opcional)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input type="url" name="website" value={formData.website} onChange={handleChange} placeholder="Website (Opcional)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <textarea name="acessibilidadeDetalhes" value={formData.acessibilidadeDetalhes} onChange={handleChange} placeholder="Detalhes de Acessibilidade (Ex: Rampas, Libras)" required rows="2" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-green-500"></textarea>
-        <input type="text" name="horarioFuncionamento" value={formData.horarioFuncionamento} onChange={handleChange} placeholder="Horário de Funcionamento (Ex: Seg-Sex 8h-18h)" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-green-500" />
+        {/* Especialidade */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Especialidade</label>
+          <input
+            type="text"
+            name="especialidade"
+            value={formData.especialidade}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ex: Fisioterapia, Psicologia, Oftalmologia..."
+          />
+        </div>
 
-        <button
+        {/* Endereço */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Endereço</label>
+          <input
+            type="text"
+            name="endereco"
+            value={formData.endereco}
+            onChange={handleChange}
+            required
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ex: Rua das Flores, 123 - Centro, Curitiba - PR"
+          />
+        </div>
+
+        {/* Telefone */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Telefone</label>
+          <input
+            type="tel"
+            name="telefone"
+            value={formData.telefone}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="(41) 99999-9999"
+          />
+        </div>
+
+        {/* Website */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Website</label>
+          <input
+            type="url"
+            name="website"
+            value={formData.website}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="https://www.exemplo.com.br"
+          />
+        </div>
+
+        {/* Acessibilidade */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Acessibilidade</label>
+          <textarea
+            name="acessibilidadeDetalhes"
+            value={formData.acessibilidadeDetalhes}
+            onChange={handleChange}
+            rows="3"
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ex: Rampas de acesso, elevador, banheiros adaptados..."
+          ></textarea>
+        </div>
+
+        {/* Horário de Funcionamento */}
+        <div>
+          <label className="block text-gray-700 font-semibold mb-2">Horário de Funcionamento</label>
+          <input
+            type="text"
+            name="horarioFuncionamento"
+            value={formData.horarioFuncionamento}
+            onChange={handleChange}
+            className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+            placeholder="Ex: Segunda a Sexta, das 08h às 18h"
+          />
+        </div>
+
+        {/* Botões */}
+        <div className="flex justify-between mt-6">
+          <button
+            type="button"
+            onClick={() => navigate('/health-resources')}
+            className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300"
+          >
+            Cancelar
+          </button>
+          <button
             type="submit"
-            className="p-3 font-semibold text-white transition-colors duration-300 bg-green-600 rounded-md col-span-full hover:bg-green-700 disabled:opacity-50" disabled={loading}
-        >
-            {loading ? 'Salvando...' : (id ? 'Atualizar Recurso' : 'Criar Recurso')}
-        </button>
-        </form>
-        <button onClick={() => navigate('/health-resources')} className="w-full p-3 mt-6 font-semibold text-white transition-colors duration-300 bg-gray-500 rounded-md hover:bg-gray-600">
-        Cancelar e Voltar
-        </button>
+            disabled={loading}
+            className="bg-green-600 text-white py-2 px-6 rounded-md hover:bg-green-700 transition-colors duration-300"
+          >
+            {loading ? 'Salvando...' : id ? 'Atualizar' : 'Cadastrar'}
+          </button>
+        </div>
+      </form>
     </div>
-    </div>
-);
+  );
 }
 
 export default HealthResourceForm;
