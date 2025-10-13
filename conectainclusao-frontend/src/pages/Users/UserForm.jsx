@@ -12,7 +12,7 @@ function UserForm() {
     nome: '',
     email: '',
     senha: '',
-    tipoPerfil: 'PCD',
+    TipoPerfil: 'PCD',
     dataNascimento: '',
     deficiencia: '',
     cidade: '',
