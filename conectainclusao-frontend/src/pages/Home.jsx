@@ -149,7 +149,7 @@ export default function Home() {
             },
             {
               icon: (
-                <FaLaptopCode className="text-5xl text-indigo-600 mx-auto mb-4" />
+               <FaLaptopCode className="text-5xl text-indigo-600 mx-auto mb-4" />
               ),
               title: "2. Aprenda",
               text: "Tenha acesso a cursos gratuitos e trilhas de capacitação em tecnologia.",

@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
@@ -19,26 +20,21 @@ import UserForm from './pages/Users/UserForm';
 import SaudeBemEstar from "./pages/HealthResources/SaudeBemEstar";
 import CadastrarClinica from "./pages/HealthResources/Cadastrarclinica";
 
-
-
-
 function App() {
   return (
     <div className="flex flex-col min-h-screen App">
       <Navbar />
       <main className="flex-grow">
         <Routes>
+          {/* Rotas principais */}
           <Route path="/" element={<Home />} />
-          <Route path="/" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
           {/* Rotas de Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
-          <Route
-            path="/opportunities/:id"
-            element={<OpportunityDetailsPage />}
-          />
+          <Route path="/opportunities/:id" element={<OpportunityDetailsPage />} />
           <Route
             path="/opportunities/new"
             element={
@@ -84,20 +80,12 @@ function App() {
           />
 
           {/* Rotas de Recursos de Saúde */}
-          <Route
-            path="/health-resources"
-            element={<HealthResourceListPage />}
-          />
-          <Route
-            path="/health-resources/:id"
-            element={<HealthResourceDetailsPage />}
-          />
+          <Route path="/health-resources" element={<HealthResourceListPage />} />
+          <Route path="/health-resources/:id" element={<HealthResourceDetailsPage />} />
           <Route
             path="/health-resources/new"
             element={
               <PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}>
-                {" "}
-                {/* Apenas ORGAO_APOIO ou ADMIN criam */}
                 <HealthResourceForm />
               </PrivateRoute>
             }
@@ -106,28 +94,16 @@ function App() {
             path="/health-resources/edit/:id"
             element={
               <PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}>
-                {" "}
-                {/* Apenas ORGAO_APOIO ou ADMIN editam */}
                 <HealthResourceForm />
               </PrivateRoute>
             }
           />
+
+          {/* Rotas de Usuários */}
           <Route
             path="/users"
             element={
               <PrivateRoute allowedRoles={["ROLE_ADMIN"]}>
-                {" "}
-                {/* Apenas ADMIN pode ver a lista de usuários */}
-                <UserListPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <PrivateRoute allowedRoles={["ROLE_ADMIN"]}>
-                {" "}
-                {/* Apenas ADMIN pode ver a lista de usuários */}
                 <UserListPage />
               </PrivateRoute>
             }
@@ -136,12 +112,16 @@ function App() {
             path="/users/edit/:id"
             element={
               <PrivateRoute allowedRoles={["ROLE_ADMIN"]}>
-                {" "}
-                {/* Apenas ADMIN pode editar usuários */}
                 <UserForm />
               </PrivateRoute>
             }
           />
+
+          {/* Rotas de Saúde e Bem-Estar */}
+          <Route path="/saude" element={<SaudeBemEstar />} />
+          <Route path="/cadastrar-clinica" element={<CadastrarClinica />} />
+
+          {/* Rota para páginas não encontradas */}
           <Route path="*" element={<h2>404 - Página Não Encontrada</h2>} />
         </Routes>
       </main>

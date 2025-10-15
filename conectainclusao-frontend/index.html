@@ -10,5 +10,83 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+  <!-- Seção de Clínicas Cadastradas -->
+<div class="clinicas-section">
+    <h2 class="section-title">Clínicas e Serviços Cadastrados</h2>
+    <div id="clinicasList" class="clinicas-list">
+        <p class="no-clinicas">Nenhuma clínica cadastrada ainda.</p>
+    </div>
+</div>
+
+<!-- Modal de Cadastro -->
+<div id="modalCadastro" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2 class="modal-title">Cadastrar Clínica / Serviço</h2>
+        
+        <div id="successMessage" class="success-message">
+            Clínica cadastrada com sucesso!
+        </div>
+
+        <form id="formCadastroClinica">
+            <div class="form-group">
+                <label for="nomeClinica">Nome da Clínica / Serviço *</label>
+                <input type="text" id="nomeClinica" name="nomeClinica" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tipoServico">Tipo de Serviço *</label>
+                <select id="tipoServico" name="tipoServico" required>
+                    <option value="">Selecione...</option>
+                    <option value="Clínica Médica">Clínica Médica</option>
+                    <option value="Fisioterapia">Fisioterapia</option>
+                    <option value="Psicologia">Psicologia</option>
+                    <option value="Fonoaudiologia">Fonoaudiologia</option>
+                    <option value="Terapia Ocupacional">Terapia Ocupacional</option>
+                    <option value="Nutrição">Nutrição</option>
+                    <option value="Odontologia">Odontologia</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="endereco">Endereço Completo *</label>
+                <input type="text" id="endereco" name="endereco" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefone">Telefone *</label>
+                <input type="tel" id="telefone" name="telefone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email">
+            </div>
+
+            <div class="form-group">
+                <label for="site">Site</label>
+                <input type="url" id="site" name="site">
+            </div>
+
+            <div class="form-group">
+                <label for="acessibilidade">Recursos de Acessibilidade</label>
+                <textarea id="acessibilidade" name="acessibilidade" placeholder="Descreva os recursos de acessibilidade disponíveis (rampas, elevadores, banheiros adaptados, etc.)"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="descricao">Descrição dos Serviços</label>
+                <textarea id="descricao" name="descricao" placeholder="Descreva os serviços oferecidos"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">Cadastrar</button>
+                <button type="button" class="btn-cancel" id="btnCancelar">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="./js/script.js"></script>
+
   </body>
 </html>

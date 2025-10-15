@@ -1,31 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { UserPlus } from "lucide-react";
+import ModalCadastroClinica from "../../components/ModalCadastroClinica"; // Ajuste o caminho se você colocou o modal em outro lugar
 
 export default function SaudeBemEstar() {
   const [showHelp, setShowHelp] = useState(false);
-  const [showCadastro, setShowCadastro] = useState(false);
+  const [showCadastro, setShowCadastro] = useState(false); // Estado para controlar o modal de cadastro
+  const [clinicas, setClinicas] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Carregar clínicas do backend
+  useEffect(() => {
+    carregarClinicas();
+  }, []);
+
+  const carregarClinicas = async () => {
+    try {
+      // Ajuste a URL conforme seu backend para listar recursos de saúde
+      // A URL `/api/health-resources` é um exemplo baseado no seu App.jsx
+      const response = await fetch("/api/health-resources");
+      if (response.ok) {
+        const data = await response.json();
+        setClinicas(data);
+      } else {
+        console.error("Erro ao carregar clínicas:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar clínicas:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCadastroSuccess = () => {
+    // Recarregar lista de clínicas após cadastro bem-sucedido
+    carregarClinicas();
+  };
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between mb-4">
-  {/* Botão Cadastro no canto esquerdo */}
-  <button
-    onClick={() => navigate('/health-resources/create')}
-    className="bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-700 transition"
-  >
-    ➕ Cadastrar Clínica / Serviço
-  </button>
+        {/* Botão Cadastro no canto esquerdo */}
+        <button
+          onClick={() => setShowCadastro(true)} // Abre o modal
+          className="bg-green-600 text-white px-4 py-2 rounded-full font-semibold shadow-md hover:bg-green-700 transition flex items-center gap-2"
+        >
+          <UserPlus size={20} />
+          Cadastrar Clínica / Serviço
+        </button>
 
-  {/* Botão de Emergência no canto direito */}
-  <button
-    onClick={() => setShowHelp(true)}
-    className="bg-red-600 text-white px-6 py-2 rounded-full font-semibold shadow-md hover:bg-red-700 transition"
-  >
-    🚨 Preciso de Ajuda
-  </button>
-</div>
+        {/* Botão de Emergência no canto direito */}
+        <button
+          onClick={() => setShowHelp(true)}
+          className="bg-red-600 text-white px-6 py-2 rounded-full font-semibold shadow-md hover:bg-red-700 transition"
+        >
+          🚨 Preciso de Ajuda
+        </button>
+      </div>
 
-      <h1 className="text-3xl font-bold text-center text-blue-700 mb-6">
+      <h1 className="text-5xl md:text-4xl text-center font-extrabold mb-6 drop-shadow-2xl leading-tight animate-fadeIn">
         Saúde & Bem-Estar
       </h1>
 
@@ -35,7 +67,7 @@ export default function SaudeBemEstar() {
         Pessoas com Deficiência (PCDs).
       </p>
 
-      {/* Grid de Cards */}
+      {/* Grid de Cards (seus cards existentes) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Card Exercícios */}
         <div className="bg-white rounded-2xl shadow-md p-6 hover:shadow-lg transition">
@@ -113,9 +145,75 @@ export default function SaudeBemEstar() {
         </div>
       </div>
 
-      {/* Modal de Ajuda */}
+      {/* Seção de Clínicas Cadastradas */}
+      <div className="mt-16">
+        <h2 className="text-3xl font-bold text-center text-blue-700 mb-8">
+          Clínicas e Serviços Cadastrados
+        </h2>
+
+        {loading ? (
+          <p className="text-center text-gray-500">Carregando...</p>
+         ) : clinicas.length === 0 ? (
+          <p className="text-center text-gray-500 py-10">
+            Nenhuma clínica cadastrada ainda.
+          </p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {clinicas.map((clinica) => (
+              <div
+                key={clinica.id} // Certifique-se de que cada clínica tenha um 'id' único do backend
+                className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition"
+              >
+                <h3 className="text-xl font-bold text-blue-700 mb-3">
+                  {clinica.nome}
+                </h3>
+                <div className="space-y-2 text-sm text-gray-700">
+                  <p>
+                    <strong>Tipo:</strong> {clinica.tipoServico}
+                  </p>
+                  <p>
+                    <strong>Endereço:</strong> {clinica.endereco}
+                  </p>
+                  <p>
+                    <strong>Telefone:</strong> {clinica.telefone}
+                  </p>
+                  {clinica.email && (
+                    <p>
+                      <strong>E-mail:</strong> {clinica.email}
+                    </p>
+                  )}
+                  {clinica.site && (
+                    <p>
+                      <strong>Site:</strong>{" "}
+                      <a
+                        href={clinica.site}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                        {clinica.site}
+                      </a>
+                    </p>
+                  )}
+                  {clinica.acessibilidade && (
+                    <p>
+                      <strong>Acessibilidade:</strong> {clinica.acessibilidade}
+                    </p>
+                  )}
+                  {clinica.descricao && (
+                    <p>
+                      <strong>Serviços:</strong> {clinica.descricao}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Modal de Ajuda (seu modal existente) */}
       {showHelp && (
-        
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-60 z-50">
           <div className="bg-white rounded-xl shadow-lg p-6 max-w-sm w-full">
             <h2 className="text-2xl font-bold text-red-600 mb-4 text-center">
@@ -150,6 +248,13 @@ export default function SaudeBemEstar() {
           </div>
         </div>
       )}
+
+      {/* Modal de Cadastro de Clínica (o novo modal) */}
+      <ModalCadastroClinica
+        isOpen={showCadastro}
+        onClose={() => setShowCadastro(false)}
+        onSuccess={handleCadastroSuccess}
+      />
     </div>
   );
 }

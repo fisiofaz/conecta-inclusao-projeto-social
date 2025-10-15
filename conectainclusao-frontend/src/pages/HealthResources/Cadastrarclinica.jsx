@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 export default function CadastrarClinica() {
   const [clinica, setClinica] = useState({
-    nome: "",
-    endereco: "",
-    cidade: "",
-    tipoServico: "",
+    Nome: "",
+    Endereço: "",
+    Cidade: "",
+    Especialidade: "",
+    Especialidade: "",
+    Especialidade: "",
   });
 
   const navigate = useNavigate();
@@ -48,8 +50,8 @@ export default function CadastrarClinica() {
           <label className="block text-sm font-medium mb-1">Nome</label>
           <input
             type="text"
-            name="nome"
-            value={clinica.nome}
+            name="Nome"
+            value={clinica.Nome}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
             required
@@ -60,8 +62,8 @@ export default function CadastrarClinica() {
           <label className="block text-sm font-medium mb-1">Endereço</label>
           <input
             type="text"
-            name="endereco"
-            value={clinica.endereco}
+            name="Endereço"
+            value={clinica.Endereço}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
             required
@@ -72,8 +74,8 @@ export default function CadastrarClinica() {
           <label className="block text-sm font-medium mb-1">Cidade</label>
           <input
             type="text"
-            name="cidade"
-            value={clinica.cidade}
+            name="Cidade"
+            value={clinica.Cidade}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
             required
@@ -84,8 +86,8 @@ export default function CadastrarClinica() {
           <label className="block text-sm font-medium mb-1">Tipo de Serviço</label>
           <input
             type="text"
-            name="tipoServico"
-            value={clinica.tipoServico}
+            name="Especialidade"
+            value={clinica.Especialidade}
             onChange={handleChange}
             className="w-full border rounded-md p-2"
             required
