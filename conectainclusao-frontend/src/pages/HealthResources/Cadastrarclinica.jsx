@@ -6,9 +6,9 @@ export default function CadastrarClinica() {
     Nome: "",
     Endereço: "",
     Cidade: "",
-    Especialidade: "",
-    Especialidade: "",
-    Especialidade: "",
+    Especialidade1: "",
+    Especialidade2: "",
+    Especialidade3: "",
   });
 
   const navigate = useNavigate();
@@ -40,63 +40,63 @@ export default function CadastrarClinica() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 bg-white rounded-2xl shadow-md p-8">
-      <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">
+    <div className="max-w-2xl p-8 mx-auto mt-10 bg-white shadow-md rounded-2xl">
+      <h2 className="mb-6 text-2xl font-bold text-center text-blue-700">
         Cadastrar Clínica
       </h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium mb-1">Nome</label>
+          <label className="block mb-1 text-sm font-medium">Nome</label>
           <input
             type="text"
             name="Nome"
             value={clinica.Nome}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full p-2 border rounded-md"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Endereço</label>
+          <label className="block mb-1 text-sm font-medium">Endereço</label>
           <input
             type="text"
             name="Endereço"
             value={clinica.Endereço}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full p-2 border rounded-md"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Cidade</label>
+          <label className="block mb-1 text-sm font-medium">Cidade</label>
           <input
             type="text"
             name="Cidade"
             value={clinica.Cidade}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full p-2 border rounded-md"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium mb-1">Tipo de Serviço</label>
+          <label className="block mb-1 text-sm font-medium">Tipo de Serviço</label>
           <input
             type="text"
             name="Especialidade"
             value={clinica.Especialidade}
             onChange={handleChange}
-            className="w-full border rounded-md p-2"
+            className="w-full p-2 border rounded-md"
             required
           />
         </div>
 
         <button
           type="submit"
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md"
+          className="w-full py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
         >
           Salvar Clínica
         </button>
