@@ -28,7 +28,7 @@ function App() {
         <Routes>
           {/* Rotas principais */}
           <Route path="/" element={<Home />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/homePage" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
