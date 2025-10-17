@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate,  Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
+import OpportunityDetailsView from '../../components/OpportunityDetailsView';
 
 function OpportunityDetailsPage() {
   const { id } = useParams();
@@ -55,14 +56,14 @@ function OpportunityDetailsPage() {
 
   // Renderização condicional baseada nos estados de carregamento e erro
   if (loading) {
-    return <div className="container mx-auto p-4 text-center">Carregando detalhes...</div>;
+    return <div className="container p-4 mx-auto text-center">Carregando detalhes...</div>;
   }
 
   if (error) {
     return (
-      <div className="container mx-auto p-4 text-center">
-        <p className="text-red-600 font-bold mb-4">{error}</p>
-        <button onClick={() => navigate('/opportunities')} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300">
+      <div className="container p-4 mx-auto text-center">
+        <p className="mb-4 font-bold text-red-600">{error}</p>
+        <button onClick={() => navigate('/opportunities')} className="px-4 py-2 text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600">
           Voltar para a lista
         </button>
       </div>
@@ -72,9 +73,9 @@ function OpportunityDetailsPage() {
   // Se a oportunidade não foi encontrada (mas não houve erro de rede/servidor)
   if (!opportunity) {
     return (
-      <div className="container mx-auto p-4 text-center">
-        <p className="text-gray-600 text-lg mb-4">Oportunidade não encontrada.</p>
-        <button onClick={() => navigate('/opportunities')} className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition-colors duration-300">
+      <div className="container p-4 mx-auto text-center">
+        <p className="mb-4 text-lg text-gray-600">Oportunidade não encontrada.</p>
+        <button onClick={() => navigate('/opportunities')} className="px-4 py-2 text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600">
           Voltar para a lista
         </button>
       </div>
@@ -83,44 +84,11 @@ function OpportunityDetailsPage() {
 
   // Renderização dos detalhes da oportunidade
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg my-8 border border-gray-200">
-      <h2 className="text-3xl sm:text-4xl font-bold text-blue-700 text-center mb-6">
-        {opportunity.titulo}
-      </h2>
-      <div className="text-gray-700 text-base sm:text-lg"> {/* Ajuste de tamanho responsivo para o texto */}
-        <p className="mb-2"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
-        <p className="mb-2"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
-        <p className="mb-2"><strong>Localização:</strong> {opportunity.localizacao}</p>
-        <p className="mb-2"><strong>Publicado em:</strong> {opportunity.dataPublicacao}</p>
-        <p className="mb-4"><strong>Requisitos de Acessibilidade:</strong> {opportunity.requisitosAcessibilidade}</p>
-      </div>
-      <div className="bg-gray-50 p-4 rounded-md border border-gray-200 mb-6 text-base sm:text-lg">
-        <h3 className="text-xl font-semibold text-gray-800 mb-3">Descrição Detalhada:</h3>
-        <p className="text-gray-700">{opportunity.descricao}</p>
-      </div>
-      <p className="text-gray-700 text-base sm:text-lg"><strong>Contato:</strong> {opportunity.contato}</p>
-      <div className="flex flex-col sm:flex-row justify-between items-center mt-8 space-y-4 sm:space-y-0 sm:space-x-4">
-        <button onClick={() => navigate('/opportunities')} className="bg-gray-500 text-white py-2 px-4 rounded-md hover:bg-gray-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto">
-          Voltar para a lista
-        </button>
-        {canManage && (
-          <>
-            <Link
-              to={`/opportunities/edit/${opportunity.id}`}
-              className="bg-yellow-500 text-white py-2 px-4 rounded-md text-center hover:bg-yellow-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
-            >
-              Editar
-            </Link>
-            <button
-              onClick={handleDelete}
-              className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600 transition-colors duration-300 flex-1 sm:flex-none w-full sm:w-auto"
-            >
-              Excluir
-            </button>
-          </>
-        )}
-      </div>
-    </div>
+    <OpportunityDetailsView 
+      opportunity={opportunity}
+      canManage={canManage}
+      onDelete={handleDelete}
+    />
   );
 }
 

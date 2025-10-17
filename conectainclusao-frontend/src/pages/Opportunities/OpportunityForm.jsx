@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import FeedbackMessage from '../../components/FeedbackMessage';
+import FormInput from '../../components/FormInput';
+import FormTextarea from '../../components/FormTextarea';
+import FormSelect from '../../components/FormSelect';
 
 function OpportunityForm() {
   const { id } = useParams();
@@ -96,6 +99,13 @@ function OpportunityForm() {
     return <div className="container p-4 mx-auto text-center">Carregando dados da oportunidade para edição...</div>;
   }
 
+  const opportunityTypes = [
+    { value: 'emprego', label: 'Emprego' },
+    { value: 'voluntariado', label: 'Voluntariado' },
+    { value: 'evento', label: 'Evento' },
+    { value: 'saude_bem_estar', label: 'Saúde e Bem-Estar' },
+  ];
+
   return (
     <div className="flex items-center justify-center min-h-screen p-6 bg-gray-100">
       <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
@@ -104,36 +114,29 @@ function OpportunityForm() {
         </h2>
         <FeedbackMessage type={feedback.type} message={feedback.message} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <input type="text" name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título da Oportunidade" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <textarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada" required rows="4" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
           <div className="col-span-full">
-            <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Oportunidade:</label>
-            <select name="tipoOportunidade" value={formData.tipoOportunidade} onChange={handleChange}  className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="emprego">Emprego</option>
-              <option value="voluntariado">Voluntariado</option>
-              <option value="evento">Evento</option>
-              <option value="saude_bem_estar">Saúde e Bem-Estar</option> {/* Incluímos o novo tipo aqui */}
-            </select>
+            <FormInput name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título da Oportunidade" required />
           </div>
 
-          <input type="text" name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização Responsável" required className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <input type="text" name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização (Ex: Remoto, Cidade-UF)" required className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <textarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade (Ex: rampas, libras, etc.)" required rows="2" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-          {id && ( 
-            <div>
-              <label className="block mb-2 text-sm font-bold text-gray-700">Data de Publicação:</label>
-              <input type="date" name="dataPublicacao" value={formData.dataPublicacao} readOnly className="w-full p-3 text-gray-700 bg-gray-100 border border-gray-300 rounded-md cursor-not-allowed"/>
-            </div>
+          <FormTextarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada" required />
+          
+          <FormSelect name="tipoOportunidade" label="Tipo de Oportunidade:" value={formData.tipoOportunidade} onChange={handleChange} options={opportunityTypes} />
+
+          <FormInput name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização" required />
+          <FormInput name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização" required />
+
+          <FormTextarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade" required rows={2} />
+          
+          {id && (
+            <FormInput label="Data de Publicação:" name="dataPublicacao" type="date" value={formData.dataPublicacao} readOnly />
           )}
 
-          <input type="text" name="contato" value={formData.contato} onChange={handleChange} placeholder="Informações de Contato" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <div className="col-span-full">
+            <FormInput name="contato" value={formData.contato} onChange={handleChange} placeholder="Informações de Contato" required />
+          </div>
 
-          <button
-            type="submit"
-            className="p-3 font-semibold text-white transition-colors duration-300 bg-blue-600 rounded-md col-span-full hover:bg-blue-700 disabled:opacity-50" disabled={loading}
-          >
-            {loading ? 'Salvando...' : (id ? 'Atualizar Oportunidade' : 'Criar Oportunidade')}
+          <button type="submit" className="p-3 font-semibold text-white transition-colors duration-300 bg-blue-600 rounded-md col-span-full hover:bg-blue-700 disabled:opacity-50" disabled={loading}>
+            {loading ? 'Salvando...' : (id ? 'Atualizar' : 'Criar Oportunidade')}
           </button>
         </form>
         <button onClick={() => navigate('/opportunities')} className="w-full p-3 mt-6 font-semibold text-white transition-colors duration-300 bg-gray-500 rounded-md hover:bg-gray-600">
