@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import FormInput from "../../components/FormInput";
+import Button from "../../components/Button";
 
 export default function CadastrarClinica() {
   const [clinica, setClinica] = useState({
-    Nome: "",
-    Endereço: "",
-    Cidade: "",
-    Especialidade1: "",
-    Especialidade2: "",
-    Especialidade3: "",
+    nome: "",
+    endereco: "",
+    cidade: "",
+    especialidades: "", // Um único campo para várias especialidades
   });
 
   const navigate = useNavigate();
@@ -44,63 +44,48 @@ export default function CadastrarClinica() {
       <h2 className="mb-6 text-2xl font-bold text-center text-blue-700">
         Cadastrar Clínica
       </h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <FormInput
+          label="Nome da Clínica"
+          name="nome"
+          value={clinica.nome}
+          onChange={handleChange}
+          placeholder="Ex: Clínica Bem Viver"
+          required
+        />
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1 text-sm font-medium">Nome</label>
-          <input
-            type="text"
-            name="Nome"
-            value={clinica.Nome}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
+        <FormInput
+          label="Endereço"
+          name="endereco"
+          value={clinica.endereco}
+          onChange={handleChange}
+          placeholder="Ex: Rua das Flores, 123"
+          required
+        />
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Endereço</label>
-          <input
-            type="text"
-            name="Endereço"
-            value={clinica.Endereço}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
+        <FormInput
+          label="Cidade"
+          name="cidade"
+          value={clinica.cidade}
+          onChange={handleChange}
+          placeholder="Ex: São Paulo"
+          required
+        />
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Cidade</label>
-          <input
-            type="text"
-            name="Cidade"
-            value={clinica.Cidade}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
+        <FormInput
+          label="Serviços ou Especialidades"
+          name="especialidades"
+          value={clinica.especialidades}
+          onChange={handleChange}
+          placeholder="Ex: Fisioterapia, Psicologia, Terapia Ocupacional"
+          required
+        />
 
-        <div>
-          <label className="block mb-1 text-sm font-medium">Tipo de Serviço</label>
-          <input
-            type="text"
-            name="Especialidade"
-            value={clinica.Especialidade}
-            onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            required
-          />
-        </div>
-
-        <button
-          type="submit"
-          className="w-full py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700"
-        >
+        <FormButton type="submit" variant="primary" className="w-full">
           Salvar Clínica
-        </button>
+        </FormButton>
       </form>
+      
     </div>
   );
 }
