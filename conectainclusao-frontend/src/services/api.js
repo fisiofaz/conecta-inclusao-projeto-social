@@ -27,4 +27,27 @@ api.interceptors.request.use(
   }
 );
 
+// ✨ MELHORIA: Interceptor para LIDAR com respostas de erro
+api.interceptors.response.use(
+  // O primeiro argumento é para respostas de sucesso, apenas as retornamos
+  (response) => response,
+  // O segundo argumento é para respostas de erro
+  (error) => {
+    // Verifica se o erro é '401 Unauthorized'
+    if (error.response && error.response.status === 401) {
+      console.log('Token expirado ou inválido. Deslogando...');
+      // Limpa os dados de autenticação do armazenamento local
+      localStorage.removeItem('jwtToken');
+      localStorage.removeItem('tipoPerfil'); // Limpa também o perfil      
+      // Remove o cabeçalho de autorização das futuras requisições
+      delete api.defaults.headers.common['Authorization'];
+      // Redireciona o usuário para a página de login
+      // Usamos window.location para forçar um recarregamento da página, limpando qualquer estado
+      window.location.href = '/login';
+    }
+    // Para qualquer outro erro, apenas o rejeitamos para que possa ser tratado localmente
+    return Promise.reject(error);
+  }
+);
+
 export default api;
