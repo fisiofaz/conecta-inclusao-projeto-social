@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Button from "../../components/Button";
 
 function HomePage() {
   return (
@@ -11,20 +12,12 @@ function HomePage() {
         O Hub de Inclusão que conecta Pessoas com Deficiência (PCDs) a
         oportunidades, recursos e comunidades.
       </p>
-      <nav className="flex space-x-6">
-        {" "}
-        {/* flex, space-x-6 */}
-        <Link
-          to="/opportunities"
-          className="px-4 py-2 text-base font-semibold text-center text-white transition-colors duration-300 bg-blue-600 rounded-lg shadow-md sm:px-6 sm:py-3 md:px-8 md:py-4 hover:bg-blue-700 sm:text-lg md:text-xl"
-        >
-          Ver Oportunidades
+      <nav className="flex flex-col gap-6 sm:flex-row">
+        <Link to="/opportunities">
+          <Button variant="primary">Ver Oportunidades</Button>
         </Link>
-        <Link
-          to="/register"
-          className="px-4 py-2 text-base font-semibold text-center text-white transition-colors duration-300 bg-green-600 rounded-lg shadow-md sm:px-6 sm:py-3 md:px-8 md:py-4 hover:bg-green-700 sm:text-lg md:text-xl"
-        >
-          Cadastre-se
+        <Link to="/register">
+          <Button variant="secondary">Cadastre-se</Button>
         </Link>
       </nav>
     </div>

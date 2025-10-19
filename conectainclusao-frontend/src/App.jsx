@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/Auth/LoginPage';
@@ -21,9 +22,12 @@ import SaudeBemEstar from "./pages/HealthResources/SaudeBemEstar";
 import CadastrarClinica from "./pages/HealthResources/Cadastrarclinica";
 
 function App() {
+  const location = useLocation();
+  const showNavbar = location.pathname !== '/';
+  
   return (
     <div className="flex flex-col min-h-screen App">
-      <Navbar />
+      {showNavbar && <Navbar />}
       <main className="flex-grow">
         <Routes>
           {/* Rotas principais */}
