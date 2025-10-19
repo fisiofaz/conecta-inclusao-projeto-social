@@ -5,6 +5,7 @@ import FeedbackMessage from '../../components/FeedbackMessage';
 import FormInput from '../../components/FormInput';
 import FormTextarea from '../../components/FormTextarea';
 import FormSelect from '../../components/FormSelect';
+import Button from '../../components/Button';
 
 function OpportunityForm() {
   const { id } = useParams();
@@ -135,13 +136,13 @@ function OpportunityForm() {
             <FormInput name="contato" value={formData.contato} onChange={handleChange} placeholder="Informações de Contato" required />
           </div>
 
-          <button type="submit" className="p-3 font-semibold text-white transition-colors duration-300 bg-blue-600 rounded-md col-span-full hover:bg-blue-700 disabled:opacity-50" disabled={loading}>
-            {loading ? 'Salvando...' : (id ? 'Atualizar' : 'Criar Oportunidade')}
-          </button>
+          <Button type="submit" variant="primary" disabled={loading} className="w-full">
+              {loading ? 'Salvando...' : (id ? 'Atualizar Oportunidade' : 'Criar Oportunidade')}
+          </Button>
         </form>
-        <button onClick={() => navigate('/opportunities')} className="w-full p-3 mt-6 font-semibold text-white transition-colors duration-300 bg-gray-500 rounded-md hover:bg-gray-600">
+        <Button onClick={() => navigate('/opportunities')} variant="secondary" className="w-full mt-4">
           Cancelar e Voltar
-        </button>
+        </Button>
       </div>
     </div>
   );

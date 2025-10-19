@@ -3,6 +3,7 @@ import { useParams, useNavigate,  Link } from 'react-router-dom';
 import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import OpportunityDetailsView from '../../components/OpportunityDetailsView';
+import Button from '../../components/Button';
 
 function OpportunityDetailsPage() {
   const { id } = useParams();
@@ -63,9 +64,9 @@ function OpportunityDetailsPage() {
     return (
       <div className="container p-4 mx-auto text-center">
         <p className="mb-4 font-bold text-red-600">{error}</p>
-        <button onClick={() => navigate('/opportunities')} className="px-4 py-2 text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600">
+        <Button onClick={() => navigate('/opportunities')} variant="primary">
           Voltar para a lista
-        </button>
+        </Button>
       </div>
     );
   }
@@ -75,9 +76,9 @@ function OpportunityDetailsPage() {
     return (
       <div className="container p-4 mx-auto text-center">
         <p className="mb-4 text-lg text-gray-600">Oportunidade não encontrada.</p>
-        <button onClick={() => navigate('/opportunities')} className="px-4 py-2 text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600">
+        <Button onClick={() => navigate('/opportunities')} variant="primary">
           Voltar para a lista
-        </button>
+        </Button>
       </div>
     );
   }

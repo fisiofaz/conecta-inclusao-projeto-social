@@ -3,13 +3,15 @@ import api from '../../services/api';
 import { Link } from 'react-router-dom'; // Importe useNavigate
 import { useAuth } from '../../contexts/AuthContext';
 import OpportunityCard from '../../components/OpportunityCard';
+import Button from '../../components/Button';
+import FeedbackMessage from '../../components/FeedbackMessage';
 
 
 function OpportunityListPage() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [message, setMessage] = useState('');
+  const [feedback, setFeedback] = useState({ type: '', message: '' });
   const { getTipoPerfil } = useAuth();
   const userTipoPerfil = getTipoPerfil();
   const canManageOpportunities = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'EMPRESA';
@@ -37,13 +39,13 @@ function OpportunityListPage() {
     if (window.confirm('Tem certeza que deseja excluir esta oportunidade?')) {
       try {
         await api.delete(`/opportunities/${id}`);
-        setMessage('Oportunidade excluída com sucesso!');
+        setFeedback({ type: 'success', message: 'Oportunidade excluída com sucesso!' });
         // Atualiza a lista após exclusão
         setOpportunities(opportunities.filter(opp => opp.id !== id));
-        setTimeout(() => setMessage(''), 3000);
+        setTimeout(() => setFeedback({ type: '', message: '' }), 3000);
       } catch (err) {
         console.error('Erro ao excluir oportunidade:', err);
-        setError('Não foi possível excluir a oportunidade.');
+        setFeedback({ type: 'error', message: 'Não foi possível excluir a oportunidade.' });
       }
     }
   };
@@ -64,13 +66,15 @@ function OpportunityListPage() {
         </h2>
         {canManageOpportunities && (
         <div className="mb-8 text-center"> {/* Centraliza o botão e adiciona margem inferior */}
-          <Link to="/opportunities/new" className="inline-block px-6 py-3 text-lg font-semibold text-white transition-colors duration-300 bg-green-600 rounded-md hover:bg-green-700"> {/* inline-block para que o text-center funcione */}
-            Criar Nova Oportunidade
+          <Link to="/opportunities/new">
+            <Button variant="primary">
+              Criar Nova Oportunidade
+            </Button>
           </Link>
         </div>
         )}
         {/* Mensagem de sucesso */}
-        {message && <p className="mb-4 text-center text-green-600">{message}</p>}
+        <FeedbackMessage type={feedback.type} message={feedback.message} />
 
         {opportunities.length === 0 ? (
           <p className="text-lg text-center text-gray-600">Nenhuma oportunidade encontrada. Clique em "Criar Nova Oportunidade" para adicionar uma!</p>
