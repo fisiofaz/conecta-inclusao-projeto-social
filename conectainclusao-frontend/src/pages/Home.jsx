@@ -6,11 +6,11 @@ import { Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { FaUserTie, FaLaptopCode, FaRocket, FaExclamationTriangle } from "react-icons/fa";
 
 // Importando todos os nossos componentes reutilizáveis
-import Button from "../../components/Button";
-import FeatureCard from "../../components/FeatureCard";
-import ScrollToTopButton from "../../components/ScrollToTopButton";
-import FormInput from '../../components/FormInput';
-import FormTextarea from '../../components/FormTextarea';
+import Button from "../components/Button";
+import FeatureCard from "../components/FeatureCard";
+import ScrollToTopButton from "../components/ScrollToTopButton";
+import FormInput from '../components/FormInput';
+import FormTextarea from '../components/FormTextarea';
 
 // Importando assets
 import logo from "../assets/logo.png";
