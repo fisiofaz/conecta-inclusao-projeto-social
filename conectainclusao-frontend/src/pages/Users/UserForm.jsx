@@ -2,6 +2,11 @@ import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import FeedbackMessage from '../../components/FeedbackMessage';
+import FormInput from '../../components/FormInput';
+import PasswordInput from '../../components/PasswordInput';
+import FormSelect from '../../components/FormSelect';
+import FormTextarea from '../../components/FormTextarea';
+import Button from '../../components/Button';
 
 function UserForm() {
   const { id } = useParams();
@@ -53,26 +58,17 @@ function UserForm() {
     e.preventDefault();
     setFeedback({ type: '', message: '' });
     setLoading(true);
-
     try {
-      let response;
       // Para o PUT, enviamos todos os campos, incluindo uma senha vazia se não for alterada
       const dataToSubmit = { ...formData };
       if (!dataToSubmit.senha) {
         delete dataToSubmit.senha;
       }
-
-      response = await api.put(`/users/${id}`, dataToSubmit);
-      setFeedback({ type: 'success', message: 'Usuário atualizado com sucesso!' });
-
+      const response = await api.put(`/users/${id}`, dataToSubmit);
       if (response.status === 200) {
         setFeedback({ type: 'success', message: 'Usuário atualizado com sucesso!' });
-        setTimeout(() => {
-            
-            navigate('/users');
-        }, 2000);
+        setTimeout(() => navigate('/users'), 2000);
       }
-    
     } catch (err) {
       console.error('Erro ao salvar usuário:', err.response || err);
       let errorMessage = 'Ocorreu um erro ao salvar o usuário. Verifique os dados e tente novamente.';
@@ -98,6 +94,13 @@ function UserForm() {
     return <div className="container p-4 mx-auto text-center">Carregando dados do usuário para edição...</div>;
   }
 
+  const profileTypes = [
+    { value: 'PCD', label: 'Pessoa com Deficiência' },
+    { value: 'Empresa', label: 'Empresa' },
+    { value: 'ORGAO_APOIO', label: 'Órgão de Apoio' },
+    { value: 'ADMIN', label: 'Administrador' },
+  ];
+
   return (
     <div className="flex items-center justify-center min-h-screen p-6 bg-gray-100">
       <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
@@ -106,40 +109,29 @@ function UserForm() {
         </h2>
         <FeedbackMessage type={feedback.type} message={feedback.message} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <input type="text" name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome Completo" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <input type="email" name="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <input type="password" name="senha" value={formData.senha} onChange={handleChange} placeholder="Nova Senha (deixe em branco para manter a atual)" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <FormInput name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome Completo" required className="col-span-full" />
+          <FormInput name="email" type="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="col-span-full" />
+          <PasswordInput name="senha" value={formData.senha} onChange={handleChange} placeholder="Nova Senha (deixe em branco para manter)" className="col-span-full" />
+          
+          <FormSelect name="tipoPerfil" label="Tipo de Perfil:" value={formData.tipoPerfil} onChange={handleChange} options={profileTypes} className="col-span-full" />
+          
+          <FormInput name="dataNascimento" type="date" label="Data de Nascimento:" value={formData.dataNascimento} onChange={handleChange} />
+          <FormInput name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" />
+          
+          <FormInput name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" />
+          <FormInput name="estado" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" />
 
+          <FormTextarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows={4} className="col-span-full" />
+          
           <div className="col-span-full">
-            <label className="block mb-2 text-sm font-bold text-gray-700">Tipo de Perfil:</label>
-            <select name="tipoPerfil" value={formData.tipoPerfil} onChange={handleChange} className="w-full p-3 pr-8 bg-white border border-gray-300 rounded-md appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="PCD">Pessoa com Deficiência</option>
-              <option value="Empresa">Empresa</option>
-              <option value="ORGAO_APOIO">Órgão de Apoio</option>
-              <option value="ADMIN">Administrador</option> {/* Admin pode mudar perfil para Admin */}
-            </select>
+            <Button type="submit" variant="primary" disabled={loading} className="w-full">
+              {loading ? 'Salvando...' : 'Atualizar Usuário'}
+            </Button>
           </div>
-
-          <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700">Data de Nascimento:</label>
-            <input type="date" name="dataNascimento" value={formData.dataNascimento} onChange={handleChange}  className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700" />
-          </div>
-
-          <input type="text" name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <input type="text" name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <input type="text" name="estado" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" className="p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" />
-          <textarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows="4" className="p-3 border border-gray-300 rounded-md col-span-full focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-
-          <button
-            type="submit"
-            className="p-3 font-semibold text-white transition-colors duration-300 bg-blue-600 rounded-md col-span-full hover:bg-blue-700 disabled:opacity-50" disabled={loading}
-          >
-            {loading ? 'Salvando...' : 'Atualizar Usuário'}
-          </button>
         </form>
-        <button onClick={() => navigate('/users')} className="w-full p-3 mt-6 font-semibold text-white transition-colors duration-300 bg-gray-500 rounded-md hover:bg-gray-600">
+        <Button onClick={() => navigate('/users')} variant="secondary" className="w-full mt-4">
           Cancelar e Voltar
-        </button>
+        </Button>
       </div>
     </div>
   );
