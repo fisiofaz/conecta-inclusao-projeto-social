@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import Button from "../../components/Button";
 
-function HomePage() {
+function DashboardPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-100">
       <h2 className="mb-6 text-4xl font-extrabold text-center text-blue-700">
@@ -24,4 +24,4 @@ function HomePage() {
   );
 }
 
-export default HomePage;
+export default DashboardPage;
