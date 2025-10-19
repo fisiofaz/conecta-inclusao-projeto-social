@@ -3,7 +3,6 @@ package com.conectainclusao.backend.model;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -45,7 +44,6 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 50)
     private String tipoPerfil;
     
-  
     @Column
     private LocalDate dataNascimento;
 
@@ -81,25 +79,32 @@ public class User implements UserDetails {
     }
     
     @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println("DEBUG: User.getAuthorities - Tipo Perfil: " + this.tipoPerfil);
-        List<SimpleGrantedAuthority> authorities = new java.util.ArrayList<>();
-        if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ADMIN")) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "EMPRESA")) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_EMPRESA"));
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else if (this.tipoPerfil != null && Objects.equals(this.tipoPerfil, "ORGAO_APOIO")) {
-            authorities.add(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"));
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        } else {
-            authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-        }
-        System.out.println("DEBUG: User.getAuthorities - Authorities retornadas: " + authorities);
-        return authorities;
+public Collection<? extends GrantedAuthority> getAuthorities() {
+    System.out.println("DEBUG: User.getAuthorities - Tipo Perfil: " + this.tipoPerfil);
+
+    // Se o perfil for nulo, retorna uma permissão padrão para evitar erros.
+    if (this.tipoPerfil == null) {
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
-    
+
+    // Usando um 'switch' para uma lógica mais limpa e correta.
+    // Ele compara com o valor exato que está no banco de dados.
+    switch (this.tipoPerfil) {
+        case "ROLE_ADMIN":
+            // Um admin também é um usuário, então damos as duas permissões.
+            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+            
+        case "ROLE_EMPRESA":
+            return List.of(new SimpleGrantedAuthority("ROLE_EMPRESA"), new SimpleGrantedAuthority("ROLE_USER"));
+            
+        case "ROLE_ORGAO_APOIO":
+            return List.of(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"), new SimpleGrantedAuthority("ROLE_USER"));
+
+        default:
+            // Para "PCD" ou qualquer outro valor, retorna apenas ROLE_USER.
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+}
     @Override
     public String getPassword() {
         return this.senha;
