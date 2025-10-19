@@ -6,70 +6,88 @@ const AuthContext = createContext();
 
 // Provedor de autenticação que envolverá sua aplicação
 export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(null);
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-// Efeito para carregar o token e o tipoPerfil do localStorage ao inicializar o app
-useEffect(() => {
-    const storedToken = localStorage.getItem('jwtToken');
-    const storedTipoPerfil = localStorage.getItem('tipoPerfil');
-    if (storedToken && storedTipoPerfil) {
-        setAuth({ token: storedToken, tipoPerfil: storedTipoPerfil });
-    }
-}, []); // O array vazio garante que roda apenas uma vez, na montagem do componente
+    // Efeito para carregar o token e o tipoPerfil do localStorage ao inicializar o app
+    useEffect(() => {
+        const loadUserFromToken = async () => {
+            const storedToken = localStorage.getItem('jwtToken');
 
-// Função para login
-const login = async (email, senha) => {
-    try {
-    const response = await api.post('/auth/login', { email, senha });
+            if (storedToken) {
+                try {
+                // Define o token no cabeçalho da API para a próxima requisição
+                    api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+                    const response = await api.get('/auth/profile'); // Endpoint de exemplo para pegar dados do usuário logado
+                    setUser(response.data); // Armazena o objeto do usuário completo
+                } catch (error) {
+                    console.error("Token inválido ou expirado. Removendo autenticação.", error);
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('tipoPerfil');
+                }
+            }
+            setLoading(false); // Finaliza o loading após a tentativa de verificação
+        };
+        loadUserFromToken();
+    }, []);
 
-    if (response.data.token) {
-        // Supondo que o backend retorna o tipoPerfil no corpo da resposta do login
-        const tipoPerfil = response.data.tipoPerfil;
 
-        localStorage.setItem('jwtToken', response.data.token);
-        localStorage.setItem('tipoPerfil', tipoPerfil);
-        setAuth({ token: response.data.token, tipoPerfil: tipoPerfil });
-        return true;
-    } else {
-        return false;
-    }
-    } catch (err) {
-    console.error('Erro no login (AuthContext):', err);
-      return false; // Login falhou (erro de API)
-    }
-};
+    // Função para login
+    const login = async (email, senha) => {
+        try {
+            const response = await api.post('/auth/login', { email, senha });
+            if (response.data.token && response.data.user) {
+                const { token, user } = response.data; // Supondo que o backend retorne o token e o objeto user
+                localStorage.setItem('jwtToken', token);
+                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                setUser(user);
+                return true;
+            }
+            return false;
+        } catch (err) {
+            console.error('Erro no login (AuthContext):', err);
+            return false; // Login falhou (erro de API)
+        }
+    };
 
-// Função para logout
-const logout = () => {
-    localStorage.removeItem('jwtToken');
-    localStorage.removeItem('tipoPerfil');
-    setAuth(null);
-};
+    // Função para logout
+    const logout = () => {
+        localStorage.removeItem('jwtToken');
+        delete api.defaults.headers.common['Authorization'];
+        setUser(null);
+    };
 
-  // Verifica se o usuário está autenticado
-const isAuthenticated = () => {
-    return !!auth?.token; // Retorna true se houver um token no estado 'auth'
-};
+    // Verifica se o usuário está autenticado
+    const isAuthenticated = () => {
+        return !!user; // Retorna true se houver um usuário no estado 'user'
+    };
 
-// Retorna o tipo de perfil do usuário logado
-const getTipoPerfil = () => {
-    return auth?.tipoPerfil || null; // Retorna o tipoPerfil ou null
-};
+    // Retorna o tipo de perfil do usuário logado
+    const getTipoPerfil = () => {
+        return user?.tipoPerfil || null; // Retorna o tipoPerfil ou null
+    };
 
-// O valor que será disponibilizado para os componentes filhos
-const contextValue = {
-    auth, // O estado de autenticação completo
+    // O valor que será disponibilizado para os componentes filhos
+    const contextValue = {
+    user, // O estado de autenticação completo
+    loading,
     login,
     logout,
     isAuthenticated,
     getTipoPerfil,
-};
+    };
 
-return (
+    // 5. Enquanto estiver carregando, não renderiza o resto do app
+    // Isso previne "piscadas" na tela e redirecionamentos incorretos
+    if (loading) {
+        return <div>Carregando aplicação...</div>; // Ou um componente de Spinner/Loader
+    }
+
+    return (
     <AuthContext.Provider value={contextValue}>
     {children}
     </AuthContext.Provider>
-);
+    );
 };
 
 // Hook personalizado para consumir o contexto de autenticação
