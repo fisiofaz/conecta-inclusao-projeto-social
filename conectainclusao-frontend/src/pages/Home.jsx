@@ -142,17 +142,54 @@ export default function Home() {
         <h2 className="mb-10 text-4xl font-bold text-indigo-800">
           Cursos e Oportunidades em Destaque
         </h2>
-        <Swiper >
-          {coursesData.map((item, idx) => (
-            <SwiperSlide key={idx}>
-              <a href={item.link}  >
-                <img src={item.img} />
-                <h3 >{item.title}</h3>
-              </a>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </section>
+        <Swiper
+          modules={[Autoplay]}
+          // Ajuste principal: quantos slides mostrar por padrão
+          slidesPerView={'auto'} // 'auto' permite que o CSS do slide defina a largura
+          spaceBetween={30}      // Espaçamento entre os slides
+          autoplay={{ 
+            delay: 2500,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true, // Pausa o autoplay ao passar o mouse em cima
+          }}
+          loop={true} // Garante que o carrossel rode infinitamente
+          centeredSlides={true} // Centraliza o slide ativo
+          breakpoints={{
+            // Para telas de tablet (>= 768px), mostrar 2 slides
+            768: {
+              slidesPerView: 2,
+              centeredSlides: false, // Não precisa mais centralizar
+            },
+            // Para telas de desktop (>= 1024px), mostrar 3 slides
+            1024: {
+              slidesPerView: 3,
+              centeredSlides: false,
+            },
+          }}
+          className="max-w-6xl py-4 mx-auto" // Adicionado py-4 para dar um respiro
+        >
+        {coursesData.map((item, idx) => (
+          <SwiperSlide key={idx} style={{ width: '300px' }}> {/* Define uma largura base para cada slide */}
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-between h-[300px] bg-gradient-to-br from-indigo-50 to-purple-100 rounded-3xl shadow-xl hover:shadow-2xl transition-all hover:-translate-y-2 p-8"
+            >
+              <img
+                src={item.img}
+                alt={item.title}
+                onError={(e) => (e.target.src = "https://via.placeholder.com/150?text=Logo")}
+                className="object-contain h-20 mb-6"
+              />
+              <h3 className="flex items-center justify-center flex-grow text-xl font-semibold text-center text-indigo-700">
+                {item.title}
+              </h3>
+            </a>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </section>
 
       {/* CONTATO */}
       <section className="relative px-6 py-24 overflow-hidden text-white bg-gradient-to-r from-indigo-800 via-purple-800 to-indigo-900 md:px-16">

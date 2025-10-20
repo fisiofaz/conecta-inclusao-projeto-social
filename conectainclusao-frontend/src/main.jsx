@@ -4,6 +4,9 @@ import App from './App.jsx';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
