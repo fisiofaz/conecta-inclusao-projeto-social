@@ -36,6 +36,8 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, senha) => {
         try {
             const response = await api.post('/auth/login', { email, senha });
+
+            console.log("RESPOSTA RECEBIDA DO BACKEND:", response.data);
             // Verificamos por 'token' e 'tipoPerfil', que é o que seu backend envia
             if (response.data.token && response.data.tipoPerfil) {
                 const { token, tipoPerfil } = response.data;
