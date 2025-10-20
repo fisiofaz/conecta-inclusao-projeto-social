@@ -33,27 +33,39 @@ export const AuthProvider = ({ children }) => {
 
 
     // Função para login
-    const login = async (email, senha) => {
-        try {
-            const response = await api.post('/auth/login', { email, senha });
+   const login = async (email, senha) => {
+    try {
+        const response = await api.post('/auth/login', { email, senha });
 
-            console.log("RESPOSTA RECEBIDA DO BACKEND:", response.data);
-            // Verificamos por 'token' e 'tipoPerfil', que é o que seu backend envia
-            if (response.data.token && response.data.tipoPerfil) {
-                const { token, tipoPerfil } = response.data;
-                localStorage.setItem('jwtToken', token);
-                api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                // Criamos um objeto de usuário simples para o contexto
-                // O resto dos dados (nome, email) será buscado pelo useEffect
-                setUser({ tipoPerfil: tipoPerfil });
-                return true;
-            }
-            return false;
-        } catch (err) {
-            console.error('Erro no login (AuthContext):', err);
+        // Log para a depuração final
+        console.log("DADOS DA RESPOSTA DO BACKEND:", response.data);
+
+        // Vamos verificar as propriedades com cuidado, uma por uma
+        const hasToken = response.data && response.data.token;
+        const hasProfile = response.data && response.data.tipoPerfil;
+
+        console.log("Possui Token:", !!hasToken, "| Possui Perfil:", !!hasProfile);
+
+        if (hasToken && hasProfile) {
+            console.log("SUCESSO: Token e perfil encontrados. Realizando login.");
+            const { token, tipoPerfil } = response.data;
+
+            localStorage.setItem('jwtToken', token);
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+
+            setUser({ tipoPerfil: tipoPerfil }); 
+
+            return true;
+        } else {
+            console.error("FALHA: Objeto de resposta não continha 'token' ou 'tipoPerfil'.", response.data);
             return false;
         }
-    };
+
+    } catch (err) {
+        console.error('ERRO durante a chamada da API no AuthContext:', err);
+        return false;
+    }
+};
 
     // Função para logout
     const logout = () => {
