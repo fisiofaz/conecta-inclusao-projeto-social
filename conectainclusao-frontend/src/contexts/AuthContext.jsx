@@ -36,17 +36,20 @@ export const AuthProvider = ({ children }) => {
     const login = async (email, senha) => {
         try {
             const response = await api.post('/auth/login', { email, senha });
-            if (response.data.token && response.data.user) {
-                const { token, user } = response.data; // Supondo que o backend retorne o token e o objeto user
+            // Verificamos por 'token' e 'tipoPerfil', que é o que seu backend envia
+            if (response.data.token && response.data.tipoPerfil) {
+                const { token, tipoPerfil } = response.data;
                 localStorage.setItem('jwtToken', token);
                 api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-                setUser(user);
+                // Criamos um objeto de usuário simples para o contexto
+                // O resto dos dados (nome, email) será buscado pelo useEffect
+                setUser({ tipoPerfil: tipoPerfil });
                 return true;
             }
             return false;
         } catch (err) {
             console.error('Erro no login (AuthContext):', err);
-            return false; // Login falhou (erro de API)
+            return false;
         }
     };
 
