@@ -14,11 +14,11 @@ function Modal({ isOpen, onClose, title, children }) {
     >
       {/* Container do Modal que impede o fechamento ao clicar dentro dele */}
       <div 
-        className="w-full max-w-lg p-6 bg-white shadow-lg rounded-xl"
+        className="w-full max-w-lg p-6 bg-white shadow-lg rounded-xl max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()} 
       >
         {/* Cabeçalho do Modal com Título e Botão de Fechar */}
-        <div className="flex items-center justify-between pb-3 mb-4 border-b">
+        <div className="sticky top-0 z-10 flex items-center justify-between pb-3 mb-4 bg-white border-b">
           <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
           <button onClick={onClose} className="text-3xl font-light text-gray-500 hover:text-gray-800">&times;</button>
         </div>
