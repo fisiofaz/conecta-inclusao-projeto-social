@@ -7,6 +7,7 @@ import FormTextarea from "./FormTextarea";
 import Button from "./Button";
 import FeedbackMessage from "./FeedbackMessage";
 
+
 export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
   const [clinica, setClinica] = useState({
     nome: "",
