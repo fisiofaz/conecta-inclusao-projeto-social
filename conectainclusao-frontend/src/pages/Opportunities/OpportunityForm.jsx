@@ -108,37 +108,48 @@ function OpportunityForm() {
   ];
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-6 bg-gray-100">
-      <div className="w-full max-w-lg p-8 bg-white rounded-lg shadow-md">
-        <h2 className="mb-6 text-3xl font-bold text-center text-blue-700">
+    <div className="flex items-center justify-center min-h-screen p-4 bg-gray-100 sm:p-6">
+      <div className="w-full max-w-lg p-6 bg-white rounded-lg shadow-md sm:p-8">
+        <h2 className="mb-6 text-2xl font-bold text-center text-blue-700 sm:text-3xl">
           {id ? 'Editar Oportunidade' : 'Criar Nova Oportunidade'}
         </h2>
         <FeedbackMessage type={feedback.type} message={feedback.message} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div className="col-span-full">
+          
+          <div className="md:col-span-2">
             <FormInput name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título da Oportunidade" required />
           </div>
 
-          <FormTextarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada" required />
+          <div className="md:col-span-2">
+            <FormTextarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada" required />
+          </div>
           
-          <FormSelect name="tipoOportunidade" label="Tipo de Oportunidade:" value={formData.tipoOportunidade} onChange={handleChange} options={opportunityTypes} />
+          <div className="md:col-span-2">
+            <FormSelect name="tipoOportunidade" label="Tipo de Oportunidade:" value={formData.tipoOportunidade} onChange={handleChange} options={opportunityTypes} />
+          </div>
 
           <FormInput name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização" required />
           <FormInput name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização" required />
 
-          <FormTextarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade" required rows={2} />
+          <div className="md:col-span-2">
+            <FormTextarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade" required rows={2} />
+          </div>
           
           {id && (
-            <FormInput label="Data de Publicação:" name="dataPublicacao" type="date" value={formData.dataPublicacao} readOnly />
+            <div className="md:col-span-2">
+              <FormInput label="Data de Publicação:" name="dataPublicacao" type="date" value={formData.dataPublicacao} readOnly />
+            </div>
           )}
 
-          <div className="col-span-full">
+          <div className="md:col-span-2">
             <FormInput name="contato" value={formData.contato} onChange={handleChange} placeholder="Informações de Contato" required />
           </div>
 
-          <Button type="submit" variant="primary" disabled={loading} className="w-full">
+          <div className="md:col-span-2">
+            <Button type="submit" variant="primary" disabled={loading} className="w-full">
               {loading ? 'Salvando...' : (id ? 'Atualizar Oportunidade' : 'Criar Oportunidade')}
-          </Button>
+            </Button>
+          </div>
         </form>
         <Button onClick={() => navigate('/opportunities')} variant="secondary" className="w-full mt-4">
           Cancelar e Voltar
