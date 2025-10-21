@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import SearchResultsPage from './pages/SearchResultsPage';
 
 // Páginas de Autenticação
 import LoginPage from './pages/Auth/LoginPage';
@@ -50,6 +51,7 @@ function App() {
 
           {/* Rotas Privadas (Área Logada) */}
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/search-results" element={<SearchResultsPage />} />
 
           {/* Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
