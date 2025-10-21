@@ -13,8 +13,8 @@ function OpportunityListPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ type: '', message: '' });
-  const { user } = useAuth();
-  const userTipoPerfil = user?.TipoPerfil;
+  const { getTipoPerfil } = useAuth();
+  const userTipoPerfil = getTipoPerfil();
   console.log("Perfil atual (getTipoPerfil):", userTipoPerfil);
   const canManageOpportunities = userTipoPerfil === 'ROLE_ADMIN' || userTipoPerfil === 'ROLE_EMPRESA';
 
