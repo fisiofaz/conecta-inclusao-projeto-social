@@ -15,6 +15,7 @@ function OpportunityListPage() {
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const { getTipoPerfil } = useAuth();
   const userTipoPerfil = getTipoPerfil();
+  console.log("Perfil atual (getTipoPerfil):", userTipoPerfil);
   const canManageOpportunities = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'EMPRESA';
 
   useEffect(() => {
