@@ -73,7 +73,7 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
         <FormTextarea label="Recursos de Acessibilidade" name="acessibilidade" value={clinica.acessibilidade} onChange={handleChange} rows="3" placeholder="Ex: Rampas, elevadores..." />
         <FormTextarea label="Descrição dos Serviços" name="descricao" value={clinica.descricao} onChange={handleChange} rows="3" />
         
-        <div className="flex gap-4 pt-4 mt-4 border-t">
+        <div className="flex flex-col gap-4 pt-4 mt-4 border-t sm:flex-row">
           <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
             Cancelar
           </Button>

@@ -6,6 +6,7 @@ import HealthResourceCard from "../../components/HealthResourceCard";
 import InfoCard from "../../components/InfoCard";
 import HelpModal from "../../components/HelpModal";
 import Button from "../../components/Button";
+import { useAuth } from "../../contexts/AuthContext";
 
 const infoCardData = [
   {
@@ -39,6 +40,8 @@ export default function SaudeBemEstar() {
   const [showCadastro, setShowCadastro] = useState(false); // Estado para controlar o modal de cadastro
   const [clinicas, setClinicas] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
+  const canRegisterClinic = user?.tipoPerfil === 'ROLE_ADMIN' || user?.tipoPerfil === 'ROLE_ORGAO_APOIO'
 
   
   const carregarClinicas = async () => {
@@ -67,10 +70,12 @@ export default function SaudeBemEstar() {
     <div className="min-h-screen p-8 bg-gray-50">
       <div className="flex justify-between mb-4">
         {/* Botão Cadastro no canto esquerdo */}
-        <Button onClick={() => setShowCadastro(true)} variant="primary" className="flex items-center gap-2">
-          <UserPlus size={20} />
-          Cadastrar Serviço
-        </Button>
+        {canRegisterClinic && (
+          <Button onClick={() => setShowCadastro(true)} variant="primary" className="flex items-center gap-2">
+            <UserPlus size={20} />
+            Cadastrar Serviço
+          </Button>
+        )}
 
         {/* Botão de Emergência no canto direito */}
         <Button onClick={() => setShowHelp(true)} variant="danger">
