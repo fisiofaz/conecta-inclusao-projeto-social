@@ -21,7 +21,7 @@ const isAdmin = userTipoPerfil === 'ADMIN';
 
   return (
     <nav className="relative z-10 flex items-center justify-between p-4 bg-blue-700 shadow-md">
-      <Link to="/" className="text-2xl font-bold text-white transition-colors duration-300 hover:text-blue-200">
+      <Link to="/dashboard" className="text-2xl font-bold text-white transition-colors duration-300 hover:text-blue-200">
         Conecta Inclusão
       </Link>
       {/* Botão de Hambúrguer - Visível apenas em telas pequenas (hidden em md e maiores) */}

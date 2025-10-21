@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
-import { Link } from 'react-router-dom'; // Importe useNavigate
+import { Link,  useNavigate} from 'react-router-dom'; // Importe useNavigate
 import { useAuth } from '../../contexts/AuthContext';
 import OpportunityCard from '../../components/OpportunityCard';
 import Button from '../../components/Button';
@@ -11,6 +11,7 @@ function OpportunityListPage() {
   const [opportunities, setOpportunities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const { getTipoPerfil } = useAuth();
   const userTipoPerfil = getTipoPerfil();
@@ -55,8 +56,13 @@ function OpportunityListPage() {
     return <div className="container p-4 mx-auto text-center">Carregando oportunidades...</div>;
   }
 
-  if (error) {
-    return <div className="container p-4 mx-auto font-bold text-center text-red-600">{error}</div>;
+ if (error) {
+    return (
+      <div className="container p-4 mx-auto text-center">
+          <p className="mb-4 font-bold text-red-600">{error}</p>
+          <Button onClick={() => navigate('/dashboard')} variant="primary">Voltar para Home</Button>
+      </div>
+    );
   }
 
   return (
