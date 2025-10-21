@@ -24,7 +24,7 @@ function LoginPage() {
     if (success) {
       setFeedback({ type: 'success', message: 'Login bem-sucedido! Redirecionando...' });
       setTimeout(() => {
-        navigate('/'); // Redireciona para a Home Page após login
+        navigate('/dashboard'); // Redireciona para a Dashboard após login
       }, 1500); // Dar um tempo para a mensagem aparecer
     } else {
       setFeedback({ type: 'error', message: 'Credenciais inválidas. Verifique seu e-mail e senha.' });
