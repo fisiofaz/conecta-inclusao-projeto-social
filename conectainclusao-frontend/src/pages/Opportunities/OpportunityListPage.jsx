@@ -13,10 +13,10 @@ function OpportunityListPage() {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [feedback, setFeedback] = useState({ type: '', message: '' });
-  const { getTipoPerfil } = useAuth();
-  const userTipoPerfil = getTipoPerfil();
+  const { user } = useAuth();
+  const userTipoPerfil = user?.TipoPerfil;
   console.log("Perfil atual (getTipoPerfil):", userTipoPerfil);
-  const canManageOpportunities = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'EMPRESA';
+  const canManageOpportunities = userTipoPerfil === 'ROLE_ADMIN' || userTipoPerfil === 'ROLE_EMPRESA';
 
   useEffect(() => {
     const fetchOpportunities = async () => {
