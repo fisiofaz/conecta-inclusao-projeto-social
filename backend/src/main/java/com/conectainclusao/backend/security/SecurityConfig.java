@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST sem sessão
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sessão sem estado
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
                         // --- 1. ROTAS PUBLICAS (PERMITALL) ---
                         // Permite login e cadastro de novos usuários sem autenticação
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
@@ -47,6 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/complaints/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health-resources").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health-resources/{id}").permitAll()
+                        
 
                         // --- 2. ROTAS PROTEGIDAS POR ROLE OU AUTENTICAÇÃO GERAL ---
                         
