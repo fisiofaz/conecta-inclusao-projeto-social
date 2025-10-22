@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-function OpportunityCard({ opportunity, canManage, onDelete }) {
+function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
   // Se não receber uma oportunidade, não renderiza nada para evitar erros.
   if (!opportunity) {
     return null;
@@ -10,9 +10,12 @@ function OpportunityCard({ opportunity, canManage, onDelete }) {
   return (
     <div className="flex flex-col justify-between p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
       <div> {/* Div para agrupar o conteúdo principal */}
-        <h3 className="mb-3 text-xl font-semibold text-blue-600 sm:text-lg">
-          {opportunity.titulo}
-        </h3>
+        <div className="flex items-center mb-3"> 
+          {icon} {/* Renderiza o ícone se ele for passado */}
+          <h3 className="text-xl font-semibold text-blue-600 sm:text-lg">
+            {opportunity.titulo}
+          </h3>
+        </div>
         <p className="mb-2 text-sm text-gray-700"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
         <p className="mb-2 text-sm text-gray-700"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
         <p className="mb-4 text-sm text-gray-700"><strong>Local:</strong> {opportunity.localizacao}</p>

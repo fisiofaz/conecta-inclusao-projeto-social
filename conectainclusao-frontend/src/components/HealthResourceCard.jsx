@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from './Button'; 
 
-function HealthResourceCard({ resource, canManage, onDelete }) {
+function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
   if (!resource) {
     return null;
   }
@@ -10,9 +10,12 @@ function HealthResourceCard({ resource, canManage, onDelete }) {
   return (
     <div className="flex flex-col justify-between p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
       <div>
-        <h3 className="mb-3 text-xl font-semibold text-green-600">
-          {resource.nome}
-        </h3>
+        <div className="flex items-center mb-3">
+          {icon} {/* Renderiza o ícone se ele for passado */}
+          <h3 className="mb-3 text-xl font-semibold text-green-600">
+            {resource.nome}
+          </h3>
+        </div>
         <p className="mb-2 text-sm text-gray-700">
           <strong>Tipo:</strong> {resource.tipoRecurso}
         </p>
