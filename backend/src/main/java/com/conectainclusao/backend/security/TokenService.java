@@ -20,7 +20,7 @@ public class TokenService {
 
     public String generateToken(User user) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+            Algorithm algorithm = Algorithm.HMAC512(secret);
             String token = JWT.create()
                     .withIssuer("conecta-inclusao-backend") // Emissor do token
                     .withSubject(user.getEmail()) // Assunto (geralmente o identificador único do usuário)
@@ -34,18 +34,18 @@ public class TokenService {
 
     public String validateToken(String token) {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(secret);
+        	Algorithm algorithm = Algorithm.HMAC512(secret);
             return JWT.require(algorithm)
                     .withIssuer("conecta-inclusao-backend")
                     .build()
                     .verify(token) // Verifica a validade do token
                     .getSubject(); // Retorna o assunto (email do usuário)
         } catch (JWTVerificationException exception){
-            return ""; // Token inválido
+        	return null; // Token inválido
         }
     }
 
     private Instant genExpirationDate() {
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+    	return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.UTC);
     }
 }

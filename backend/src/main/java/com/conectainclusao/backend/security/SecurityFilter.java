@@ -1,11 +1,14 @@
 package com.conectainclusao.backend.security;
 
 import com.conectainclusao.backend.repository.UserRepository;
+import com.conectainclusao.backend.service.AuthorizationService;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,33 +24,51 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    UserRepository userRepository;
+    AuthorizationService authorizationService; // Use the UserDetailsService
+
+    // No need to inject UserRepository directly here if AuthorizationService uses it
+    // @Autowired
+    // UserRepository userRepository; 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(@NonNull HttpServletRequest request, 
+                                    @NonNull HttpServletResponse response, 
+                                    @NonNull FilterChain filterChain) 
+            throws ServletException, IOException {
+        
         var token = this.recoverToken(request);
-        if(token != null){
-            var login = tokenService.validateToken(token);
-            
-            UserDetails userDetails = userRepository.findByEmail(login).orElse(null);
-            
-            if (userDetails != null) {
-                
-                var authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-               
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-             // Adicione estas linhas para depuração:
-                System.out.println("DEBUG: SecurityFilter - Usuário autenticado no contexto: " + userDetails.getUsername());
-                System.out.println("DEBUG: SecurityFilter - Autoridades no contexto: " + userDetails.getAuthorities());
-                System.out.println("DEBUG: SecurityFilter - Request URI: " + request.getRequestURI()); // Para ver qual URL está sendo processada
+        
+        if (token != null) {
+            var login = tokenService.validateToken(token); 
+
+            if (login != null) { 
+                UserDetails userDetails = authorizationService.loadUserByUsername(login); 
+
+                if (userDetails != null) {
+
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                   
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println("DEBUG: SecurityFilter - User authenticated: " + userDetails.getUsername());
+                    System.out.println("DEBUG: SecurityFilter - Authorities: " + userDetails.getAuthorities());
+                } else {
+                     System.out.println("DEBUG: SecurityFilter - User not found for login: " + login);
+                }
+            } else {
+                 System.out.println("DEBUG: SecurityFilter - Invalid or expired token received.");
             }
         }
-        filterChain.doFilter(request, response);
+        
+        filterChain.doFilter(request, response); 
     }
 
-    private String recoverToken(HttpServletRequest request){
+    private String recoverToken(HttpServletRequest request) {
         var authHeader = request.getHeader("Authorization");
-        if(authHeader == null) return null;
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
         return authHeader.replace("Bearer ", "");
     }
 }
