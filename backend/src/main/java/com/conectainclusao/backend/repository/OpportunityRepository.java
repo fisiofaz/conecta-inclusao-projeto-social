@@ -7,5 +7,6 @@ import java.util.List;
 
 @Repository
 public interface OpportunityRepository extends JpaRepository<Opportunity, Long> {
-    List<Opportunity> findByTituloContainingIgnoreCaseOrDescricaoContainingIgnoreCase(String titulo, String descricao);
+    List<Opportunity> findByTituloContainingIgnoreCaseOrDescricaoContainingIgnoreCaseOrLocalizacaoContainingIgnoreCase(
+        String titulo, String descricao, String localizacao);
 }

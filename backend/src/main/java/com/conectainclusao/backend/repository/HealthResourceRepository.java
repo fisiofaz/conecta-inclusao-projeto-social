@@ -7,5 +7,6 @@ import java.util.List;
 
 @Repository
 public interface HealthResourceRepository extends JpaRepository<HealthResource, Long> {
-    List<HealthResource> findByNomeContainingIgnoreCaseOrEspecialidadeContainingIgnoreCase(String nome, String especialidade);
+    List<HealthResource> findByNomeContainingIgnoreCaseOrEspecialidadeContainingIgnoreCaseOrEnderecoContainingIgnoreCase(
+        String nome, String especialidade, String endereco);
 }

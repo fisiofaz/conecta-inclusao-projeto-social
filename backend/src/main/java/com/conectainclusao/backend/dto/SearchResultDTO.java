@@ -6,14 +6,16 @@ public class SearchResultDTO {
     private String type; // "opportunity" ou "health_resource"
     private String title; // Título da oportunidade ou nome do recurso
     private String description; // Descrição curta
+    private int score;
     // Você pode adicionar outros campos comuns se desejar (ex: location)
 
     // Construtor, Getters e Setters
-    public SearchResultDTO(Long id, String type, String title, String description) {
+    public SearchResultDTO(Long id, String type, String title, String description, int score) {
         this.id = id;
         this.type = type;
         this.title = title;
         this.description = description;
+        this.score = score;
     }
 
     // Getters e Setters ...
@@ -25,4 +27,6 @@ public class SearchResultDTO {
     public void setTitle(String title) { this.title = title; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    public int getScore() { return score; }
+    public void setScore(int score) { this.score = score; }
 }
