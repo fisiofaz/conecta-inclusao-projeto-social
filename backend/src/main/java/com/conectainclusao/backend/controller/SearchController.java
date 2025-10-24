@@ -2,7 +2,6 @@ package com.conectainclusao.backend.controller;
 
 import com.conectainclusao.backend.dto.SearchResultDTO;
 import com.conectainclusao.backend.service.SearchService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,8 +14,12 @@ import java.util.List;
 @RequestMapping("/api/search") // Define a base da URL para este controller
 public class SearchController {
 
-    @Autowired
-    private SearchService searchService;
+    private SearchService searchService; // Campo é final
+    
+    // Injeção via construtor
+    public SearchController(SearchService searchService) {
+        this.searchService = searchService;
+    }
 
     @GetMapping // Mapeia requisições GET para /api/search
     public ResponseEntity<List<SearchResultDTO>> search(@RequestParam("q") String query) {

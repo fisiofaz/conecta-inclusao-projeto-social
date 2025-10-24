@@ -4,7 +4,6 @@ import com.conectainclusao.backend.dto.AuthenticationRequestDTO;
 import com.conectainclusao.backend.dto.AuthenticationResponseDTO;
 import com.conectainclusao.backend.dto.UserRequestDTO;
 import com.conectainclusao.backend.model.User;
-import com.conectainclusao.backend.repository.UserRepository;
 import com.conectainclusao.backend.security.TokenService;
 import com.conectainclusao.backend.service.UserService;
 import jakarta.validation.Valid;
@@ -12,13 +11,11 @@ import jakarta.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,15 +23,14 @@ import org.springframework.web.bind.annotation.*;
 public class AuthenticationController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
     @Autowired
     private final UserService userService;
 
     @Autowired
-    private TokenService tokenService;
+    private final TokenService tokenService;
     
-    @Autowired
     public AuthenticationController(AuthenticationManager authenticationManager, 
                                     TokenService tokenService, 
                                     UserService userService) {
@@ -50,7 +46,6 @@ public class AuthenticationController {
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.getEmail(), data.getSenha());     
         var auth = this.authenticationManager.authenticate(usernamePassword);
        
-        // O principal retornado pelo authenticate() é UserDetails, que no seu caso é sua entidade User
         User user = (User) auth.getPrincipal();
 
         String token = tokenService.generateToken(user); 

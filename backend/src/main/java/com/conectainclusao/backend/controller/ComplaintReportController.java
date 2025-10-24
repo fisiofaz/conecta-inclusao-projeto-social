@@ -2,11 +2,9 @@ package com.conectainclusao.backend.controller;
 
 import com.conectainclusao.backend.dto.ComplaintReportRequestDTO;
 import com.conectainclusao.backend.dto.ComplaintReportResponseDTO;
-import com.conectainclusao.backend.model.ComplaintReport;
 import com.conectainclusao.backend.model.User; 
-import com.conectainclusao.backend.repository.ComplaintReportRepository;
+import com.conectainclusao.backend.service.ComplaintReportService;
 import jakarta.validation.Valid;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,105 +14,69 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/complaints")
-@CrossOrigin(origins = {"http://localhost:5173", "http://127.0.0.1:5173"})
 public class ComplaintReportController {
 
-    @Autowired
-    private ComplaintReportRepository complaintReportRepository;
+    private final ComplaintReportService complaintReportService; // <<< Injetar o Serviço
 
-    // ENDPOINT PARA CRIAR NOVA DENÚNCIA/RELATO (POST /api/complaints)
-    // Apenas usuários autenticados podem criar denúncias
+    @Autowired // Injeção via construtor
+    public ComplaintReportController(ComplaintReportService complaintReportService) {
+        this.complaintReportService = complaintReportService;
+    }
+
+    // --- CRIAR ---
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ComplaintReportResponseDTO> createComplaintReport(@RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
-        ComplaintReport complaintReport = new ComplaintReport();
-        BeanUtils.copyProperties(complaintReportRequestDTO, complaintReport);
-
-        // Define o status inicial da denúncia
-        complaintReport.setStatus("aberto");
-
-        // Obtém o ID do usuário autenticado e associa à denúncia
-        // Pormenor: Isso é crucial para quem fez a denúncia.
+        // Obter userId do contexto de segurança
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userId = null;
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             User authenticatedUser = (User) authentication.getPrincipal();
-            complaintReport.setUserId(authenticatedUser.getId().toString()); 
+            userId = authenticatedUser.getId().toString(); // Assumindo que userId na denúncia é String
         } else {
-           
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+             // Se não conseguir obter o usuário, retorna erro (embora @PreAuthorize já deva garantir)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
         }
 
-        ComplaintReport savedComplaintReport = complaintReportRepository.save(complaintReport);
-
-        ComplaintReportResponseDTO complaintReportResponseDTO = new ComplaintReportResponseDTO();
-        BeanUtils.copyProperties(savedComplaintReport, complaintReportResponseDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(complaintReportResponseDTO);
+        // Chama o serviço para criar
+        ComplaintReportResponseDTO createdReportDTO = complaintReportService.createComplaintReport(complaintReportRequestDTO, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReportDTO);
     }
 
-    // ENDPOINT PARA LISTAR TODAS AS DENÚNCIAS/RELATOS (GET /api/complaints)   
+    // --- LISTAR TODOS ---
     @GetMapping
     public ResponseEntity<List<ComplaintReportResponseDTO>> getAllComplaintReports() {
-        List<ComplaintReport> complaintReports = complaintReportRepository.findAll();
-        List<ComplaintReportResponseDTO> reportsDTO = complaintReports.stream()
-                .map(report -> {
-                    ComplaintReportResponseDTO dto = new ComplaintReportResponseDTO();
-                    BeanUtils.copyProperties(report, dto);
-                    return dto;
-                })
-                .collect(Collectors.toList());
-
+        // Chama o serviço para listar
+        List<ComplaintReportResponseDTO> reportsDTO = complaintReportService.getAllComplaintReports();
         return ResponseEntity.ok(reportsDTO);
     }
 
-    // ENDPOINT PARA BUSCAR DENÚNCIA/RELATO POR ID (GET /api/complaints/{id})
+    // --- BUSCAR POR ID ---
     @GetMapping("/{id}")
     public ResponseEntity<ComplaintReportResponseDTO> getComplaintReportById(@PathVariable Long id) {
-        Optional<ComplaintReport> complaintReportOptional = complaintReportRepository.findById(id);
-        if (complaintReportOptional.isPresent()) {
-            ComplaintReportResponseDTO complaintReportResponseDTO = new ComplaintReportResponseDTO();
-            BeanUtils.copyProperties(complaintReportOptional.get(), complaintReportResponseDTO);
-            return ResponseEntity.ok(complaintReportResponseDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // Chama o serviço para buscar por ID (o serviço já trata o Not Found)
+        ComplaintReportResponseDTO reportDTO = complaintReportService.getComplaintReportById(id);
+        return ResponseEntity.ok(reportDTO);
     }
 
-    // ENDPOINT PARA ATUALIZAR DENÚNCIA/RELATO (PUT /api/complaints/{id})
-    
+    // --- ATUALIZAR ---
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ComplaintReportResponseDTO> updateComplaintReport(@PathVariable Long id, @RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
-        Optional<ComplaintReport> complaintReportOptional = complaintReportRepository.findById(id);
-        if (complaintReportOptional.isPresent()) {
-            ComplaintReport existingComplaintReport = complaintReportOptional.get();
-            
-            BeanUtils.copyProperties(complaintReportRequestDTO, existingComplaintReport, "id");
-            
-            ComplaintReport updatedComplaintReport = complaintReportRepository.save(existingComplaintReport);
-
-            ComplaintReportResponseDTO complaintReportResponseDTO = new ComplaintReportResponseDTO();
-            BeanUtils.copyProperties(updatedComplaintReport, complaintReportResponseDTO);
-            return ResponseEntity.ok(complaintReportResponseDTO);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // Chama o serviço para atualizar (o serviço já trata o Not Found)
+        ComplaintReportResponseDTO updatedReportDTO = complaintReportService.updateComplaintReport(id, complaintReportRequestDTO);
+        return ResponseEntity.ok(updatedReportDTO);
     }
 
-    // ENDPOINT PARA DELETAR DENÚNCIA/RELATO (DELETE /api/complaints/{id})    
+    // --- DELETAR ---
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteComplaintReport(@PathVariable Long id) {
-        if (complaintReportRepository.existsById(id)) {
-            complaintReportRepository.deleteById(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        // Chama o serviço para deletar (o serviço já trata o Not Found)
+        complaintReportService.deleteComplaintReport(id);
+        return ResponseEntity.noContent().build();
     }
 }
