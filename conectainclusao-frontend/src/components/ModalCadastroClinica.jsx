@@ -24,7 +24,8 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
   const [feedback, setFeedback] = useState({ type: '', message: '' });
 
   const handleChange = (e) => {
-    setClinica({ ...clinica, [name]: e.target.value });
+    const { name, value } = e.target;
+    setClinica(prevState => ({ ...prevState, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
