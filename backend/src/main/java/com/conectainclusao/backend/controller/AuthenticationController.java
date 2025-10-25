@@ -2,7 +2,7 @@ package com.conectainclusao.backend.controller;
 
 import com.conectainclusao.backend.dto.AuthenticationRequestDTO;
 import com.conectainclusao.backend.dto.AuthenticationResponseDTO;
-import com.conectainclusao.backend.dto.UserRequestDTO;
+import com.conectainclusao.backend.dto.UserCreateRequestDTO;
 import com.conectainclusao.backend.model.User;
 import com.conectainclusao.backend.security.TokenService;
 import com.conectainclusao.backend.service.UserService;
@@ -50,19 +50,21 @@ public class AuthenticationController {
 
         String token = tokenService.generateToken(user); 
 
-        return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getTipoPerfil())); 
+        return ResponseEntity.ok(new AuthenticationResponseDTO(token, user.getTipoPerfil().name())); 
     }
 
     
     @PostMapping("/register")
-    public ResponseEntity<Map<String, String>> register(@RequestBody @Valid UserRequestDTO data) {
-    	try {            
-            userService.registerUser(data);      
-            return ResponseEntity.status(HttpStatus.CREATED).build();
-        } catch (IllegalArgumentException e) {           
-        	Map<String, String> errorResponse = new HashMap<>();
+    public ResponseEntity<Object> register(
+            @RequestBody @Valid UserCreateRequestDTO data 
+        ) {
+        try {           
+            userService.registerUser(data);         
+            return ResponseEntity.status(HttpStatus.CREATED).build(); 
+        } catch (IllegalArgumentException e) {            
+            Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("error", e.getMessage());
-            return ResponseEntity.badRequest().body(errorResponse);
+            return ResponseEntity.badRequest().body(errorResponse); 
         }
     }
 }

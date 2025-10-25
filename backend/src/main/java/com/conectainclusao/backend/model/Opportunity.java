@@ -9,6 +9,9 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import com.conectainclusao.backend.model.TipoOportunidade;
 
 import java.time.LocalDate;
 
@@ -29,9 +32,9 @@ public class Opportunity {
     @Column(nullable = false, columnDefinition = "TEXT") 
     private String descricao;
 
-    @NotBlank(message = "O tipo de oportunidade não pode estar em branco")
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private String tipoOportunidade; 
+    private TipoOportunidade tipoOportunidade; 
 
     @NotBlank(message = "A empresa/organização responsável não pode estar em branco")
     @Size(max = 100, message = "O nome da empresa/organização deve ter no máximo 100 caracteres")
@@ -60,7 +63,7 @@ public class Opportunity {
     public Opportunity() {}
 
     // Construtor com todos os argumentos
-    public Opportunity(Long id, String titulo, String descricao, String tipoOportunidade,
+    public Opportunity(Long id, String titulo, String descricao, TipoOportunidade tipoOportunidade,
                        String empresaOuOrgResponsavel, String localizacao,
                        String requisitosAcessibilidade, LocalDate dataPublicacao, String contato) {
         this.id = id;
@@ -78,7 +81,7 @@ public class Opportunity {
     public Long getId() { return id; }
     public String getTitulo() { return titulo; }
     public String getDescricao() { return descricao; }
-    public String getTipoOportunidade() { return tipoOportunidade; }
+    public TipoOportunidade getTipoOportunidade() { return tipoOportunidade; }
     public String getEmpresaOuOrgResponsavel() { return empresaOuOrgResponsavel; }
     public String getLocalizacao() { return localizacao; }
     public String getRequisitosAcessibilidade() { return requisitosAcessibilidade; }
@@ -89,7 +92,7 @@ public class Opportunity {
     public void setId(Long id) { this.id = id; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
-    public void setTipoOportunidade(String tipoOportunidade) { this.tipoOportunidade = tipoOportunidade; }
+    public void setTipoOportunidade(TipoOportunidade tipoOportunidade) { this.tipoOportunidade = tipoOportunidade; }
     public void setEmpresaOuOrgResponsavel(String empresaOuOrgResponsavel) { this.empresaOuOrgResponsavel = empresaOuOrgResponsavel; }
     public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
     public void setRequisitosAcessibilidade(String requisitosAcessibilidade) { this.requisitosAcessibilidade = requisitosAcessibilidade; }

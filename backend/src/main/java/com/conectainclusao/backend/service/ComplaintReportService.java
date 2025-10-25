@@ -2,25 +2,30 @@ package com.conectainclusao.backend.service;
 
 import com.conectainclusao.backend.dto.ComplaintReportRequestDTO;
 import com.conectainclusao.backend.dto.ComplaintReportResponseDTO;
-import com.conectainclusao.backend.exception.ResourceNotFoundException; // Precisaremos criar esta exceção
+import com.conectainclusao.backend.exception.ResourceNotFoundException; 
 import com.conectainclusao.backend.model.ComplaintReport;
+import com.conectainclusao.backend.model.User;
 import com.conectainclusao.backend.repository.ComplaintReportRepository;
+import com.conectainclusao.backend.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ComplaintReportService {
 
     private final ComplaintReportRepository complaintReportRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    public ComplaintReportService(ComplaintReportRepository complaintReportRepository) {
+    public ComplaintReportService(ComplaintReportRepository complaintReportRepository, UserRepository userRepository) {
         this.complaintReportRepository = complaintReportRepository;
+        this.userRepository = userRepository;
     }
 
     // --- Lógica para CRIAR ---
@@ -81,7 +86,31 @@ public class ComplaintReportService {
     // --- Método auxiliar para mapear Entidade -> ResponseDTO ---
     private ComplaintReportResponseDTO mapEntityToResponseDTO(ComplaintReport report) {
         ComplaintReportResponseDTO dto = new ComplaintReportResponseDTO();
-        BeanUtils.copyProperties(report, dto);
+        
+        // Copia a maioria das propriedades
+        BeanUtils.copyProperties(report, dto, "userId"); 
+
+        // Busca o nome do usuário
+        String userName = "Usuário Desconhecido"; // Valor padrão
+        if (report.getUserId() != null && !report.getUserId().isEmpty()) {
+            try {
+                // Tenta converter o userId (String) para Long
+                Long userIdLong = Long.parseLong(report.getUserId()); 
+                Optional<User> userOptional = userRepository.findById(userIdLong);
+                if (userOptional.isPresent()) {
+                    userName = userOptional.get().getNome(); // Pega o nome do usuário
+                }
+            } catch (NumberFormatException e) {
+                // Lida com o caso onde userId não é um número válido (se aplicável)
+                System.err.println("WARN: User ID inválido na denúncia ID " + report.getId() + ": " + report.getUserId());
+                userName = "ID Inválido"; 
+            }
+        } else {
+             userName = "Anônimo"; // Ou como você quiser tratar denúncias sem userId
+        }
+
+        dto.setUserName(userName); // Define o nome do usuário no DTO
+
         return dto;
     }
 }

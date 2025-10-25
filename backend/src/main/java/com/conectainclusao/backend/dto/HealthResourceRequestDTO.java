@@ -1,7 +1,13 @@
 package com.conectainclusao.backend.dto;
 
+import org.hibernate.validator.constraints.URL;
+
+import com.conectainclusao.backend.model.TipoRecurso;
+
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 
 public class HealthResourceRequestDTO {
 
@@ -9,9 +15,8 @@ public class HealthResourceRequestDTO {
     @Size(max = 255, message = "O nome deve ter no máximo 255 caracteres")
     private String nome;
 
-    @NotBlank(message = "O tipo do recurso de saúde não pode estar em branco")
-    @Size(max = 100, message = "O tipo deve ter no máximo 100 caracteres")
-    private String tipoRecurso;
+    @NotNull(message = "O tipo do recurso não pode ser nulo")
+    private TipoRecurso tipoRecurso;
 
     @Size(max = 255, message = "A especialidade deve ter no máximo 255 caracteres")
     private String especialidade;
@@ -21,9 +26,11 @@ public class HealthResourceRequestDTO {
     private String endereco;
 
     @Size(max = 50, message = "O telefone deve ter no máximo 50 caracteres")
+    @Pattern(regexp = "^[0-9\\s\\(\\)-]*$", message = "Formato de telefone inválido")
     private String telefone;
 
     @Size(max = 255, message = "O website deve ter no máximo 255 caracteres")
+    @URL(message = "O formato do website é inválido")
     private String website;
 
     @NotBlank(message = "Os detalhes de acessibilidade não podem estar em branco")
@@ -31,12 +38,13 @@ public class HealthResourceRequestDTO {
 
     @Size(max = 255, message = "O horário de funcionamento deve ter no máximo 255 caracteres")
     private String horarioFuncionamento;
+    
 
     // Construtor sem argumentos
     public HealthResourceRequestDTO() {}
 
     // Construtor com todos os argumentos (opcional)
-    public HealthResourceRequestDTO(String nome, String tipoRecurso, String especialidade, String endereco,
+    public HealthResourceRequestDTO(String nome, TipoRecurso tipoRecurso, String especialidade, String endereco,
                                     String telefone, String website, String acessibilidadeDetalhes,
                                     String horarioFuncionamento) {
         this.nome = nome;
@@ -51,7 +59,7 @@ public class HealthResourceRequestDTO {
 
     // Getters (gerar manualmente)
     public String getNome() { return nome; }
-    public String getTipoRecurso() { return tipoRecurso; }
+    public TipoRecurso getTipoRecurso() { return tipoRecurso; }
     public String getEspecialidade() { return especialidade; }
     public String getEndereco() { return endereco; }
     public String getTelefone() { return telefone; }
@@ -61,7 +69,7 @@ public class HealthResourceRequestDTO {
 
     // Setters (gerar manualmente)
     public void setNome(String nome) { this.nome = nome; }
-    public void setTipoRecurso(String tipoRecurso) { this.tipoRecurso = tipoRecurso; }
+    public void setTipoRecurso(TipoRecurso tipoRecurso) { this.tipoRecurso = tipoRecurso; }
     public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
     public void setTelefone(String telefone) { this.telefone = telefone; }

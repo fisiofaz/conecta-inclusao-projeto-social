@@ -1,11 +1,11 @@
 package com.conectainclusao.backend.service; 
 
-import com.conectainclusao.backend.dto.UserRequestDTO;
+import com.conectainclusao.backend.dto.UserCreateRequestDTO;
+import com.conectainclusao.backend.dto.UserUpdateRequestDTO;
 import com.conectainclusao.backend.dto.UserResponseDTO;
 import com.conectainclusao.backend.exception.ResourceNotFoundException;
 import com.conectainclusao.backend.model.User;
 import com.conectainclusao.backend.repository.UserRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,17 +28,23 @@ public class UserService {
     }
 
     @Transactional
-    public User registerUser(UserRequestDTO data) {
-        if (userRepository.findByEmail(data.getEmail()).isPresent()) {
+    public User registerUser(UserCreateRequestDTO createDTO) {
+        if (userRepository.findByEmail(createDTO.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Este e-mail já está cadastrado.");
         }
-        String encryptedPassword = passwordEncoder.encode(data.getSenha());
+        String encryptedPassword = passwordEncoder.encode(createDTO.getSenha());
         User newUser = new User();
-        BeanUtils.copyProperties(data, newUser);
-        newUser.setSenha(encryptedPassword);
-        if (newUser.getTipoPerfil() == null) {
-            newUser.setTipoPerfil("ROLE_USER"); 
-        }
+     
+        newUser.setNome(createDTO.getNome());
+        newUser.setEmail(createDTO.getEmail());
+        newUser.setSenha(encryptedPassword); // Senha já criptografada
+        newUser.setTipoPerfil(createDTO.getTipoPerfil()); // Usa o Enum
+        newUser.setDataNascimento(createDTO.getDataNascimento());
+        newUser.setDeficiencia(createDTO.getDeficiencia());
+        newUser.setCidade(createDTO.getCidade());
+        newUser.setEstado(createDTO.getEstado());
+        newUser.setBio(createDTO.getBio());        
+        
         return userRepository.save(newUser);
     }
     
@@ -60,23 +66,23 @@ public class UserService {
     
     // --- MÉTODO PARA ATUALIZAR USUÁRIO ---
     @Transactional
-    public UserResponseDTO updateUser(Long id, UserRequestDTO dto) {
+    public UserResponseDTO updateUser(Long id, UserUpdateRequestDTO updateDTO) {
         User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + id));
 
         // Atualiza os campos (Mapeamento manual - mais seguro que BeanUtils aqui)
-        userToUpdate.setNome(dto.getNome());
-        userToUpdate.setEmail(dto.getEmail()); // Considere validar se o novo e-mail já existe
-        userToUpdate.setTipoPerfil(dto.getTipoPerfil());
-        userToUpdate.setDataNascimento(dto.getDataNascimento());
-        userToUpdate.setDeficiencia(dto.getDeficiencia());
-        userToUpdate.setCidade(dto.getCidade());
-        userToUpdate.setEstado(dto.getEstado());
-        userToUpdate.setBio(dto.getBio());
+        userToUpdate.setNome(updateDTO.getNome());
+        userToUpdate.setEmail(updateDTO.getEmail()); // Considere validar se o novo e-mail já existe
+        userToUpdate.setTipoPerfil(updateDTO.getTipoPerfil());
+        userToUpdate.setDataNascimento(updateDTO.getDataNascimento());
+        userToUpdate.setDeficiencia(updateDTO.getDeficiencia());
+        userToUpdate.setCidade(updateDTO.getCidade());
+        userToUpdate.setEstado(updateDTO.getEstado());
+        userToUpdate.setBio(updateDTO.getBio());
 
         // Atualiza a senha SOMENTE se uma nova senha for fornecida no DTO
-        if (StringUtils.hasText(dto.getSenha())) { // Verifica se a string não é nula nem vazia
-            userToUpdate.setSenha(passwordEncoder.encode(dto.getSenha()));
+        if (StringUtils.hasText(updateDTO.getSenha())) { // Verifica se a string não é nula nem vazia
+            userToUpdate.setSenha(passwordEncoder.encode(updateDTO.getSenha()));
         }
 
         User updatedUser = userRepository.save(userToUpdate);
@@ -104,7 +110,6 @@ public class UserService {
         dto.setCidade(user.getCidade());
         dto.setEstado(user.getEstado());
         dto.setBio(user.getBio());
-        // NÃO inclua a senha no DTO de resposta!
         return dto;
     }
 }

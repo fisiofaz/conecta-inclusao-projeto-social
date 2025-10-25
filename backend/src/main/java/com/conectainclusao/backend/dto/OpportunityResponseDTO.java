@@ -1,12 +1,13 @@
 package com.conectainclusao.backend.dto;
 
 import java.time.LocalDate;
+import com.conectainclusao.backend.model.TipoOportunidade;
 
 public class OpportunityResponseDTO {
     private Long id;
     private String titulo;
     private String descricao;
-    private String tipoOportunidade;
+    private TipoOportunidade tipoOportunidade;
     private String empresaOuOrgResponsavel;
     private String localizacao;
     private String requisitosAcessibilidade;
@@ -17,7 +18,7 @@ public class OpportunityResponseDTO {
     public OpportunityResponseDTO() {}
 
     // Construtor com todos os argumentos (opcional)
-    public OpportunityResponseDTO(Long id, String titulo, String descricao, String tipoOportunidade,
+    public OpportunityResponseDTO(Long id, String titulo, String descricao, TipoOportunidade tipoOportunidade,
                                   String empresaOuOrgResponsavel, String localizacao,
                                   String requisitosAcessibilidade, LocalDate dataPublicacao, String contato) {
         this.id = id;
@@ -35,7 +36,7 @@ public class OpportunityResponseDTO {
     public Long getId() { return id; }
     public String getTitulo() { return titulo; }
     public String getDescricao() { return descricao; }
-    public String getTipoOportunidade() { return tipoOportunidade; }
+    public TipoOportunidade getTipoOportunidade() { return tipoOportunidade; }
     public String getEmpresaOuOrgResponsavel() { return empresaOuOrgResponsavel; }
     public String getLocalizacao() { return localizacao; }
     public String getRequisitosAcessibilidade() { return requisitosAcessibilidade; }
@@ -46,7 +47,7 @@ public class OpportunityResponseDTO {
     public void setId(Long id) { this.id = id; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
     public void setDescricao(String descricao) { this.descricao = descricao; }
-    public void setTipoOportunidade(String tipoOportunidade) { this.tipoOportunidade = tipoOportunidade; }
+    public void setTipoOportunidade(TipoOportunidade tipoOportunidade) { this.tipoOportunidade = tipoOportunidade; }
     public void setEmpresaOuOrgResponsavel(String empresaOuOrgResponsavel) { this.empresaOuOrgResponsavel = empresaOuOrgResponsavel; }
     public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
     public void setRequisitosAcessibilidade(String requisitosAcessibilidade) { this.requisitosAcessibilidade = requisitosAcessibilidade; }

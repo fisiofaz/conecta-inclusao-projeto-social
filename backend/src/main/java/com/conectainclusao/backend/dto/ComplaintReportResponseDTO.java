@@ -2,22 +2,26 @@ package com.conectainclusao.backend.dto;
 
 import java.time.LocalDate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class ComplaintReportResponseDTO {
     private Long id;
     private String titulo;
     private String descricao;
     private String tipoProblema;
     private String localizacaoOcorrencia;
+    
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate dataOcorrencia;
     private String status;
-    private String userId; // ID do usuário que fez a denúncia
+    private String userName;
 
     // Construtor sem argumentos
     public ComplaintReportResponseDTO() {}
 
     public ComplaintReportResponseDTO(Long id, String titulo, String descricao, String tipoProblema,
                                       String localizacaoOcorrencia, LocalDate dataOcorrencia,
-                                      String status, String userId) {
+                                      String status, String userName) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -25,7 +29,7 @@ public class ComplaintReportResponseDTO {
         this.localizacaoOcorrencia = localizacaoOcorrencia;
         this.dataOcorrencia = dataOcorrencia;
         this.status = status;
-        this.userId = userId;
+        this.userName = userName;
     }
 
     // Getters
@@ -36,7 +40,7 @@ public class ComplaintReportResponseDTO {
     public String getLocalizacaoOcorrencia() { return localizacaoOcorrencia; }
     public LocalDate getDataOcorrencia() { return dataOcorrencia; }
     public String getStatus() { return status; }
-    public String getUserId() { return userId; }
+    public String getUserName() { return userName; }
 
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -46,5 +50,5 @@ public class ComplaintReportResponseDTO {
     public void setLocalizacaoOcorrencia(String localizacaoOcorrencia) { this.localizacaoOcorrencia = localizacaoOcorrencia; }
     public void setDataOcorrencia(LocalDate dataOcorrencia) { this.dataOcorrencia = dataOcorrencia; }
     public void setStatus(String status) { this.status = status; }
-    public void setUserId(String userId) { this.userId = userId; }
+    public void setUserName(String userName) { this.userName = userName; }
 }

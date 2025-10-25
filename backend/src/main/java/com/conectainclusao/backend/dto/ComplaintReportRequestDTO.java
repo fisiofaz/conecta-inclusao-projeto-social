@@ -2,9 +2,12 @@ package com.conectainclusao.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 public class ComplaintReportRequestDTO {
 
@@ -16,6 +19,7 @@ public class ComplaintReportRequestDTO {
     private String descricao;
 
     @NotBlank(message = "O tipo de problema não pode estar em branco")
+    @Pattern(regexp = "acessibilidade|discriminação|falta_de_informacao", message = "Tipo de problema inválido")
     private String tipoProblema;
 
     @NotBlank(message = "A localização da ocorrência não pode estar em branco")
@@ -23,8 +27,10 @@ public class ComplaintReportRequestDTO {
     private String localizacaoOcorrencia;
 
     @NotNull(message = "A data da ocorrência não pode ser nula")
+    @jakarta.validation.constraints.PastOrPresent(message = "A data da ocorrência não pode ser futura")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) // Opcional, mas claro
     private LocalDate dataOcorrencia;
-
+    
    // Construtor sem argumentos
     public ComplaintReportRequestDTO() {}
 

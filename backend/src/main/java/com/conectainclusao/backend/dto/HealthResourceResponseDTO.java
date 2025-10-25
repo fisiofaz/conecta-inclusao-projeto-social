@@ -1,9 +1,11 @@
 package com.conectainclusao.backend.dto;
 
+import com.conectainclusao.backend.model.TipoRecurso;
+
 public class HealthResourceResponseDTO {
     private Long id;
     private String nome;
-    private String tipoRecurso;
+    private TipoRecurso tipoRecurso;
     private String especialidade;
     private String endereco;
     private String telefone;
@@ -15,7 +17,7 @@ public class HealthResourceResponseDTO {
     public HealthResourceResponseDTO() {}
 
     // Construtor com todos os argumentos (opcional)
-    public HealthResourceResponseDTO(Long id, String nome, String tipoRecurso, String especialidade,
+    public HealthResourceResponseDTO(Long id, String nome, TipoRecurso tipoRecurso, String especialidade,
                                      String endereco, String telefone, String website,
                                      String acessibilidadeDetalhes, String horarioFuncionamento) {
         this.id = id;
@@ -32,7 +34,7 @@ public class HealthResourceResponseDTO {
     // Getters (gerar manualmente)
     public Long getId() { return id; }
     public String getNome() { return nome; }
-    public String getTipoRecurso() { return tipoRecurso; }
+    public TipoRecurso getTipoRecurso() { return tipoRecurso; }
     public String getEspecialidade() { return especialidade; }
     public String getEndereco() { return endereco; }
     public String getTelefone() { return telefone; }
@@ -43,7 +45,7 @@ public class HealthResourceResponseDTO {
     // Setters (gerar manualmente)
     public void setId(Long id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
-    public void setTipoRecurso(String tipoRecurso) { this.tipoRecurso = tipoRecurso; }
+    public void setTipoRecurso(TipoRecurso tipoRecurso) { this.tipoRecurso = tipoRecurso; }
     public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
     public void setTelefone(String telefone) { this.telefone = telefone; }

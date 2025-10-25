@@ -8,6 +8,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Table; 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "health_resources")
@@ -23,6 +25,7 @@ public class HealthResource {
     private String nome;
 
     @NotBlank(message = "O tipo do recurso de saúde não pode estar em branco")
+    @Enumerated(EnumType.STRING)
     @Size(max = 100, message = "O tipo deve ter no máximo 100 caracteres")
     @Column(nullable = false, length = 100)
     private String tipoRecurso; 

@@ -1,12 +1,13 @@
 package com.conectainclusao.backend.dto;
 
 import java.time.LocalDate;
+import com.conectainclusao.backend.model.PerfilUsuario;
 
 public class UserResponseDTO {
     private Long id;
     private String nome;
     private String email;
-    private String tipoPerfil;
+    private PerfilUsuario tipoPerfil;
     private LocalDate dataNascimento;
     private String deficiencia;
     private String cidade;
@@ -30,7 +31,7 @@ public class UserResponseDTO {
         return email;
     }
 
-    public String getTipoPerfil() {
+    public PerfilUsuario getTipoPerfil() {
         return tipoPerfil;
     }
 
@@ -67,7 +68,7 @@ public class UserResponseDTO {
         this.email = email;
     }
 
-    public void setTipoPerfil(String tipoPerfil) {
+    public void setTipoPerfil(PerfilUsuario tipoPerfil) {
         this.tipoPerfil = tipoPerfil;
     }
 

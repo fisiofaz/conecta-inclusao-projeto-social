@@ -1,6 +1,6 @@
 package com.conectainclusao.backend.controller;
 
-import com.conectainclusao.backend.dto.UserRequestDTO;
+import com.conectainclusao.backend.dto.UserUpdateRequestDTO;
 import com.conectainclusao.backend.dto.UserResponseDTO;
 import com.conectainclusao.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +37,11 @@ public class UserController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDTO userRequestDTO) {
-        UserResponseDTO updatedUser = userService.updateUser(id, userRequestDTO);
+    public ResponseEntity<UserResponseDTO> updateUser(
+            @PathVariable Long id,       
+            @Valid @RequestBody UserUpdateRequestDTO userUpdateRequestDTO
+        ) { 
+        UserResponseDTO updatedUser = userService.updateUser(id, userUpdateRequestDTO);
         return ResponseEntity.ok(updatedUser);
     }
 

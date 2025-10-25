@@ -18,11 +18,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import com.conectainclusao.backend.model.PerfilUsuario;
+
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+	
 
-    @Id
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -41,8 +46,9 @@ public class User implements UserDetails {
     @Column(nullable = false, length = 255)
     private String senha;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 50)
-    private String tipoPerfil;
+    private PerfilUsuario tipoPerfil;
     
     @Column
     private LocalDate dataNascimento;
@@ -64,7 +70,7 @@ public class User implements UserDetails {
     }
 
     // Construtor com todos os argumentos (AllArgsConstructor)
-    public User(Long id, String nome, String email, String senha, String tipoPerfil, LocalDate dataNascimento,
+    public User(Long id, String nome, String email, String senha,PerfilUsuario tipoPerfil, LocalDate dataNascimento,
                 String deficiencia, String cidade, String estado, String bio) {
         this.id = id;
         this.nome = nome;
@@ -79,32 +85,34 @@ public class User implements UserDetails {
     }
     
     @Override
-public Collection<? extends GrantedAuthority> getAuthorities() {
-    System.out.println("DEBUG: User.getAuthorities - Tipo Perfil: " + this.tipoPerfil);
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        System.out.println("DEBUG: User.getAuthorities - Tipo Perfil Enum: " + this.tipoPerfil); 
 
-    // Se o perfil for nulo, retorna uma permissão padrão para evitar erros.
-    if (this.tipoPerfil == null) {
-        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        // Se o perfil for nulo, retorna uma permissão padrão.
+        if (this.tipoPerfil == null) {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER")); // Permissão padrão
+        }
+
+        switch (this.tipoPerfil) {
+            case ROLE_ADMIN: // Compara com PerfilUsuario.ROLE_ADMIN
+                // Admin também é USER
+                return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+                
+            case ROLE_EMPRESA: // Compara com PerfilUsuario.ROLE_EMPRESA
+                // Empresa também é USER
+                return List.of(new SimpleGrantedAuthority("ROLE_EMPRESA"), new SimpleGrantedAuthority("ROLE_USER"));
+                
+            case ROLE_ORGAO_APOIO: // Compara com PerfilUsuario.ROLE_ORGAO_APOIO
+                 // Órgão de Apoio também é USER
+                return List.of(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"), new SimpleGrantedAuthority("ROLE_USER"));
+
+            case ROLE_USER: // Compara com PerfilUsuario.ROLE_USER (ou qualquer outro valor padrão)
+            default:
+                 // Perfil padrão ou desconhecido recebe apenas ROLE_USER
+                return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
-
-    // Usando um 'switch' para uma lógica mais limpa e correta.
-    // Ele compara com o valor exato que está no banco de dados.
-    switch (this.tipoPerfil) {
-        case "ROLE_ADMIN":
-            // Um admin também é um usuário, então damos as duas permissões.
-            return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
-            
-        case "ROLE_EMPRESA":
-            return List.of(new SimpleGrantedAuthority("ROLE_EMPRESA"), new SimpleGrantedAuthority("ROLE_USER"));
-            
-        case "ROLE_ORGAO_APOIO":
-            return List.of(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"), new SimpleGrantedAuthority("ROLE_USER"));
-
-        default:
-            // Para "PCD" ou qualquer outro valor, retorna apenas ROLE_USER.
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
-    }
-}
+    
     @Override
     public String getPassword() {
         return this.senha;
@@ -144,8 +152,8 @@ public Collection<? extends GrantedAuthority> getAuthorities() {
     public void setEmail(String email) { this.email = email; }
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
-    public String getTipoPerfil() { return tipoPerfil; }
-    public void setTipoPerfil(String tipoPerfil) { this.tipoPerfil = tipoPerfil; }
+    public PerfilUsuario getTipoPerfil() { return tipoPerfil; }
+    public void setTipoPerfil(PerfilUsuario tipoPerfil) { this.tipoPerfil = tipoPerfil; }
     public LocalDate getDataNascimento() { return dataNascimento; }
     public void setDataNascimento(LocalDate dataNascimento) { this.dataNascimento = dataNascimento; }
     public String getDeficiencia() { return deficiencia; }
