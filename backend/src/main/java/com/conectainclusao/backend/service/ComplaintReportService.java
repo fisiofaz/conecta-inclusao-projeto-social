@@ -5,6 +5,7 @@ import com.conectainclusao.backend.dto.ComplaintReportResponseDTO;
 import com.conectainclusao.backend.exception.ResourceNotFoundException; 
 import com.conectainclusao.backend.model.ComplaintReport;
 import com.conectainclusao.backend.model.User;
+import com.conectainclusao.backend.model.StatusDenuncia;
 import com.conectainclusao.backend.repository.ComplaintReportRepository;
 import com.conectainclusao.backend.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional; 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,16 +29,26 @@ public class ComplaintReportService {
     }
 
     // --- Lógica para CRIAR ---
-    @Transactional // Garante que a operação seja atômica
-    public ComplaintReportResponseDTO createComplaintReport(ComplaintReportRequestDTO dto, String userId) {
+    @Transactional
+    // 👇 Recebe userId como Long 👇
+    public ComplaintReportResponseDTO createComplaintReport(ComplaintReportRequestDTO dto, Long userId) { 
         ComplaintReport complaintReport = new ComplaintReport();
-        BeanUtils.copyProperties(dto, complaintReport);
-        complaintReport.setStatus("aberto"); // Define status inicial
-        complaintReport.setUserId(userId); // Associa o ID do usuário (como String)
+        
+        // Copia propriedades do DTO (incluindo o Enum TipoProblema)
+        BeanUtils.copyProperties(dto, complaintReport); 
+        
+        // 👇 Define o Status usando o Enum 👇
+        complaintReport.setStatus(StatusDenuncia.ABERTO); 
+
+        // 👇 Busca a entidade User pelo ID fornecido 👇
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + userId + " ao criar denúncia."));
+        
+        // 👇 Associa a entidade User completa à denúncia 👇
+        complaintReport.setUser(user); 
 
         ComplaintReport savedReport = complaintReportRepository.save(complaintReport);
         
-        // Mapeia a entidade salva para o DTO de resposta
         return mapEntityToResponseDTO(savedReport);
     }
 
@@ -87,28 +97,14 @@ public class ComplaintReportService {
     private ComplaintReportResponseDTO mapEntityToResponseDTO(ComplaintReport report) {
         ComplaintReportResponseDTO dto = new ComplaintReportResponseDTO();
         
-        // Copia a maioria das propriedades
-        BeanUtils.copyProperties(report, dto, "userId"); 
+        // BeanUtils deve copiar os Enums TipoProblema e StatusDenuncia corretamente
+        BeanUtils.copyProperties(report, dto, "user"); // Ignora o campo 'user' da entidade
 
-        // Busca o nome do usuário
-        String userName = "Usuário Desconhecido"; // Valor padrão
-        if (report.getUserId() != null && !report.getUserId().isEmpty()) {
-            try {
-                // Tenta converter o userId (String) para Long
-                Long userIdLong = Long.parseLong(report.getUserId()); 
-                Optional<User> userOptional = userRepository.findById(userIdLong);
-                if (userOptional.isPresent()) {
-                    userName = userOptional.get().getNome(); // Pega o nome do usuário
-                }
-            } catch (NumberFormatException e) {
-                // Lida com o caso onde userId não é um número válido (se aplicável)
-                System.err.println("WARN: User ID inválido na denúncia ID " + report.getId() + ": " + report.getUserId());
-                userName = "ID Inválido"; 
-            }
-        } else {
-             userName = "Anônimo"; // Ou como você quiser tratar denúncias sem userId
+        // 👇 Obtém o nome diretamente do objeto User relacionado 👇
+        String userName = "Usuário Desconhecido"; // Padrão
+        if (report.getUser() != null) {
+            userName = report.getUser().getNome(); // Acessa o nome através do relacionamento
         }
-
         dto.setUserName(userName); // Define o nome do usuário no DTO
 
         return dto;

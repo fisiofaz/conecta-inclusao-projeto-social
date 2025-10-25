@@ -30,19 +30,21 @@ public class ComplaintReportController {
     @PostMapping
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ComplaintReportResponseDTO> createComplaintReport(@RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
-        // Obter userId do contexto de segurança
+        // Obter o objeto User autenticado do contexto de segurança
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userId = null;
+        User authenticatedUser = null; // Inicializa como null
+
         if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User authenticatedUser = (User) authentication.getPrincipal();
-            userId = authenticatedUser.getId().toString(); // Assumindo que userId na denúncia é String
+            authenticatedUser = (User) authentication.getPrincipal();
         } else {
-             // Se não conseguir obter o usuário, retorna erro (embora @PreAuthorize já deva garantir)
+             // Se não conseguir obter o usuário (embora @PreAuthorize deva garantir que existe), retorna erro
+            System.err.println("ERRO: Não foi possível obter o usuário autenticado no ComplaintReportController.");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
         }
 
-        // Chama o serviço para criar
-        ComplaintReportResponseDTO createdReportDTO = complaintReportService.createComplaintReport(complaintReportRequestDTO, userId);
+        // 👇 Passa o DTO e o ID (Long) do usuário para o serviço 👇
+        ComplaintReportResponseDTO createdReportDTO = complaintReportService.createComplaintReport(complaintReportRequestDTO, authenticatedUser.getId());
+        
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReportDTO);
     }
 

@@ -20,7 +20,6 @@ import jakarta.validation.constraints.Size;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import com.conectainclusao.backend.model.PerfilUsuario;
 
 @Entity
 @Table(name = "users")
