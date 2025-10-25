@@ -12,8 +12,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthorizationService implements UserDetailsService {
 
-    @Autowired
+    
     private UserRepository userRepository;
+    
+    @Autowired // Opcional em versões recentes
+    public AuthorizationService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

@@ -20,14 +20,20 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity; 
+import org.springframework.security.config.Customizer;
 
 @Configuration
 @EnableWebSecurity 
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Autowired
-    SecurityFilter securityFilter; 
+    // Injeção via construtor
+    private final SecurityFilter securityFilter;
+    
+    @Autowired // Opcional no construtor
+    public SecurityConfig(SecurityFilter securityFilter) {
+        this.securityFilter = securityFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -35,52 +41,20 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST sem sessão
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sessão sem estado
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
-                        // --- 1. ROTAS PUBLICAS (PERMITALL) ---
-                        // Permite login e cadastro de novos usuários sem autenticação
-                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-
-                        // Permite GETs (listagem e busca por ID) de oportunidades, denúncias e recursos de saúde para QUALQUER UM (mesmo não autenticado)
-                        .requestMatchers(HttpMethod.GET, "/api/opportunities").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/opportunities/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/complaints").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/complaints/{id}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/health-resources").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/health-resources/{id}").permitAll()
+                		 // --- 1. ROTAS PUBLICAS (PERMITALL) ---
+                		.requestMatchers("/api/auth/**").permitAll() // Login e Registro
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll() // Ver Oportunidades
+                        .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() // Ver Denúncias
+                        .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll() // Ver Recursos
+                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll() // Busca pública
                         
-
-                        // --- 2. ROTAS PROTEGIDAS POR ROLE OU AUTENTICAÇÃO GERAL ---
-                        
-                        // Listar/Buscar Usuários exige autenticação
-                        .requestMatchers(HttpMethod.GET, "/api/users").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/users/{id}").authenticated()
-                        
-                        // Criar Denúncias exige autenticação (qualquer usuário logado)
-                        .requestMatchers(HttpMethod.POST, "/api/complaints").authenticated()
-                        
-                        // --- 3. ROTAS QUE EXIGEM ROLES ESPECÍFICAS (@PreAuthorize nos Controllers) ---
-                        // Oportunidades: POST/PUT/DELETE exigem EMPRESA ou ADMIN
-                        .requestMatchers(HttpMethod.POST, "/api/opportunities").hasAnyRole("EMPRESA", "ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/opportunities/{id}").hasAnyRole("EMPRESA", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/opportunities/{id}").hasAnyRole("EMPRESA", "ADMIN")
-                        	
-                    	// Denúncias: PUT/DELETE exigem ADMIN
-                        .requestMatchers(HttpMethod.PUT, "/api/complaints/{id}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/complaints/{id}").hasRole("ADMIN")
-
-                        // Recursos de Saúde: POST/PUT/DELETE exigem ORGAO_APOIO ou ADMIN
-                        
-                        .requestMatchers(HttpMethod.POST, "/api/health-resources").hasAnyRole("ORGAO_APOIO", "ADMIN") // << ATENÇÃO A ESTA LINHA. Alterei de permitAll para hasAnyRole
-                        .requestMatchers(HttpMethod.PUT, "/api/health-resources/{id}").hasAnyRole("ORGAO_APOIO", "ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/health-resources/{id}").hasAnyRole("ORGAO_APOIO", "ADMIN")
-
-                        
-                        // --- 4. REGRA CATCH-ALL ---                        
-                        .anyRequest().authenticated()                       
+                        // --- QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
+                        // A verificação específica de ROLE será feita via @PreAuthorize nos controllers/services
+                        .anyRequest().authenticated()
                         
                 )
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                // Usar a configuração CORS definida no Bean corsConfigurationSource
+                .cors(Customizer.withDefaults()) // Simplifica a aplicação da config CORS do Bean
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

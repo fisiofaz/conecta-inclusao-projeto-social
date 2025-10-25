@@ -1,6 +1,5 @@
 package com.conectainclusao.backend.security;
 
-import com.conectainclusao.backend.repository.UserRepository;
 import com.conectainclusao.backend.service.AuthorizationService;
 
 import jakarta.servlet.FilterChain;
