@@ -46,7 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll() // Ver Oportunidades
                         .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() // Ver Denúncias
                         .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll() // Ver Recursos
-                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll() // Busca pública
+                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        .requestMatchers("/api/auth/profile").authenticated()// Busca pública
                         
                         // --- QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
                         // A verificação específica de ROLE será feita via @PreAuthorize nos controllers/services

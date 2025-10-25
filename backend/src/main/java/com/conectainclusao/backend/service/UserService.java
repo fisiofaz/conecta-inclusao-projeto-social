@@ -99,12 +99,12 @@ public class UserService {
     }
     
  // --- MÉTODO AUXILIAR PRIVADO PARA MAPEAMENTO User -> UserResponseDTO ---
-    private UserResponseDTO mapEntityToResponseDTO(User user) {
+    public UserResponseDTO mapEntityToResponseDTO(User user) { 
         UserResponseDTO dto = new UserResponseDTO();
         dto.setId(user.getId());
         dto.setNome(user.getNome());
         dto.setEmail(user.getEmail());
-        dto.setTipoPerfil(user.getTipoPerfil());
+        dto.setTipoPerfil(user.getTipoPerfil()); 
         dto.setDataNascimento(user.getDataNascimento());
         dto.setDeficiencia(user.getDeficiencia());
         dto.setCidade(user.getCidade());

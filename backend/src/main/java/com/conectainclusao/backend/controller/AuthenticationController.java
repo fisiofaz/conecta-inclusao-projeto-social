@@ -1,22 +1,32 @@
 package com.conectainclusao.backend.controller;
 
-import com.conectainclusao.backend.dto.AuthenticationRequestDTO;
-import com.conectainclusao.backend.dto.AuthenticationResponseDTO;
-import com.conectainclusao.backend.dto.UserCreateRequestDTO;
-import com.conectainclusao.backend.model.User;
-import com.conectainclusao.backend.security.TokenService;
-import com.conectainclusao.backend.service.UserService;
-import jakarta.validation.Valid;
-
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.conectainclusao.backend.dto.AuthenticationRequestDTO;
+import com.conectainclusao.backend.dto.AuthenticationResponseDTO;
+import com.conectainclusao.backend.dto.UserCreateRequestDTO;
+import com.conectainclusao.backend.dto.UserResponseDTO;
+import com.conectainclusao.backend.model.User;
+import com.conectainclusao.backend.security.TokenService;
+import com.conectainclusao.backend.service.UserService;
+
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/auth")
@@ -66,5 +76,25 @@ public class AuthenticationController {
             errorResponse.put("error", e.getMessage());
             return ResponseEntity.badRequest().body(errorResponse); 
         }
+    }
+    
+ // Dentro do AuthenticationController ou um novo ProfileController
+
+    @GetMapping("/profile")
+    @PreAuthorize("isAuthenticated()") // Garante que só usuários logados acessem
+    public ResponseEntity<UserResponseDTO> getUserProfile() {
+        // Pega o usuário autenticado do contexto de segurança
+        org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // Segurança extra
+        }
+        User authenticatedUser = (User) authentication.getPrincipal();
+
+        // Mapeia para o DTO de resposta (usando o método do UserService ou manual)
+        // Assumindo que você tem um método mapEntityToResponseDTO no UserService injetado
+        UserResponseDTO userDTO = userService.mapEntityToResponseDTO(authenticatedUser); // Você precisará tornar esse método público ou criar um específico
+
+
+        return ResponseEntity.ok(userDTO);
     }
 }
