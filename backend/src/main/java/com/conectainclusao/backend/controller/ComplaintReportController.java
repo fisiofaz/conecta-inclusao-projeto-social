@@ -66,7 +66,7 @@ public class ComplaintReportController {
 
     // --- ATUALIZAR ---
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<ComplaintReportResponseDTO> updateComplaintReport(@PathVariable Long id, @RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
         // Chama o serviço para atualizar (o serviço já trata o Not Found)
         ComplaintReportResponseDTO updatedReportDTO = complaintReportService.updateComplaintReport(id, complaintReportRequestDTO);
@@ -75,7 +75,7 @@ public class ComplaintReportController {
 
     // --- DELETAR ---
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteComplaintReport(@PathVariable Long id) {
         // Chama o serviço para deletar (o serviço já trata o Not Found)
         complaintReportService.deleteComplaintReport(id);

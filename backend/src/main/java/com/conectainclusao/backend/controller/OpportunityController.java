@@ -24,7 +24,7 @@ public class OpportunityController {
 
     // --- CRIAR ---
     @PostMapping
-    @PreAuthorize("hasAnyRole('EMPRESA', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPRESA', 'ROLE_ADMIN')")
     public ResponseEntity<OpportunityResponseDTO> createOpportunity(@RequestBody @Valid OpportunityRequestDTO opportunityRequestDTO) {
         // Delega para o Serviço 
         OpportunityResponseDTO createdOpportunityDTO = opportunityService.createOpportunity(opportunityRequestDTO);
@@ -49,7 +49,7 @@ public class OpportunityController {
 
     // --- ATUALIZAR ---
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('EMPRESA', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPRESA', 'ROLE_ADMIN')")
     public ResponseEntity<OpportunityResponseDTO> updateOpportunity(@PathVariable Long id, @RequestBody @Valid OpportunityRequestDTO opportunityRequestDTO) {
         // Delega para o Serviço (ele trata Not Found) 
         OpportunityResponseDTO updatedOpportunityDTO = opportunityService.updateOpportunity(id, opportunityRequestDTO);
@@ -58,7 +58,7 @@ public class OpportunityController {
 
     // --- DELETAR ---
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('EMPRESA', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_EMPRESA', 'ROLE_ADMIN')")
     public ResponseEntity<Void> deleteOpportunity(@PathVariable Long id) {
         //  Delega para o Serviço (ele trata Not Found) 
         opportunityService.deleteOpportunity(id);
