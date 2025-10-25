@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import com.conectainclusao.backend.model.TipoRecurso;
 
 @Entity
 @Table(name = "health_resources")
@@ -24,11 +25,9 @@ public class HealthResource {
     @Column(nullable = false, length = 255)
     private String nome;
 
-    @NotBlank(message = "O tipo do recurso de saúde não pode estar em branco")
     @Enumerated(EnumType.STRING)
-    @Size(max = 100, message = "O tipo deve ter no máximo 100 caracteres")
     @Column(nullable = false, length = 100)
-    private String tipoRecurso; 
+    private TipoRecurso tipoRecurso; 
 
     @Size(max = 255, message = "A especialidade deve ter no máximo 255 caracteres")
     @Column(length = 255)
@@ -59,7 +58,7 @@ public class HealthResource {
     public HealthResource() {}
 
     // Construtor com todos os argumentos
-    public HealthResource(Long id, String nome, String tipoRecurso, String especialidade,
+    public HealthResource(Long id, String nome, TipoRecurso tipoRecurso, String especialidade,
                           String endereco, String telefone, String website,
                           String acessibilidadeDetalhes, String horarioFuncionamento) {
         this.id = id;
@@ -76,7 +75,7 @@ public class HealthResource {
     // Getters (gerar manualmente)
     public Long getId() { return id; }
     public String getNome() { return nome; }
-    public String getTipoRecurso() { return tipoRecurso; }
+    public TipoRecurso getTipoRecurso() { return tipoRecurso; }
     public String getEspecialidade() { return especialidade; }
     public String getEndereco() { return endereco; }
     public String getTelefone() { return telefone; }
@@ -87,7 +86,7 @@ public class HealthResource {
     // Setters (gerar manualmente)
     public void setId(Long id) { this.id = id; }
     public void setNome(String nome) { this.nome = nome; }
-    public void setTipoRecurso(String tipoRecurso) { this.tipoRecurso = tipoRecurso; }
+    public void setTipoRecurso(TipoRecurso tipoRecurso) { this.tipoRecurso = tipoRecurso; }
     public void setEspecialidade(String especialidade) { this.especialidade = especialidade; }
     public void setEndereco(String endereco) { this.endereco = endereco; }
     public void setTelefone(String telefone) { this.telefone = telefone; }
