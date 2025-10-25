@@ -41,6 +41,7 @@ export default function SaudeBemEstar() {
   const [clinicas, setClinicas] = useState([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  console.log("Perfil do usuário LOGADO (SaudeBemEstar):", user?.tipoPerfil);
   const canRegisterClinic = user?.tipoPerfil === 'ROLE_ADMIN' || user?.tipoPerfil === 'ROLE_ORGAO_APOIO'
 
   
