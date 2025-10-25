@@ -29,7 +29,7 @@ public class HealthResourceController {
 
     // --- CRIAR ---
     @PostMapping
-    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ORGAO_APOIO', 'ROLE_ADMIN')")
     public ResponseEntity<HealthResourceResponseDTO> createHealthResource(@RequestBody @Valid HealthResourceRequestDTO healthResourceRequestDTO) {
         HealthResourceResponseDTO createdResourceDTO = healthResourceService.createHealthResource(healthResourceRequestDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdResourceDTO);
@@ -52,7 +52,7 @@ public class HealthResourceController {
 
     // --- ATUALIZAR ---
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ORGAO_APOIO', 'ROLE_ADMIN')")
     public ResponseEntity<HealthResourceResponseDTO> updateHealthResource(@PathVariable Long id, @RequestBody @Valid HealthResourceRequestDTO healthResourceRequestDTO) {
         // O serviço agora lança ResourceNotFoundException
         HealthResourceResponseDTO updatedResourceDTO = healthResourceService.updateHealthResource(id, healthResourceRequestDTO);
@@ -61,7 +61,7 @@ public class HealthResourceController {
 
     // --- DELETAR ---
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ORGAO_APOIO', 'ADMIN')")
+    @PreAuthorize("hasAnyAuthority('ROLE_ORGAO_APOIO', 'ROLE_ADMIN')")
     public ResponseEntity<Void> deleteHealthResource(@PathVariable Long id) {
          // O serviço agora lança ResourceNotFoundException
         healthResourceService.deleteHealthResource(id);
