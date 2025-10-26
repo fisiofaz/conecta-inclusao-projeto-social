@@ -13,7 +13,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/health-resources")
@@ -70,5 +72,13 @@ public class HealthResourceController {
          // O serviço agora lança ResourceNotFoundException
         healthResourceService.deleteHealthResource(id);
         return ResponseEntity.noContent().build();
+    }
+    
+    @GetMapping("/version")
+    @ResponseBody 
+    public Map<String, String> getVersion() {
+        Map<String, String> versionInfo = new HashMap<>();
+        versionInfo.put("version", "v2.1-teste-deploy-options"); // Dê um nome único
+        return versionInfo;
     }
 }
