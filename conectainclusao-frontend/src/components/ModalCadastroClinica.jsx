@@ -11,7 +11,7 @@ import FeedbackMessage from "./FeedbackMessage";
 export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
   const [clinica, setClinica] = useState({
     nome: "",
-    tipoServico: "",
+    tipoRecurso: "",
     endereco: "",
     telefone: "",
     email: "",
@@ -56,10 +56,14 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
 
   const serviceTypes = [
     { value: "", label: "Selecione..." },
-    { value: "Clínica Médica", label: "Clínica Médica" },
-    { value: "Fisioterapia", label: "Fisioterapia" },
-    { value: "Psicologia", label: "Psicologia" },
-    { value: "Outros", label: "Outros" },
+    { value: "CLINICA_MEDICA", label: "Clínica Médica" }, // Ex: CLINICA_MEDICA
+    { value: "FISIOTERAPIA", label: "Fisioterapia" },   // Ex: FISIOTERAPIA
+    { value: "PSICOLOGIA", label: "Psicologia" },     // Ex: PSICOLOGIA
+    { value: "FONOAUDIOLOGIA", label: "Fonoaudiologia" }, // Adicione os outros valores do seu Enum
+    { value: "TERAPIA_OCUPACIONAL", label: "Terapia Ocupacional" },
+    { value: "NUTRICAO", label: "Nutrição" },
+    { value: "ODONTOLOGIA", label: "Odontologia" },
+    { value: "OUTROS", label: "Outros" },             // Ex: OUTROS
   ];
 
   return (
@@ -67,12 +71,33 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
       <FeedbackMessage type={feedback.type} message={feedback.message} />
       <form onSubmit={handleSubmit} className="space-y-4">
         <FormInput label="Nome da Clínica / Serviço *" name="nome" value={clinica.nome} onChange={handleChange} required />
-        <FormSelect label="Tipo de Serviço *" name="tipoServico" value={clinica.tipoServico} onChange={handleChange} options={serviceTypes} required />
+        
+        {/* 👇 3. CORRIGIDO: 'name' e 'value' atualizados */}
+        <FormSelect 
+          label="Tipo de Serviço *" 
+          name="tipoRecurso" // Corrigido
+          value={clinica.tipoRecurso} // Corrigido
+          onChange={handleChange} 
+          options={serviceTypes} 
+          required 
+        />
+        
         <FormInput label="Endereço Completo *" name="endereco" value={clinica.endereco} onChange={handleChange} required />
         <FormInput label="Telefone *" name="telefone" type="tel" value={clinica.telefone} onChange={handleChange} required />
         <FormInput label="E-mail" name="email" type="email" value={clinica.email} onChange={handleChange} />
-        <FormInput label="Site" name="site" type="url" value={clinica.site} onChange={handleChange} placeholder="https://" />
-        <FormTextarea label="Recursos de Acessibilidade" name="acessibilidadeDetalhes" value={clinica.acessibilidadeDetalhes} onChange={handleChange} rows="3" placeholder="Ex: Rampas, elevadores..." required/>
+        <FormInput label="Site" name="site" type="url" value={clinica.site} onChange={handleChange} placeholder="https://"/>
+        
+        {/* Campo de Acessibilidade (já corrigido por você) */}
+        <FormTextarea 
+          label="Recursos de Acessibilidade *" 
+          name="acessibilidadeDetalhes" 
+          value={clinica.acessibilidadeDetalhes} 
+          onChange={handleChange} 
+          rows="3" 
+          placeholder="Ex: Rampas, elevadores..." 
+          required
+        />
+        
         <FormTextarea label="Descrição dos Serviços" name="descricao" value={clinica.descricao} onChange={handleChange} rows="3" />
         
         <div className="flex flex-col gap-4 pt-4 mt-4 border-t sm:flex-row">
