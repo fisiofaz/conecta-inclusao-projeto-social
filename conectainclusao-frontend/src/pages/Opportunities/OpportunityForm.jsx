@@ -101,10 +101,14 @@ function OpportunityForm() {
   }
 
   const opportunityTypes = [
-    { value: 'emprego', label: 'Emprego' },
-    { value: 'voluntariado', label: 'Voluntariado' },
-    { value: 'evento', label: 'Evento' },
-    { value: 'saude_bem_estar', label: 'Saúde e Bem-Estar' },
+    { value: 'EMPREGO', label: 'Emprego' },
+    { value: 'VOLUNTARIADO', label: 'Voluntariado' },
+    { value: 'EVENTO', label: 'Evento' },
+    { value: 'SAUDE_BEM_ESTAR', label: 'Saúde e Bem-Estar' },
+    { value: 'ESTAGIO', label: 'ESTAGIO'},
+    { value: 'PALESTRA', label: 'Palestra' },
+    { value: 'CURSO_APRIMORAMENTO', label: 'Curso de Aprimoramento' },
+    { value: 'CURSO_PROFISSIONALIZANTE', label: 'Curso Profissionalizante' },
   ];
 
   return (

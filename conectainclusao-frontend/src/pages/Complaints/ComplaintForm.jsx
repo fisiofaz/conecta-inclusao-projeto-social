@@ -95,9 +95,9 @@ function ComplaintForm() {
     }
 
     const problemTypes = [
-        { value: 'acessibilidade', label: 'Acessibilidade' },
-        { value: 'discriminação', label: 'Discriminação' },
-        { value: 'falta_de_informacao', label: 'Falta de Informação' },
+      { value: 'ACESSIBILIDADE', label: 'Acessibilidade' },
+      { value: 'DISCRIMINACAO', label: 'Discriminação' },
+      { value: 'FALTA_DE_INFORMACAO', label: 'Falta de Informação' },
     ];
 
     return (
