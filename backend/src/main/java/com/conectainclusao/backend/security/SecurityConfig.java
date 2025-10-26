@@ -42,11 +42,13 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sessão sem estado
                 .authorizeHttpRequests(authorize -> authorize
                 		 // --- 1. ROTAS PUBLICAS (PERMITALL) ---
+                		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                		.requestMatchers(HttpMethod.GET, "/api/search").permitAll()
                 		.requestMatchers("/api/auth/**").permitAll() // Login e Registro
                         .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll() // Ver Oportunidades
                         .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() // Ver Denúncias
                         .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll() // Ver Recursos
-                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        
                         .requestMatchers("/api/auth/profile").authenticated()// Busca pública
                         
                         // --- QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
