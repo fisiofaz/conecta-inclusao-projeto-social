@@ -16,7 +16,7 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
     telefone: "",
     email: "",
     site: "",
-    acessibilidade: "",
+    acessibilidadeDetalhes: "",
     descricao: "",
   });
 
@@ -72,7 +72,7 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
         <FormInput label="Telefone *" name="telefone" type="tel" value={clinica.telefone} onChange={handleChange} required />
         <FormInput label="E-mail" name="email" type="email" value={clinica.email} onChange={handleChange} />
         <FormInput label="Site" name="site" type="url" value={clinica.site} onChange={handleChange} placeholder="https://" />
-        <FormTextarea label="Recursos de Acessibilidade" name="acessibilidade" value={clinica.acessibilidade} onChange={handleChange} rows="3" placeholder="Ex: Rampas, elevadores..." />
+        <FormTextarea label="Recursos de Acessibilidade" name="acessibilidadeDetalhes" value={clinica.acessibilidadeDetalhes} onChange={handleChange} rows="3" placeholder="Ex: Rampas, elevadores..." required/>
         <FormTextarea label="Descrição dos Serviços" name="descricao" value={clinica.descricao} onChange={handleChange} rows="3" />
         
         <div className="flex flex-col gap-4 pt-4 mt-4 border-t sm:flex-row">
