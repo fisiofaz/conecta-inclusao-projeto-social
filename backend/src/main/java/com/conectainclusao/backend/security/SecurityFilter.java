@@ -50,8 +50,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                    
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    System.out.println("DEBUG: SecurityFilter - User authenticated: " + userDetails.getUsername());
-                    System.out.println("DEBUG: SecurityFilter - Authorities: " + userDetails.getAuthorities());
+                    System.out.println(String.format("DEBUG: SecurityFilter - Auth OK! User: %s | Authorities: %s | URI: %s",
+                            userDetails.getUsername(), 
+                            userDetails.getAuthorities(), 
+                            request.getRequestURI()));
                 } else {
                      System.out.println("DEBUG: SecurityFilter - User not found for login: " + login);
                 }

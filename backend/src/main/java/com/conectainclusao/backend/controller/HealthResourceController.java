@@ -3,6 +3,9 @@ package com.conectainclusao.backend.controller;
 import com.conectainclusao.backend.dto.HealthResourceRequestDTO;
 import com.conectainclusao.backend.dto.HealthResourceResponseDTO;
 import com.conectainclusao.backend.service.HealthResourceService;
+import org.slf4j.Logger;
+
+import org.slf4j.LoggerFactory;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +30,7 @@ public class HealthResourceController {
         this.healthResourceService = healthResourceService;
     }
 
+    private static final Logger logger = LoggerFactory.getLogger(HealthResourceController.class);
     // --- CRIAR ---
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_ORGAO_APOIO', 'ROLE_ADMIN')")
