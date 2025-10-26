@@ -6,7 +6,7 @@ public enum TipoOportunidade {
     EVENTO,         // Representa "evento"
     SAUDE_BEM_ESTAR, // Representa "saude_bem_estar"
     ESTAGIO,
-    CONCURSO,
-    CURSO,
+    CURSO_APRIMORAMENTO,
+    CURSO_PROFISSIONALIZANTE,
     PALESTRA
 }
