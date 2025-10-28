@@ -67,6 +67,20 @@ export default function SaudeBemEstar() {
     carregarClinicas();
   };
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Tem certeza que deseja excluir este recurso?')) {
+      try {
+        await api.delete(`/health-resources/${id}`);
+        // Recarrega a lista após a exclusão
+        carregarClinicas();
+        // Você pode querer adicionar um FeedbackMessage aqui
+      } catch (err) {
+        console.error('Erro ao excluir recurso:', err);
+        // Adicionar feedback de erro
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen p-8 bg-gray-50">
       <div className="flex justify-between mb-4">
@@ -115,7 +129,12 @@ export default function SaudeBemEstar() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             {/* Reutilizando o HealthResourceCard que já fizemos! */}
             {clinicas.map((clinica) => (
-              <HealthResourceCard key={clinica.id} resource={clinica} />
+              <HealthResourceCard 
+                key={clinica.id} 
+                resource={clinica}
+                canManage={canRegisterClinic} // <<< ISSO JÁ HABILITA O BOTÃO "EDITAR"
+                onDelete={() => handleDelete(clinica.id)} // Passa a função de deletar
+              />
             ))}
           </div>
         )}
