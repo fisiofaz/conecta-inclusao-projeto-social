@@ -29,7 +29,7 @@ function ComplaintListPage() {
         setError('Não foi possível carregar as denúncias. Tente novamente mais tarde.');
       } finally {
         setLoading(false);
-      }'
+      }
     };
 
     fetchComplaints();
