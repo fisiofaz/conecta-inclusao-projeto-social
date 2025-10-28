@@ -1,7 +1,6 @@
 package com.conectainclusao.backend.security;
 
 import com.conectainclusao.backend.service.AuthorizationService;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,45 +22,49 @@ public class SecurityFilter extends OncePerRequestFilter {
     TokenService tokenService;
 
     @Autowired
-    AuthorizationService authorizationService; // Use the UserDetailsService
-
-    // No need to inject UserRepository directly here if AuthorizationService uses it
-    // @Autowired
-    // UserRepository userRepository; 
+    AuthorizationService authorizationService;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, 
                                     @NonNull HttpServletResponse response, 
                                     @NonNull FilterChain filterChain) 
             throws ServletException, IOException {
-        
+
         var token = this.recoverToken(request);
-        
-        if (token != null) {
-            var login = tokenService.validateToken(token); 
 
-            if (login != null) { 
-                UserDetails userDetails = authorizationService.loadUserByUsername(login); 
+        try {
+            if (token != null) {
+                var login = tokenService.validateToken(token);
 
-                if (userDetails != null) {
+                if (login != null) {
+                    UserDetails userDetails = authorizationService.loadUserByUsername(login);
 
-                    var authentication = new UsernamePasswordAuthenticationToken(
-                            userDetails, null, userDetails.getAuthorities());
-                   
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                    if (userDetails != null) {
+                        var authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    System.out.println(String.format("DEBUG: SecurityFilter - Auth OK! User: %s | Authorities: %s | URI: %s",
-                            userDetails.getUsername(), 
-                            userDetails.getAuthorities(), 
-                            request.getRequestURI()));
+                        System.out.println(String.format(
+                            "DEBUG: SecurityFilter - Auth OK! User: %s | Authorities: %s | URI: %s",
+                            userDetails.getUsername(),
+                            userDetails.getAuthorities(),
+                            request.getRequestURI()
+                        ));
+                    } else {
+                        System.out.println("DEBUG: SecurityFilter - User not found for login: " + login);
+                    }
                 } else {
-                     System.out.println("DEBUG: SecurityFilter - User not found for login: " + login);
+                    // Token inválido ou expirado, mas não bloqueia rotas públicas
+                    System.out.println("DEBUG: SecurityFilter - Token inválido ou expirado, mas rota pública: " 
+                        + request.getRequestURI());
                 }
-            } else {
-                 System.out.println("DEBUG: SecurityFilter - Invalid or expired token received.");
             }
+        } catch (Exception e) {
+            // Qualquer exceção durante validação não bloqueia rotas públicas
+            System.out.println("DEBUG: SecurityFilter - Erro ao validar token (ignorado para rota pública): " + e.getMessage());
         }
-        
+
+        // Continua normalmente o fluxo da requisição
         filterChain.doFilter(request, response); 
     }
 
@@ -73,3 +76,4 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 }
+
