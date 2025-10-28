@@ -110,7 +110,7 @@ function ComplaintForm() {
                 <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
                     <FormInput name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título da Denúncia" required />
                     <FormTextarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada do problema" required rows={4} />
-                    <FormSelect name="tipoProblema" label="TIPO DE PROBLEMA (VERSÃO CORRIGIDA v2):" value={formData.tipoProblema} onChange={handleChange} options={problemTypes} />
+                    <FormSelect name="tipoProblema" label="TIPO DE PROBLEMA:" value={formData.tipoProblema} onChange={handleChange} options={problemTypes} />
                     <FormInput name="localizacaoOcorrencia" value={formData.localizacaoOcorrencia} onChange={handleChange} placeholder="Localização da Ocorrência" required />
                     <FormInput name="dataOcorrencia" type="date" label="Data da Ocorrência:" value={formData.dataOcorrencia} onChange={handleChange} required />
 

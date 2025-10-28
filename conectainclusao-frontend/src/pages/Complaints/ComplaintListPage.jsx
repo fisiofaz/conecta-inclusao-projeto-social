@@ -14,7 +14,7 @@ function ComplaintListPage() {
   const navigate = useNavigate();
   const { isAuthenticated, getTipoPerfil } = useAuth();
   const userTipoPerfil = getTipoPerfil();
-  const canManageComplaints = userTipoPerfil === 'ADMIN';
+  const canManageComplaints = user?.tipoPerfil === 'ROLE_ADMIN';
 
   // useEffect para buscar a lista de denúncias quando o componente for montado
   useEffect(() => {
@@ -29,7 +29,7 @@ function ComplaintListPage() {
         setError('Não foi possível carregar as denúncias. Tente novamente mais tarde.');
       } finally {
         setLoading(false);
-      }
+      }'
     };
 
     fetchComplaints();
