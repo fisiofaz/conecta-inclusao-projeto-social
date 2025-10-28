@@ -1,6 +1,6 @@
 package com.conectainclusao.backend.security;
 
-import java.util.Arrays;
+import java.util.Arrays; // <<< ADICIONADO IMPORT FALTANTE
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +27,9 @@ import org.springframework.security.config.Customizer;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    // Injeção via construtor
     private final SecurityFilter securityFilter;
-    
-    @Autowired // Opcional no construtor
+
+    @Autowired
     public SecurityConfig(SecurityFilter securityFilter) {
         this.securityFilter = securityFilter;
     }
@@ -38,30 +37,33 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
-                .csrf(csrf -> csrf.disable()) // Desabilita CSRF para APIs REST sem sessão
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Sessão sem estado
+                .csrf(csrf -> csrf.disable()) 
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
                 .authorizeHttpRequests(authorize -> authorize
-                		 // --- 1. ROTAS PUBLICAS (PERMITALL) ---
-                		.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                		.requestMatchers(HttpMethod.GET, "/api/search").permitAll()
-                		.requestMatchers("/api/auth/**").permitAll() // Login e Registro
-                        .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll() // Ver Oportunidades
-                        .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() // Ver Denúncias
-                        .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll() // Ver Recursos
-                        .requestMatchers(HttpMethod.GET, "/api/health-resources/version").permitAll()
-                        .requestMatchers("/api/auth/profile").authenticated()// Busca pública
-                        
-                        // --- QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
-                        // A verificação específica de ROLE será feita via @PreAuthorize nos controllers/services
-                        .anyRequest().authenticated()
-                        
-                )
-                // Usar a configuração CORS definida no Bean corsConfigurationSource
-                .cors(Customizer.withDefaults()) // Simplifica a aplicação da config CORS do Bean
+                	    // --- 1. ROTAS PÚBLICAS (PERMITALL) ---
+
+                	    // PERMITE REQUISIÇÕES 'OPTIONS' (CRUCIAL PARA CORS)
+                	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+
+                	    // PERMITE LOGIN E REGISTRO EXPLÍCITOS
+                	    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                	    .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+
+                	    // PERMITE BUSCAS PÚBLICAS
+                	    .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll()
+                	    .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() 
+                	    .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll()
+                	    .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+
+                	    // --- 2. QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
+                	    .anyRequest().authenticated() 
+                	)
+                .cors(Customizer.withDefaults())// Usa o Bean corsConfigurationSource
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
+    // ... (O resto do arquivo - AuthenticationManager, PasswordEncoder, CorsConfigurationSource - continua igual) ...
     @Bean 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -77,21 +79,19 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         configuration.setAllowedOrigins(Arrays.asList(
-        	    "http://localhost:5173",
-        	    "http://127.0.0.1:5173",
-        	    "https://inclusaosocial.netlify.app"
+                "http://localhost:5173",
+                "http://127.0.0.1:5173",
+                "https://inclusaosocial.netlify.app"
         ));
         
+        // 👇 A LINHA CRUCIAL ESTÁ AQUI 👇
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         configuration.setAllowedHeaders(Collections.singletonList("*"));
-       
         configuration.setAllowCredentials(true);
-       
         configuration.setMaxAge(3600L); 
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
