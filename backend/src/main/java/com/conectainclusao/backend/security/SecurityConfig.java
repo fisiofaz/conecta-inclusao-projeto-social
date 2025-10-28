@@ -108,18 +108,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         
-        configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "https://inclusaosocial.netlify.app"
-        ));
+        // Em vez de especificar origens, vamos permitir todas para este teste
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*")); 
         
-        // Incluir OPTIONS aqui é fundamental
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        
-        configuration.setAllowedHeaders(Collections.singletonList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setMaxAge(3600L); 
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Ser explícito
+        configuration.setAllowCredentials(true); // Manter para requisições autenticadas
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
