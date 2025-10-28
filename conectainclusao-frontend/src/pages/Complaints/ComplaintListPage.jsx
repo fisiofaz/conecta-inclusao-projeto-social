@@ -12,8 +12,8 @@ function ComplaintListPage() {
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-  const { isAuthenticated, getTipoPerfil } = useAuth();
-  const userTipoPerfil = getTipoPerfil();
+  const { isAuthenticated, user } = useAuth();
+  console.log("ComplaintList: Objeto user:", user);
   const canManageComplaints = user?.tipoPerfil === 'ROLE_ADMIN';
 
   // useEffect para buscar a lista de denúncias quando o componente for montado
