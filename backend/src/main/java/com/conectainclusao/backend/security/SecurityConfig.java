@@ -1,6 +1,6 @@
 package com.conectainclusao.backend.security;
 
-import java.util.Arrays; // <<< ADICIONADO IMPORT FALTANTE
+import java.util.Arrays;
 import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,30 +40,59 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
                 .authorizeHttpRequests(authorize -> authorize
-                	    // --- 1. ROTAS PÚBLICAS (PERMITALL) ---
+                        // --- 1. ROTAS PÚBLICAS (PERMITALL) ---
+                        
+                        // Permite requisições OPTIONS (para CORS pre-flight)
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+                        
+                        // Permite login e registro
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll() // <<< Rota de registro correta
+                        // .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // <<< Rota antiga e insegura REMOVIDA
 
-                	    // PERMITE REQUISIÇÕES 'OPTIONS' (CRUCIAL PARA CORS)
-                	    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
+                        // Permite GETs públicos para visualização
+                        .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll()
+                        
+                        // --- 2. ROTAS AUTENTICADAS (NÍVEL GERAL) ---
+                        // Exige que o usuário esteja logado para criar denúncia
+                        .requestMatchers(HttpMethod.POST, "/api/complaints").authenticated() 
+                        // Exige que o usuário esteja logado para ver o perfil
+                        .requestMatchers(HttpMethod.GET, "/api/auth/profile").authenticated()
 
-                	    // PERMITE LOGIN E REGISTRO EXPLÍCITOS
-                	    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                	    .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
+                        // --- 3. ROTAS COM AUTORIZAÇÃO ESPECÍFICA (ROLE/AUTHORITY) ---
+                        // (Usando hasAuthority para verificar o prefixo ROLE_)
 
-                	    // PERMITE BUSCAS PÚBLICAS
-                	    .requestMatchers(HttpMethod.GET, "/api/opportunities", "/api/opportunities/**").permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll() 
-                	    .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
+                        // Gerenciamento de Usuários (só ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/users/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/users/**").hasAuthority("ROLE_ADMIN")
+                        
+                        // Gerenciamento de Oportunidades (EMPRESA ou ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/api/opportunities").hasAnyAuthority("ROLE_EMPRESA", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/opportunities/**").hasAnyAuthority("ROLE_EMPRESA", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/opportunities/**").hasAnyAuthority("ROLE_EMPRESA", "ROLE_ADMIN")
 
-                	    // --- 2. QUALQUER OUTRA ROTA EXIGE AUTENTICAÇÃO ---
-                	    .anyRequest().authenticated() 
-                	)
-                .cors(Customizer.withDefaults())// Usa o Bean corsConfigurationSource
+                        // Gerenciamento de Denúncias (só ADMIN)
+                        .requestMatchers(HttpMethod.PUT, "/api/complaints/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/complaints/**").hasAuthority("ROLE_ADMIN")
+
+                        // Gerenciamento de Recursos de Saúde (ORGAO_APOIO ou ADMIN)
+                        .requestMatchers(HttpMethod.POST, "/api/health-resources").hasAnyAuthority("ROLE_ORGAO_APOIO", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/health-resources/**").hasAnyAuthority("ROLE_ORGAO_APOIO", "ROLE_ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/health-resources/**").hasAnyAuthority("ROLE_ORGAO_APOIO", "ROLE_ADMIN")
+                        
+                        // --- 4. REGRA CATCH-ALL ---
+                        // Qualquer outra rota não listada acima exige autenticação
+                        .anyRequest().authenticated() 
+                )
+                .cors(Customizer.withDefaults()) // Usa o Bean corsConfigurationSource
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    // ... (O resto do arquivo - AuthenticationManager, PasswordEncoder, CorsConfigurationSource - continua igual) ...
     @Bean 
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -74,6 +103,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
     
+    // O seu Bean de CORS (que já permite OPTIONS)
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -84,7 +114,7 @@ public class SecurityConfig {
                 "https://inclusaosocial.netlify.app"
         ));
         
-        // 👇 A LINHA CRUCIAL ESTÁ AQUI 👇
+        // Incluir OPTIONS aqui é fundamental
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         
         configuration.setAllowedHeaders(Collections.singletonList("*"));
