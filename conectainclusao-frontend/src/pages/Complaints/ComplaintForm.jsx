@@ -15,7 +15,7 @@ function ComplaintForm() {
     const [formData, setFormData] = useState({
         titulo: '',
         descricao: '',
-        tipoProblema: 'acessibilidade',
+        tipoProblema: '',
         localizacaoOcorrencia: '',
         dataOcorrencia: '',
     });
