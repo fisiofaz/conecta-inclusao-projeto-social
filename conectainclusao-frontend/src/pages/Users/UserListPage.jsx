@@ -8,41 +8,45 @@ import FeedbackMessage from '../../components/FeedbackMessage';
 
 function UserListPage() {
   const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [listLoading, setListLoading] = useState(true);
   const [error, setError] = useState(null);
   const [feedback, setFeedback] = useState({ type: '', message: '' });
   const navigate = useNavigate();
-  const { getTipoPerfil } = useAuth(); 
-
-  const userTipoPerfil = getTipoPerfil();
-  const isAdmin = userTipoPerfil === 'ADMIN';
+  const { user, loading: authLoading } = useAuth();
+  const isAdmin = user?.tipoPerfil === 'ROLE_ADMIN';
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await api.get('/users'); 
-        setUsers(response.data);
-      } catch (err) {
-        console.error('Erro ao buscar usuários:', err);
-        setError('Não foi possível carregar a lista de usuários. Tente novamente mais tarde.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isAdmin) {
-        fetchUsers();
-    } else {
-        setLoading(false);
+    // NÃO FAÇA NADA se o contexto ainda estiver carregando
+    if (authLoading) {
+      return; // Aguarde o AuthContext terminar
     }
-  }, [isAdmin]);
+
+    // Se o AuthContext terminou e o usuário é Admin, busque os dados
+    if (isAdmin) {
+      const fetchUsers = async () => {
+        try {
+          setListLoading(true);
+          setError(null);
+          const response = await api.get('/users');
+          setUsers(response.data);
+        } catch (err) {
+          console.error('Erro ao buscar usuários:', err);
+          setError('Não foi possível carregar a lista de usuários.');
+        } finally {
+          setListLoading(false);
+        }
+      };
+      fetchUsers();
+    } else {
+      // Se o AuthContext terminou e o usuário NÃO é Admin
+      setError('Acesso negado. Apenas administradores podem ver esta página.');
+      setListLoading(false);
+    }
+  }, [isAdmin, authLoading]); // Reaja a mudanças no authLoading e isAdmin
 
   const handleDelete = async (id) => {
     if (window.confirm('Tem certeza que deseja excluir este usuário? Esta ação é irreversível!')) {
       try {
-        setLoading(true);
         await api.delete(`/users/${id}`);
         setFeedback({ type: 'success', message: 'Usuário excluído com sucesso!' });
         setUsers(users.filter(user => user.id !== id));
@@ -54,24 +58,15 @@ function UserListPage() {
     }
   };
 
-  if (loading) {
+  if (authLoading || listLoading) {
     return <div className="container p-4 mx-auto text-center">Carregando usuários...</div>;
   }
 
   if (error) {
     return (
       <div className="container p-4 mx-auto text-center">
-        <p className="mb-4 font-bold text-red-600">{error}</p>
-        <Button onClick={() => navigate('/')} variant="primary">Voltar para Home</Button>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="container p-4 mx-auto text-center">
-        <p className="mb-4 font-bold text-red-600">Acesso negado. Apenas administradores podem ver esta página.</p>
-        <Button onClick={() => navigate('/')} variant="primary">Voltar para Home</Button>
+        <p className="font-bold text-red-600 mb-4">{error}</p>
+        <Button onClick={() => navigate('/dashboard')} variant="primary">Voltar para o Dashboard</Button>
       </div>
     );
   }

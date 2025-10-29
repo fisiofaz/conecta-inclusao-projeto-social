@@ -20,7 +20,7 @@ function OpportunityDetailsPage() {
         setLoading(true);
         setError(null);
         const response = await api.get(`/opportunities/${id}`);
-        setOpportunity(response.data);
+        setOpportunity(response.cdata);
       } catch (err) {
         console.error('Erro ao buscar detalhes da oportunidade:', err);
         if (err.response && err.response.status === 404) {
