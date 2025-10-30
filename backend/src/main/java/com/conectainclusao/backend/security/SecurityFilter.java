@@ -1,6 +1,11 @@
 package com.conectainclusao.backend.security;
 
-import com.conectainclusao.backend.service.AuthorizationService;
+
+// IMPORTS ADICIONADOS
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.List;
+// FIM DOS IMPORTS ADICIONADOS
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,51 +26,59 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
-    @Autowired
-    AuthorizationService authorizationService;
+    // O AuthorizationService foi REMOVIDO daqui
 
     @Override
-    protected void doFilterInternal(@NonNull HttpServletRequest request, 
-                                    @NonNull HttpServletResponse response, 
-                                    @NonNull FilterChain filterChain) 
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
             throws ServletException, IOException {
 
         var token = this.recoverToken(request);
 
-        try {
-            if (token != null) {
-                var login = tokenService.validateToken(token);
+        if (token != null) {
+            System.out.println("DEBUG (NÍVEL 1): Token RECUPERADO. Verificando..."); // <-- NOVO LOG
+            System.out.println("DEBUG (NÍVEL 1.5): O token recebido é: [" + token + "]");
+            try {
+                var login = tokenService.validateToken(token); // Pega o Email
+                System.out.println("DEBUG (NÍVEL 2): Login extraído: " + login); // <-- NOVO LOG
+                
 
-                if (login != null) {
-                    UserDetails userDetails = authorizationService.loadUserByUsername(login);
+                List<String> roles = tokenService.getRolesFromToken(token); // Pega as ROLES
+                System.out.println("DEBUG (NÍVEL 3): Roles extraídas: " + roles); // <-- NOVO LOG
 
-                    if (userDetails != null) {
-                        var authentication = new UsernamePasswordAuthenticationToken(
-                                userDetails, null, userDetails.getAuthorities());
-                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                if (login != null && roles != null) { 
+                    System.out.println("DEBUG (NÍVEL 4): Autenticação VAI COMEÇAR."); // <-- NOVO LOG
 
-                        System.out.println(String.format(
-                            "DEBUG: SecurityFilter - Auth OK! User: %s | Authorities: %s | URI: %s",
-                            userDetails.getUsername(),
-                            userDetails.getAuthorities(),
-                            request.getRequestURI()
-                        ));
-                    } else {
-                        System.out.println("DEBUG: SecurityFilter - User not found for login: " + login);
-                    }
+                    var authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .toList();
+
+                    UserDetails userDetails = new org.springframework.security.core.userdetails.User(login, "", authorities);
+
+                    var authentication = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                    System.out.println(String.format( // O log antigo
+                       "DEBUG (FINAL): SecurityFilter - Auth OK! User: %s | Authorities: %s | URI: %s",
+                       userDetails.getUsername(), userDetails.getAuthorities(), request.getRequestURI()
+                    ));
                 } else {
-                    // Token inválido ou expirado, mas não bloqueia rotas públicas
-                    System.out.println("DEBUG: SecurityFilter - Token inválido ou expirado, mas rota pública: " 
-                        + request.getRequestURI());
+                     System.out.println("DEBUG (FALHA): O login ou as roles são NULOS. Pulando autenticação."); // <-- NOVO LOG
                 }
+
+            } catch (Exception e) {
+                SecurityContextHolder.clearContext();
+                System.out.println("DEBUG (ERRO): Token JWT inválido ou expirado: " + e.getMessage()); // <-- LOG DE ERRO
             }
-        } catch (Exception e) {
-            // Qualquer exceção durante validação não bloqueia rotas públicas
-            System.out.println("DEBUG: SecurityFilter - Erro ao validar token (ignorado para rota pública): " + e.getMessage());
+        } else {
+             System.out.println("DEBUG (FALHA): Token é NULO. Nenhum header 'Authorization' encontrado."); // <-- NOVO LOG
         }
 
-        // Continua normalmente o fluxo da requisição
-        filterChain.doFilter(request, response); 
+        // Continua o fluxo da requisição
+        filterChain.doFilter(request, response);
     }
 
     private String recoverToken(HttpServletRequest request) {
@@ -76,4 +89,3 @@ public class SecurityFilter extends OncePerRequestFilter {
         return authHeader.replace("Bearer ", "");
     }
 }
-

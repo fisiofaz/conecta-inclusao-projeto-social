@@ -85,29 +85,34 @@ public class User implements UserDetails {
     
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        System.out.println("DEBUG: User.getAuthorities - Tipo Perfil Enum: " + this.tipoPerfil); 
+    	System.out.println("DEBUG v12: INICIANDO getAuthorities. Perfil é: " + this.tipoPerfil);
 
         // Se o perfil for nulo, retorna uma permissão padrão.
         if (this.tipoPerfil == null) {
+        	System.out.println("DEBUG v12: Perfil nulo, retornando ROLE_USER");
             return List.of(new SimpleGrantedAuthority("ROLE_USER")); // Permissão padrão
         }
 
         switch (this.tipoPerfil) {
             case ROLE_ADMIN: // Compara com PerfilUsuario.ROLE_ADMIN
                 // Admin também é USER
+            	System.out.println("DEBUG v12: Perfil é ROLE_ADMIN, retornando [ROLE_ADMIN, ROLE_USER]");
                 return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
                 
             case ROLE_EMPRESA: // Compara com PerfilUsuario.ROLE_EMPRESA
                 // Empresa também é USER
+            	System.out.println("DEBUG v12: Perfil é ROLE_EMPRESA, retornando [ROLE_EMPRESA, ROLE_USER]");
                 return List.of(new SimpleGrantedAuthority("ROLE_EMPRESA"), new SimpleGrantedAuthority("ROLE_USER"));
                 
             case ROLE_ORGAO_APOIO: // Compara com PerfilUsuario.ROLE_ORGAO_APOIO
                  // Órgão de Apoio também é USER
+            	System.out.println("DEBUG v12: Perfil é ROLE_ORGAO_APOIO, retornando [ROLE_ORGAO_APOIO, ROLE_USER]");
                 return List.of(new SimpleGrantedAuthority("ROLE_ORGAO_APOIO"), new SimpleGrantedAuthority("ROLE_USER"));
 
             case ROLE_USER: // Compara com PerfilUsuario.ROLE_USER (ou qualquer outro valor padrão)
             default:
                  // Perfil padrão ou desconhecido recebe apenas ROLE_USER
+            	System.out.println("DEBUG v12: Perfil padrão/USER, retornando [ROLE_USER]");
                 return List.of(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
