@@ -17,6 +17,7 @@ function OpportunityForm() {
     descricao: '',
     tipoOportunidade: 'emprego',
     empresaOuOrgResponsavel: '',
+    cep: '',
     localizacao: '',
     requisitosAcessibilidade: '',
     dataPublicacao: '',
@@ -33,9 +34,11 @@ function OpportunityForm() {
       const fetchOpportunity = async () => {
         try {
           const response = await api.get(`/opportunities/${id}`);
+          const data = response.data;
           // Preenche o formulário com os dados da oportunidade existente
           setFormData({
             ...response.data,
+            cep: data.cep || '',
             // dataPublicacao vindo do backend pode precisar de formatação para input type="date"
             dataPublicacao: response.data.dataPublicacao ? response.data.dataPublicacao : '',
           });
@@ -52,6 +55,39 @@ function OpportunityForm() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleCepBlur = async (e) => {
+    const cep = e.target.value.replace(/\D/g, ''); // Limpa o CEP
+
+    if (cep.length !== 8) {
+      return; // Sai se o CEP não tiver 8 dígitos
+    }
+
+    setLoading(true); // Reutiliza seu estado de loading
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (data.erro) {
+        setFeedback({ type: 'error', message: 'CEP não encontrado.' });
+      } else {
+        // Sucesso! Combina os dados em uma única string de localização
+        const fullLocation = `${data.logradouro}, ${data.bairro} - ${data.localidade}, ${data.uf}`;
+        
+        // Atualiza o estado
+        setFormData(prevState => ({
+          ...prevState,
+          localizacao: fullLocation // 👈 Preenche a localização
+        }));
+        setFeedback({ type: '', message: '' }); // Limpa mensagens de erro
+      }
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      setFeedback({ type: 'error', message: 'Ocorreu um erro ao buscar o CEP.' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -133,8 +169,12 @@ function OpportunityForm() {
           </div>
 
           <FormInput name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização" required />
-          <FormInput name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização" required />
-
+          <FormInput label="CEP" name="cep" value={formData.cep} onChange={handleChange} onBlur={handleCepBlur} placeholder="CEP (preenche a localização)" maxLength={9} />
+          
+          <div className="md:col-span-2">
+            <FormInput label="Localização (Rua, Bairro, Cidade-UF)" name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização (preenchimento automático)" required />
+          </div>
+          
           <div className="md:col-span-2">
             <FormTextarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade" required rows={2} />
           </div>
