@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, EffectFade } from "swiper/modules";
+import React, { useState } from 'react';
 
 // Ícones que serão passados como props
 import { FaUserTie, FaLaptopCode, FaRocket, FaExclamationTriangle } from "react-icons/fa";
@@ -48,6 +49,54 @@ const coursesData = [
 ];
 
 export default function Home() {
+  const [formData, setFormData] = useState({
+    nome: '',
+    email: '',
+    cep: '',
+    logradouro: '',
+    bairro: '',
+    cidade: '',
+    estado: '',
+    mensagem: ''
+  });
+
+  // Função genérica para atualizar TODOS os campos
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleCepBlur = async (e) => {
+    const cep = e.target.value.replace(/\D/g, ''); // Limpa o CEP (deixa só números)
+
+    if (cep.length !== 8) {
+      return; // Sai da função se o CEP não tiver 8 dígitos
+    }
+
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (data.erro) {
+        alert('CEP não encontrado. Por favor, verifique.');
+      } else {
+        // Sucesso! Preenche o estado com os dados do ViaCEP
+        setFormData(prevState => ({
+          ...prevState,
+          logradouro: data.logradouro,
+          bairro: data.bairro,
+          cidade: data.localidade,
+          estado: data.uf
+        }));
+      }
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      alert('Ocorreu um erro ao buscar o CEP. Tente novamente.');
+    }
+  };
   return (
     <div className="flex flex-col min-h-screen overflow-hidden text-gray-800 bg-gradient-to-br from-indigo-50 via-white to-purple-100">
       {/* HERO FULLSCREEN */}
@@ -198,12 +247,105 @@ export default function Home() {
           <p className="mb-10 text-lg text-gray-300">
             Tem dúvidas, ideias ou quer apoiar nosso projeto? Fale com a gente!
           </p>
-          <form className="grid gap-5 p-8 text-left border shadow-2xl bg-white/10 backdrop-blur-lg rounded-3xl border-white/20">
+          <form 
+            className="grid gap-5 p-8 text-left border shadow-2xl bg-white/10 backdrop-blur-lg rounded-3xl border-white/20"
+            onSubmit={(e) => {
+              e.preventDefault(); // Impede o recarregamento da página
+              console.log("Dados do formulário:", formData);
+              alert("Formulário enviado! (Verifique o console para ver os dados)");
+              // Aqui você colocaria a lógica de envio do email
+            }}
+          >
+            {/* Campos de Nome e Email */}
             <div className="grid gap-5 md:grid-cols-2">
-              <FormInput type="text" placeholder="Seu nome" />
-              <FormInput type="email" placeholder="Seu e-mail" />
+              <FormInput
+                type="text"
+                name="nome"
+                placeholder="Seu nome"
+                value={formData.nome}
+                onChange={handleChange}
+                required
+              />
+              <FormInput
+                type="email"
+                name="email"
+                placeholder="Seu e-mail"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
             </div>
-            <FormTextarea rows="5" placeholder="Sua mensagem" />
+            
+            {/* Linha divisória */}
+            <h3 className="pt-2 text-lg font-semibold text-white border-b border-white/20 pb-2">Endereço</h3>
+
+            {/* Campos de CEP e Rua */}
+            <div className="grid gap-5 md:grid-cols-3">
+              <div className="md:col-span-1">
+                <FormInput
+                  label="CEP"
+                  type="text"
+                  name="cep"
+                  placeholder="Digite o CEP"
+                  value={formData.cep}
+                  onChange={handleChange}
+                  onBlur={handleCepBlur} // 👈 A MÁGICA ACONTECE AQUI
+                  maxLength={9} // (Ex: 00000-000)
+                />
+              </div>
+              <div className="md:col-span-2">
+                <FormInput
+                  label="Rua / Logradouro"
+                  type="text"
+                  name="logradouro"
+                  placeholder="Rua (preenchimento automático)"
+                  value={formData.logradouro} // 👈 Preenchido pelo ViaCEP
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+
+            {/* Campos de Bairro, Cidade e Estado */}
+            <div className="grid gap-5 md:grid-cols-3">
+              <FormInput
+                label="Bairro"
+                type="text"
+                name="bairro"
+                placeholder="Bairro (automático)"
+                value={formData.bairro} // 👈 Preenchido pelo ViaCEP
+                onChange={handleChange}
+              />
+              <FormInput
+                label="Cidade"
+                type="text"
+                name="cidade"
+                placeholder="Cidade (automático)"
+                value={formData.cidade} // 👈 Preenchido pelo ViaCEP
+                onChange={handleChange}
+              />
+              <FormInput
+                label="Estado (UF)"
+                type="text"
+                name="estado"
+                placeholder="UF (automático)"
+                value={formData.estado} // 👈 Preenchido pelo ViaCEP
+                onChange={handleChange}
+              />
+            </div>
+
+            {/* Linha divisória */}
+            <h3 className="pt-2 text-lg font-semibold text-white border-b border-white/20 pb-2 mt-4">Sua Mensagem</h3>
+
+            {/* Campo de Mensagem */}
+            <FormTextarea
+              rows="5"
+              name="mensagem"
+              placeholder="Sua mensagem"
+              value={formData.mensagem}
+              onChange={handleChange}
+              required
+            />
+            
             <Button type="submit" variant="primary" className="mt-2 bg-yellow-400 text-gray-900 hover:bg-yellow-300 hover:scale-105 !rounded-xl">
               Enviar Mensagem
             </Button>
