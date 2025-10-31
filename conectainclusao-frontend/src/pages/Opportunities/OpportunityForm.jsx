@@ -169,12 +169,12 @@ function OpportunityForm() {
           </div>
 
           <FormInput name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização" required />
-          <FormInput label="CEP" name="cep" value={formData.cep} onChange={handleChange} onBlur={handleCepBlur} placeholder="CEP (preenche a localização)" maxLength={9} />
+          <FormInput name="cep" value={formData.cep} onChange={handleChange} onBlur={handleCepBlur} placeholder="CEP (preenche a localização)" maxLength={9} />
           
           <div className="md:col-span-2">
             <FormInput label="Localização (Rua, Bairro, Cidade-UF)" name="localizacao" value={formData.localizacao} onChange={handleChange} placeholder="Localização (preenchimento automático)" required />
           </div>
-          
+
           <div className="md:col-span-2">
             <FormTextarea name="requisitosAcessibilidade" value={formData.requisitosAcessibilidade} onChange={handleChange} placeholder="Requisitos de Acessibilidade" required rows={2} />
           </div>
