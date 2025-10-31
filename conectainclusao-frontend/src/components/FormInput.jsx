@@ -1,7 +1,8 @@
 import React from 'react';
 
 function FormInput({ label, name, type = 'text', value, onChange, placeholder, required = false, readOnly = false }) {
-  const baseClasses = "p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full";
+  
+  const baseClasses = "p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full text-gray-900";
   const readOnlyClasses = "bg-gray-100 cursor-not-allowed";
 
   return (

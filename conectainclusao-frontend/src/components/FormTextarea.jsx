@@ -16,7 +16,7 @@ function FormTextarea({ label, name, value, onChange, placeholder, required = fa
         placeholder={placeholder}
         required={required}
         rows={rows}
-        className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="w-full p-3 text-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
     </div>
   );
