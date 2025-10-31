@@ -16,6 +16,7 @@ function ComplaintForm() {
         titulo: '',
         descricao: '',
         tipoProblema: '',
+        cep: '',
         localizacaoOcorrencia: '',
         dataOcorrencia: '',
     });
@@ -29,10 +30,12 @@ function ComplaintForm() {
         setLoading(true);
         const fetchComplaint = async () => {
             try {
-            const response = await api.get(`/complaints/${id}`);
+              const response = await api.get(`/complaints/${id}`);
+              const data = response.data;
                 // Preenche o formulário com os dados da denúncia existente
                 setFormData({
-                    ...response.data,
+                    ...data,
+                    cep: data.cep || '',
                     dataOcorrencia: response.data.dataOcorrencia ? response.data.dataOcorrencia : '',
                 });
             } catch (error) {
@@ -48,6 +51,39 @@ function ComplaintForm() {
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleCepBlur = async (e) => {
+        const cep = e.target.value.replace(/\D/g, ''); // Limpa o CEP
+
+        if (cep.length !== 8) {
+            return; // Sai se o CEP não tiver 8 dígitos
+        }
+
+        setLoading(true); // Reutiliza seu estado de loading
+        try {
+            const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+            const data = await response.json();
+
+            if (data.erro) {
+                setFeedback({ type: 'error', message: 'CEP não encontrado.' });
+            } else {
+                // Sucesso! Combina os dados na localização
+                const fullLocation = `${data.logradouro}, ${data.bairro} - ${data.localidade}, ${data.uf}`;
+                
+                // Atualiza o estado
+                setFormData(prevState => ({
+                    ...prevState,
+                    localizacaoOcorrencia: fullLocation // 👈 Preenche a localização
+                }));
+                setFeedback({ type: '', message: '' }); // Limpa mensagens de erro
+            }
+        } catch (error) {
+            console.error('Erro ao buscar CEP:', error);
+            setFeedback({ type: 'error', message: 'Ocorreu um erro ao buscar o CEP.' });
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -111,7 +147,8 @@ function ComplaintForm() {
                     <FormInput name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título da Denúncia" required />
                     <FormTextarea name="descricao" value={formData.descricao} onChange={handleChange} placeholder="Descrição detalhada do problema" required rows={4} />
                     <FormSelect name="tipoProblema" label="TIPO DE PROBLEMA:" value={formData.tipoProblema} onChange={handleChange} options={problemTypes} />
-                    <FormInput name="localizacaoOcorrencia" value={formData.localizacaoOcorrencia} onChange={handleChange} placeholder="Localização da Ocorrência" required />
+                    <FormInput name="cep" value={formData.cep} onChange={handleChange} onBlur={handleCepBlur} placeholder="CEP (preenche a localização)" maxLength={9} />
+                    <FormInput name="localizacaoOcorrencia" value={formData.localizacaoOcorrencia} onChange={handleChange} placeholder="Localização da Ocorrência (preenchimento automático)" required />
                     <FormInput name="dataOcorrencia" type="date" label="Data da Ocorrência:" value={formData.dataOcorrencia} onChange={handleChange} required />
 
                     <div className="mt-4">
