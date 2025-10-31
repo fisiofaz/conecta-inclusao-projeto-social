@@ -12,6 +12,7 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
   const [clinica, setClinica] = useState({
     nome: "",
     tipoRecurso: "",
+    cep: "",
     endereco: "",
     telefone: "",
     email: "",
@@ -26,6 +27,40 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setClinica(prevState => ({ ...prevState, [name]: value }));
+  };
+
+  const handleCepBlur = async (e) => {
+    const cep = e.target.value.replace(/\D/g, ''); // Limpa o CEP
+
+    if (cep.length !== 8) {
+      return; // Sai se o CEP não tiver 8 dígitos
+    }
+
+    setLoading(true);
+    setFeedback({ type: '', message: '' }); // Limpa feedback antigo
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+      const data = await response.json();
+
+      if (data.erro) {
+        setFeedback({ type: 'error', message: 'CEP não encontrado.' });
+        setClinica(prevState => ({ ...prevState, endereco: '' })); // Limpa o endereço
+      } else {
+        // Sucesso! Combina os dados na string de endereço
+        const fullAddress = `${data.logradouro}, ${data.bairro} - ${data.localidade}, ${data.uf}`;
+        
+        // Atualiza o estado
+        setClinica(prevState => ({
+          ...prevState,
+          endereco: fullAddress // 👈 Preenche o endereço
+        }));
+      }
+    } catch (error) {
+      console.error('Erro ao buscar CEP:', error);
+      setFeedback({ type: 'error', message: 'Ocorreu um erro ao buscar o CEP.' });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -70,35 +105,15 @@ export default function ModalCadastroClinica({ isOpen, onClose, onSuccess }) {
     <Modal isOpen={isOpen} onClose={onClose} title="Cadastrar Clínica / Serviço">
       <FeedbackMessage type={feedback.type} message={feedback.message} />
       <form onSubmit={handleSubmit} className="space-y-4">
-        <FormInput label="Nome da Clínica / Serviço *" name="nome" value={clinica.nome} onChange={handleChange} required />
-        
-        {/* 👇 3. CORRIGIDO: 'name' e 'value' atualizados */}
-        <FormSelect 
-          label="Tipo de Serviço *" 
-          name="tipoRecurso" // Corrigido
-          value={clinica.tipoRecurso} // Corrigido
-          onChange={handleChange} 
-          options={serviceTypes} 
-          required 
-        />
-        
-        <FormInput label="Endereço Completo *" name="endereco" value={clinica.endereco} onChange={handleChange} required />
-        <FormInput label="Telefone *" name="telefone" type="tel" value={clinica.telefone} onChange={handleChange} required />
-        <FormInput label="E-mail" name="email" type="email" value={clinica.email} onChange={handleChange} />
-        <FormInput label="Site" name="site" type="url" value={clinica.site} onChange={handleChange} placeholder="https://"/>
-        
-        {/* Campo de Acessibilidade (já corrigido por você) */}
-        <FormTextarea 
-          label="Recursos de Acessibilidade *" 
-          name="acessibilidadeDetalhes" 
-          value={clinica.acessibilidadeDetalhes} 
-          onChange={handleChange} 
-          rows="3" 
-          placeholder="Ex: Rampas, elevadores..." 
-          required
-        />
-        
-        <FormTextarea label="Descrição dos Serviços" name="descricao" value={clinica.descricao} onChange={handleChange} rows="3" />
+        <FormInput name="nome" value={clinica.nome} onChange={handleChange} placeholder="Nome da Clínica / Serviço " required />
+        <FormSelect name="tipoRecurso" value={clinica.tipoRecurso} onChange={handleChange} options={serviceTypes} placeholder="Tipo de Serviço " required />
+        <FormInput name="cep" value={clinica.cep} onChange={handleChange} onBlur={handleCepBlur} placeholder="Digite o CEP" maxLength={9} required />
+        <FormInput name="endereco" value={clinica.endereco} onChange={handleChange} placeholder="Endereço (preenchimento automático)" required />
+        <FormInput name="telefone" type="tel" value={clinica.telefone} onChange={handleChange} placeholder="Telefone " required />
+        <FormInput name="email" type="email" value={clinica.email} onChange={handleChange} placeholder={"E-mail"} required />
+        <FormInput name="site" type="url" value={clinica.site} onChange={handleChange} placeholder="Site: https://" required />
+        <FormTextarea name="acessibilidadeDetalhes" value={clinica.acessibilidadeDetalhes} onChange={handleChange} rows="3" placeholder="Recursos de Acessibilidade - Ex: Rampas, elevadores..." required />
+        <FormTextarea name="descricao" value={clinica.descricao} onChange={handleChange} rows="3" placeholder="Descrição dos Serviços" required />
         
         <div className="flex flex-col gap-4 pt-4 mt-4 border-t sm:flex-row">
           <Button type="button" variant="secondary" onClick={onClose} className="flex-1">
