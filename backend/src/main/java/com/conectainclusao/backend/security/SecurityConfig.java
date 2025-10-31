@@ -109,7 +109,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         
         // Em vez de especificar origens, vamos permitir todas para este teste
-        configuration.setAllowedOriginPatterns(Collections.singletonList("*")); 
+        configuration.setAllowedOrigins(Collections.singletonList("https://inclusaosocial.netlify.app"));
         
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type")); // Ser explícito
