@@ -13,7 +13,7 @@ function RegisterPage() {
     nome: '',
     email: '',
     senha: '',
-    tipoPerfil: 'PCD',
+    tipoPerfil: 'ROLE_USER',
     dataNascimento: '',
     deficiencia: '',
     cidade: '',
@@ -34,7 +34,7 @@ function RegisterPage() {
     setFeedback({ type: '', message: '' });
     setLoading(true);
     try {
-      const response = await api.post('/users', formData); // Envia para /api/users
+     const response = await api.post('/api/auth/register', formData); // Envia para /api/auth/register
       if (response.status === 201) { // Status 201 Created do backend
         setFeedback({ type: 'success', message: 'Usuário registrado com sucesso! Você pode fazer login agora.' });
         // Redireciona para a página de login após um breve atraso
@@ -64,7 +64,7 @@ function RegisterPage() {
   };
 
   const profileTypes = [
-    { value: 'PCD', label: 'Pessoa com Deficiência' },
+   { value: 'ROLE_USER', label: 'Pessoa com Deficiência' }, // PCD agora é ROLE_USER
     { value: 'Empresa', label: 'Empresa' },
     { value: 'Orgão_Apoio', label: 'Órgão de Apoio' },
   ];
