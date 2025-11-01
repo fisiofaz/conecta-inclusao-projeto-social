@@ -10,7 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import com.conectainclusao.backend.model.TipoRecurso;
 
 @Entity
 @Table(name = "health_resources")
