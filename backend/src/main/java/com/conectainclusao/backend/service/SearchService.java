@@ -1,19 +1,16 @@
 package com.conectainclusao.backend.service;
 
 import com.conectainclusao.backend.dto.SearchResultDTO;
-import com.conectainclusao.backend.model.ComplaintReport; 
-import com.conectainclusao.backend.model.Opportunity;
-import com.conectainclusao.backend.model.HealthResource;
-import com.conectainclusao.backend.repository.ComplaintReportRepository; 
-import com.conectainclusao.backend.repository.OpportunityRepository;
+import com.conectainclusao.backend.repository.ComplaintReportRepository;
 import com.conectainclusao.backend.repository.HealthResourceRepository;
+import com.conectainclusao.backend.repository.OpportunityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Comparator;
 
 @Service
 public class SearchService {
@@ -25,7 +22,7 @@ public class SearchService {
     private HealthResourceRepository healthResourceRepository;
 
     @Autowired
-    private ComplaintReportRepository complaintReportRepository; // 👈 ADICIONADO
+    private ComplaintReportRepository complaintReportRepository; 
 
     public List<SearchResultDTO> searchAll(String query) {
         String lowerCaseQuery = query.toLowerCase();
@@ -40,14 +37,17 @@ public class SearchService {
                 if (opp.getDescricao() != null && opp.getDescricao().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 if (opp.getLocalizacao() != null && opp.getLocalizacao().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 
-                // Mapeia para o DTO
-                return new SearchResultDTO(
-                    opp.getId(), 
-                    "opportunity", // O tipo que o frontend espera
-                    opp.getTitulo(), 
-                    opp.getDescricao(), // Usar a descrição
-                    score
-                );
+                // --- USA SETTERS ---
+                SearchResultDTO dto = new SearchResultDTO();
+                dto.setId(opp.getId());
+                dto.setType("opportunity");
+                dto.setTitle(opp.getTitulo());
+                dto.setDescription(opp.getDescricao());
+                dto.setScore(score);
+                dto.setLocation(opp.getLocalizacao());
+                dto.setCompany(opp.getEmpresaOuOrgResponsavel());
+                dto.setDetails(opp.getTipoOportunidade() != null ? opp.getTipoOportunidade().name() : null);
+                return dto;
             });
 
         // 2. Busca Recursos de Saúde
@@ -60,17 +60,19 @@ public class SearchService {
                 if (hr.getEspecialidade() != null && hr.getEspecialidade().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 if (hr.getEndereco() != null && hr.getEndereco().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 
-                // Mapeia para o DTO
-                return new SearchResultDTO(
-                    hr.getId(), 
-                    "health_resource", // O tipo que o frontend espera
-                    hr.getNome(), 
-                    hr.getEspecialidade(), // Usa descrição, ou especialidade como fallback
-                    score
-                );
+                // --- USA SETTERS ---
+                SearchResultDTO dto = new SearchResultDTO();
+                dto.setId(hr.getId());
+                dto.setType("health_resource");
+                dto.setTitle(hr.getNome());
+                dto.setDescription(hr.getEspecialidade());
+                dto.setScore(score);
+                dto.setLocation(hr.getEndereco());
+                dto.setPhone(hr.getTelefone());
+                return dto;
             });
 
-        // 3. Busca Denúncias (NOVO)
+        // 3. Busca Denúncias
         Stream<SearchResultDTO> complaintResults = complaintReportRepository.searchByQuery(query)
             .stream()
             .map(cr -> {
@@ -79,22 +81,25 @@ public class SearchService {
                 if (cr.getDescricao() != null && cr.getDescricao().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 if (cr.getLocalizacaoOcorrencia() != null && cr.getLocalizacaoOcorrencia().toLowerCase().contains(lowerCaseQuery)) score += 1;
                 
-                // Mapeia para o DTO
-                return new SearchResultDTO(
-                    cr.getId(), 
-                    "complaint", // O tipo que o frontend espera
-                    cr.getTitulo(), 
-                    cr.getDescricao(),
-                    score
-                );
+                // --- USA SETTERS ---
+                SearchResultDTO dto = new SearchResultDTO();
+                dto.setId(cr.getId());
+                dto.setType("complaint");
+                dto.setTitle(cr.getTitulo());
+                dto.setDescription(cr.getDescricao());
+                dto.setScore(score);
+                dto.setLocation(cr.getLocalizacaoOcorrencia());
+                dto.setDetails(cr.getTipoProblema() != null ? cr.getTipoProblema().name() : null);
+                dto.setStatus(cr.getStatus() != null ? cr.getStatus().name() : null);
+                return dto;
             });
 
-        // Combina os TRÊS resultados em uma única lista
+        // Combina os TRÊS resultados
         List<SearchResultDTO> combinedResults = Stream.of(opportunityResults, healthResourceResults, complaintResults)
-            .flatMap(s -> s) // Achata os 3 streams em 1
+            .flatMap(s -> s) 
             .collect(Collectors.toList());
 
-        // Ordena pela pontuação (score)
+        // Ordena pela pontuação
         combinedResults.sort(Comparator.comparingInt(SearchResultDTO::getScore).reversed());
         
         return combinedResults;

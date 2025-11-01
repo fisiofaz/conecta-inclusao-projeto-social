@@ -7,18 +7,18 @@ public class SearchResultDTO {
     private String title; // Título da oportunidade ou nome do recurso
     private String description; // Descrição curta
     private int score;
-    // Você pode adicionar outros campos comuns se desejar (ex: location)
+    
+    // Campos Específicos (serão nulos dependendo do tipo)
+    private String location; // localizacao / endereco
+    private String details;  // tipoProblema / tipoOportunidade
+    private String status;   // status da denúncia
+    private String company;  // empresaOuOrgResponsavel
+    private String phone;    // telefone
+    
+    public SearchResultDTO() {}
+    
 
-    // Construtor, Getters e Setters
-    public SearchResultDTO(Long id, String type, String title, String description, int score) {
-        this.id = id;
-        this.type = type;
-        this.title = title;
-        this.description = description;
-        this.score = score;
-    }
-
-    // Getters e Setters ...
+ // Getters e Setters (Necessários para o Jackson)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getType() { return type; }
@@ -29,4 +29,14 @@ public class SearchResultDTO {
     public void setDescription(String description) { this.description = description; }
     public int getScore() { return score; }
     public void setScore(int score) { this.score = score; }
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
+    public String getDetails() { return details; }
+    public void setDetails(String details) { this.details = details; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+    public String getCompany() { return company; }
+    public void setCompany(String company) { this.company = company; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
 }

@@ -9,7 +9,6 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
-import SearchResultsPage from './pages/SearchResultsPage';
 
 // Páginas de Autenticação
 import LoginPage from './pages/Auth/LoginPage';
@@ -34,6 +33,9 @@ import HealthResourceListPage from './pages/HealthResources/HealthResourceListPa
 // Páginas de Admin
 import UserListPage from './pages/Users/UserListPage';
 import UserForm from './pages/Users/UserForm';
+
+// Página de Busca
+import SearchResultsPage from './pages/SearchResultsPage';
 
 function App() {
   const location = useLocation();
@@ -75,7 +77,7 @@ function App() {
           <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
           
           {/* Rota 404 */}
-          <Route path="*" element={<NotFoundPage />} />          
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer />
