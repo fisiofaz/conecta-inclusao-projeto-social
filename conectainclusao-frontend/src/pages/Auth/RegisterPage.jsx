@@ -34,7 +34,7 @@ function RegisterPage() {
     setFeedback({ type: '', message: '' });
     setLoading(true);
     try {
-     const response = await api.post('/api/auth/register', formData); // Envia para /api/auth/register
+     const response = await api.post('/auth/register', formData); // Envia para /api/auth/register
       if (response.status === 201) { // Status 201 Created do backend
         setFeedback({ type: 'success', message: 'Usuário registrado com sucesso! Você pode fazer login agora.' });
         // Redireciona para a página de login após um breve atraso
