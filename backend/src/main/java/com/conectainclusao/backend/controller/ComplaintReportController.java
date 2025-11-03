@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication; 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder; 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -29,27 +30,28 @@ public class ComplaintReportController {
     // --- CRIAR ---
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ComplaintReportResponseDTO> createComplaintReport(@RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
-        // Obter o objeto User autenticado do contexto de segurança
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User authenticatedUser = null; // Inicializa como null
-
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            authenticatedUser = (User) authentication.getPrincipal();
-        } else {
-             // Se não conseguir obter o usuário (embora @PreAuthorize deva garantir que existe), retorna erro
-            System.err.println("ERRO: Não foi possível obter o usuário autenticado no ComplaintReportController.");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); 
-        }
-
-        // 👇 Passa o DTO e o ID (Long) do usuário para o serviço 👇
-        ComplaintReportResponseDTO createdReportDTO = complaintReportService.createComplaintReport(complaintReportRequestDTO, authenticatedUser.getId());
+    public ResponseEntity<ComplaintReportResponseDTO> createComplaintReport(
+            @RequestBody @Valid ComplaintReportRequestDTO dto,
+            @AuthenticationPrincipal User authenticatedUser) {
+        
+        //  Passa o DTO e a ENTIDADE User completa para o serviço
+        ComplaintReportResponseDTO createdReportDTO = complaintReportService.createComplaintReport(dto, authenticatedUser);
         
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReportDTO);
+    }
+    
+    // --- NOVO ENDPOINT: LISTAR "MINHAS DENÚNCIAS" ---
+    @GetMapping("/my-complaints")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<List<ComplaintReportResponseDTO>> getMyComplaints(@AuthenticationPrincipal User authenticatedUser) {
+        // Chama o novo serviço que busca por ID de usuário
+        List<ComplaintReportResponseDTO> reportsDTO = complaintReportService.getComplaintsByUserId(authenticatedUser.getId());
+        return ResponseEntity.ok(reportsDTO);
     }
 
     // --- LISTAR TODOS ---
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<List<ComplaintReportResponseDTO>> getAllComplaintReports() {
         // Chama o serviço para listar
         List<ComplaintReportResponseDTO> reportsDTO = complaintReportService.getAllComplaintReports();
@@ -58,26 +60,25 @@ public class ComplaintReportController {
 
     // --- BUSCAR POR ID ---
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ComplaintReportResponseDTO> getComplaintReportById(@PathVariable Long id) {
         // Chama o serviço para buscar por ID (o serviço já trata o Not Found)
         ComplaintReportResponseDTO reportDTO = complaintReportService.getComplaintReportById(id);
         return ResponseEntity.ok(reportDTO);
     }
-
-    // --- ATUALIZAR ---
+    
+    // --- ATUALIZAR (Para Admins) ---
     @PutMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public ResponseEntity<ComplaintReportResponseDTO> updateComplaintReport(@PathVariable Long id, @RequestBody @Valid ComplaintReportRequestDTO complaintReportRequestDTO) {
-        // Chama o serviço para atualizar (o serviço já trata o Not Found)
-        ComplaintReportResponseDTO updatedReportDTO = complaintReportService.updateComplaintReport(id, complaintReportRequestDTO);
+    public ResponseEntity<ComplaintReportResponseDTO> updateComplaintReport(@PathVariable Long id, @RequestBody @Valid ComplaintReportRequestDTO dto) {
+        ComplaintReportResponseDTO updatedReportDTO = complaintReportService.updateComplaintReport(id, dto);
         return ResponseEntity.ok(updatedReportDTO);
     }
 
-    // --- DELETAR ---
+    // --- DELETAR (Para Admins) ---
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteComplaintReport(@PathVariable Long id) {
-        // Chama o serviço para deletar (o serviço já trata o Not Found)
         complaintReportService.deleteComplaintReport(id);
         return ResponseEntity.noContent().build();
     }

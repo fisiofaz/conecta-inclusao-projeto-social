@@ -17,4 +17,5 @@ public interface ComplaintReportRepository extends JpaRepository<ComplaintReport
 	           "LOWER(c.localizacaoOcorrencia) LIKE LOWER(concat('%', :query, '%')) OR " +
 	           "LOWER(CAST(c.tipoProblema AS string)) LIKE LOWER(concat('%', :query, '%'))")
 	    List<ComplaintReport> searchByQuery(@Param("query") String query);
+		List<ComplaintReport> findByUserId(Long userId);
 }

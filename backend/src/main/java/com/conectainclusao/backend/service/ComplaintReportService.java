@@ -20,44 +20,42 @@ import java.util.stream.Collectors;
 public class ComplaintReportService {
 
     private final ComplaintReportRepository complaintReportRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public ComplaintReportService(ComplaintReportRepository complaintReportRepository, UserRepository userRepository) {
         this.complaintReportRepository = complaintReportRepository;
-        this.userRepository = userRepository;
     }
 
     // --- Lógica para CRIAR ---
     @Transactional
-    // 👇 Recebe userId como Long 👇
-    public ComplaintReportResponseDTO createComplaintReport(ComplaintReportRequestDTO dto, Long userId) { 
-        ComplaintReport complaintReport = new ComplaintReport();
-        
-        // Copia propriedades do DTO (incluindo o Enum TipoProblema)
-        BeanUtils.copyProperties(dto, complaintReport); 
-        
-        // 👇 Define o Status usando o Enum 👇
-        complaintReport.setStatus(StatusDenuncia.ABERTO); 
+    public ComplaintReportResponseDTO createComplaintReport(ComplaintReportRequestDTO dto, User user) {
+    	ComplaintReport complaintReport = new ComplaintReport();
+ 
+    	 BeanUtils.copyProperties(dto, complaintReport);
 
-        // 👇 Busca a entidade User pelo ID fornecido 👇
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com ID: " + userId + " ao criar denúncia."));
-        
-        // 👇 Associa a entidade User completa à denúncia 👇
-        complaintReport.setUser(user); 
 
-        ComplaintReport savedReport = complaintReportRepository.save(complaintReport);
-        
-        return mapEntityToResponseDTO(savedReport);
+    	 //  Associa o usuário logado (muito mais seguro)
+    	 complaintReport.setUser(user);
+
+    	ComplaintReport savedReport = complaintReportRepository.save(complaintReport);
+  
+    	 return mapEntityToResponseDTO(savedReport);
     }
-
+        
     // --- Lógica para LISTAR TODOS ---
     @Transactional(readOnly = true) // Otimização para operações de leitura
     public List<ComplaintReportResponseDTO> getAllComplaintReports() {
         return complaintReportRepository.findAll().stream()
                 .map(this::mapEntityToResponseDTO) // Usa o método de mapeamento
                 .collect(Collectors.toList());
+    }
+    
+    // LISTAR "MINHAS DENÚNCIAS"
+    @Transactional(readOnly = true)
+    	public List<ComplaintReportResponseDTO> getComplaintsByUserId(Long userId) {
+    		return complaintReportRepository.findByUserId(userId).stream() // Usa o novo método do repositório
+    				.map(this::mapEntityToResponseDTO)
+    				.collect(Collectors.toList());
     }
 
     // --- Lógica para BUSCAR POR ID ---
