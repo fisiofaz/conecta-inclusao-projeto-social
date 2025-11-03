@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import MyComplaintsPage from './pages/MyComplaintsPage';
 
 // Páginas de Autenticação
 import LoginPage from './pages/Auth/LoginPage';
@@ -23,6 +24,7 @@ import OpportunityForm from './pages/Opportunities/OpportunityForm';
 import ComplaintListPage from './pages/Complaints/ComplaintListPage';
 import ComplaintDetailsPage from './pages/Complaints/ComplaintDetailsPage';
 import ComplaintForm from './pages/Complaints/ComplaintForm';
+
 
 // Páginas de Saúde (Agora consolidadas)
 import SaudeBemEstar from "./pages/HealthResources/SaudeBemEstar";
@@ -54,6 +56,7 @@ function App() {
           {/* Rotas Privadas (Área Logada) */}
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/search-results" element={<SearchResultsPage />} />
+          <Route path="/my-complaints" element={<MyComplaintsPage />} />
 
           {/* Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
@@ -66,7 +69,8 @@ function App() {
           <Route path="/complaints/:id" element={<ComplaintDetailsPage />} />
           <Route path="/complaints/new" element={<PrivateRoute allowedRoles={["ROLE_USER", "ROLE_EMPRESA", "ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute>} />
           <Route path="/complaints/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute>} />
-
+         
+          
           {/* Saúde e Bem-estar (Fluxo Consolidado) */}
           <Route path="/saude" element={<SaudeBemEstar />} />
           <Route path="/saude/:id" element={<HealthResourceDetailsPage />} /> {/* Rota de detalhes */}
