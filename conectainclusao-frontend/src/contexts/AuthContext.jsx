@@ -19,7 +19,7 @@ export const AuthProvider = ({ children }) => {
     const fetchFavorites = async () => {
         try {
             // 1. Chama a nova API que criamos no backend
-            const response = await api.get('/api/favorites/my-favorites');
+            const response = await api.get('/favorites/my-favorites');
             
             // 2. Processa os resultados
             const oppIds = new Set();
@@ -136,7 +136,7 @@ export const AuthProvider = ({ children }) => {
     const addFavorite = async (type, id) => {
         if (!isAuthenticated()) return; // Não faz nada se não estiver logado
         try {
-            await api.post(`/api/favorites/${type}/${id}`);
+            await api.post(`/favorites/${type}/${id}`);
             // Atualiza o estado local para a UI responder imediatamente
             const stateKey = type === 'opportunity' ? 'opportunities' : 'healthResources';
             setFavorites(prev => {
@@ -152,7 +152,7 @@ export const AuthProvider = ({ children }) => {
     const removeFavorite = async (type, id) => {
         if (!isAuthenticated()) return;
         try {
-            await api.delete(`/api/favorites/${type}/${id}`);
+            await api.delete(`/favorites/${type}/${id}`);
             // Atualiza o estado local
             const stateKey = type === 'opportunity' ? 'opportunities' : 'healthResources';
             setFavorites(prev => {
