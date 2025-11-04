@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
             response.data.forEach(item => {
             if (item.type === 'opportunity') {
                     oppIds.add(item.id);
-                } else if (item.type === 'health_resource') {
+                } else if (item.type === 'health') {
                     healthIds.add(item.id);
                 }
             });
