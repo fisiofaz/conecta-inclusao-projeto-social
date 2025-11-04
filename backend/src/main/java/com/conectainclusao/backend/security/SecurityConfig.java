@@ -57,13 +57,18 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll()
                         
                         // --- 2. ROTAS AUTENTICADAS (NÍVEL GERAL) ---
-                        // Exige que o usuário esteja logado para criar denúncia
                         .requestMatchers(HttpMethod.POST, "/api/complaints").authenticated() 
-                        // Exige que o usuário esteja logado para ver o perfil
                         .requestMatchers(HttpMethod.GET, "/api/auth/profile").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/complaints/my-complaints").authenticated()
+                        
+                        // 👇 ADICIONE ESTAS NOVAS ROTAS DE FAVORITOS 👇
+                        .requestMatchers(HttpMethod.GET, "/api/favorites/my-favorites").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/favorites/opportunity/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/favorites/opportunity/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/favorites/health/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/favorites/health/**").authenticated()
 
                         // --- 3. ROTAS COM AUTORIZAÇÃO ESPECÍFICA (ROLE/AUTHORITY) ---
-                        // (Usando hasAuthority para verificar o prefixo ROLE_)
 
                         // Gerenciamento de Usuários (só ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/**").hasAuthority("ROLE_ADMIN")
