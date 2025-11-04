@@ -28,6 +28,12 @@ import org.springframework.security.config.Customizer;
 public class SecurityConfig {
 
     private final SecurityFilter securityFilter;
+    
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     @Autowired
     public SecurityConfig(SecurityFilter securityFilter) {
@@ -41,6 +47,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) 
                 .authorizeHttpRequests(authorize -> authorize
                         // --- 1. ROTAS PÚBLICAS (PERMITALL) ---
+                		
+                		.requestMatchers(SWAGGER_WHITELIST).permitAll()
                         
                         // Permite requisições OPTIONS (para CORS pre-flight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
