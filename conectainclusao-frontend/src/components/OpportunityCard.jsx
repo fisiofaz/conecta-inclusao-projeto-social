@@ -1,20 +1,57 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import { Heart } from 'lucide-react';
 
 function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
-  // Se não receber uma oportunidade, não renderiza nada para evitar erros.
+  // Pegamos as funções do nosso Contexto de Autenticação
+  const { isAuthenticated, isFavorite, addFavorite, removeFavorite } = useAuth();
+  
   if (!opportunity) {
     return null;
   }
 
+  const isFav = isFavorite('opportunity', opportunity.id);
+
+  // Função que será chamada ao clicar no coração
+  const handleFavoriteClick = (e) => {
+    // e.stopPropagation() impede que o clique no coração 
+    // acione o clique no card inteiro (se houver)
+    e.stopPropagation(); 
+    e.preventDefault();
+
+    if (isFav) {
+      removeFavorite('opportunity', opportunity.id);
+    } else {
+      addFavorite('opportunity', opportunity.id);
+    }
+  };
+
   return (
-    <div className="flex flex-col justify-between p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
+    <div className="flex flex-col justify-between h-full p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
       <div> {/* Div para agrupar o conteúdo principal */}
-        <div className="flex items-center mb-3"> 
-          {icon} {/* Renderiza o ícone se ele for passado */}
-          <h3 className="text-xl font-semibold text-blue-600 sm:text-lg">
-            {opportunity.titulo}
-          </h3>
+        <div className="flex items-start justify-between mb-3"> 
+          {/* Div para agrupar ícone e título */}
+          <div className="flex items-center">
+            {icon} 
+            <h3 className="text-xl font-semibold text-blue-600 sm:text-lg">
+              {opportunity.titulo}
+            </h3>
+          </div>
+          {/* O botão de coração só aparece se o usuário estiver logado */}
+          {isAuthenticated() && (
+            <button
+              onClick={handleFavoriteClick}
+              className="p-1 text-gray-400 rounded-full hover:bg-red-50"
+              aria-label={isFav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+            >
+              <Heart
+                size={20}
+                // Muda a cor e preenchimento se for favorito
+                className={isFav ? 'text-red-500 fill-red-500' : 'hover:text-red-500'}
+              />
+            </button>
+          )}
         </div>
         <p className="mb-2 text-sm text-gray-700"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
         <p className="mb-2 text-sm text-gray-700"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
@@ -23,7 +60,6 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
           {opportunity.requisitosAcessibilidade}
         </p>
       </div>
-
       <div className="flex flex-col items-center justify-between mt-4 space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
         <Link
           to={`/opportunities/${opportunity.id}`}

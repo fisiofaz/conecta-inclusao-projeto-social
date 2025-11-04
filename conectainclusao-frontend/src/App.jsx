@@ -9,11 +9,12 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
-import MyComplaintsPage from './pages/MyComplaintsPage';
 
 // Páginas de Autenticação
 import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
+import MyComplaintsPage from './pages/MyComplaintsPage';
+import MyFavoritesPage from './pages/MyFavoritesPage';
 
 // Páginas de Oportunidades
 import OpportunityListPage from './pages/Opportunities/OpportunityListPage';
@@ -57,6 +58,7 @@ function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/search-results" element={<SearchResultsPage />} />
           <Route path="/my-complaints" element={<MyComplaintsPage />} />
+          <Route path="/my-favorites" element={<MyFavoritesPage />} />
 
           {/* Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
