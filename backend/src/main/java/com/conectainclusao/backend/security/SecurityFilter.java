@@ -18,49 +18,59 @@ import java.io.IOException;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
-	@Autowired
-	TokenService tokenService;
+    @Autowired
+    TokenService tokenService;
 
-	@Autowired
-	AuthorizationService authorizationService;
+    @Autowired
+    AuthorizationService authorizationService;
 
-	@Override
-	protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(@NonNull HttpServletRequest request, 
+                                    @NonNull HttpServletResponse response, 
+                                    @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
 
-		var token = this.recoverToken(request);
+        var token = this.recoverToken(request);
 
-		if (token != null) {
-			try {
-                
-				var login = tokenService.validateToken(token); // Pega o Email
+        if (token != null) {
+            try {
+                // 1. Validamos o token (o bug do fuso horário JÁ FOI CORRIGIDO no TokenService)
+                var login = tokenService.validateToken(token); // Pega o Email
 
-				if (login != null) {                   
-	                // Isso retorna o (com.conectainclusao.backend.model.User)
-					UserDetails userDetails = authorizationService.loadUserByUsername(login);
+                if (login != null) {
+                    // 2. Usamos o email para buscar o USUÁRIO REAL no banco
+                    // Isso retorna o (com.conectainclusao.backend.model.User)
+                    UserDetails userDetails = authorizationService.loadUserByUsername(login);
 
-					if (userDetails != null) {
-                        // Agora o 'userDetails' é o usuário REAL, e o cast no controller vai funcionar
-						var authentication = new UsernamePasswordAuthenticationToken(
-								userDetails, null, userDetails.getAuthorities());
-						SecurityContextHolder.getContext().setAuthentication(authentication);
-                    }
-                }
-			} catch (Exception e) {
-				// Token inválido (expirado, assinatura errada, etc)
-				SecurityContextHolder.clearContext();
+                    if (userDetails != null) {
+                        // 3. Agora o 'userDetails' é o usuário REAL, e o cast no controller vai funcionar
+                        var authentication = new UsernamePasswordAuthenticationToken(
+                                userDetails, null, userDetails.getAuthorities());
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                        // Opcional: Log de sucesso (agora limpo)
+                        // System.out.println(String.format(
+                        //    "DEBUG (SecurityFilter): Auth OK! User: %s | URI: %s",
+                        //    userDetails.getUsername(), request.getRequestURI()
+                        // ));
+                    }
+                }
+            } catch (Exception e) {
+                // Token inválido (expirado, assinatura errada, etc)
+                SecurityContextHolder.clearContext();
                 // System.out.println("DEBUG (SecurityFilter): Token JWT inválido ou expirado: " + e.getMessage());
-			}
-		}
+            }
+        }
 
-		// Continua normalmente o fluxo da requisição
-		filterChain.doFilter(request, response);
-	}
+        // Continua normalmente o fluxo da requisição
+        filterChain.doFilter(request, response);
+    }
 
-	private String recoverToken(HttpServletRequest request) {
-		var authHeader = request.getHeader("Authorization");
-		if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-			return null;
-		}
-		return authHeader.replace("Bearer ", "");
-    }
+    private String recoverToken(HttpServletRequest request) {
+        var authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return null;
+        }
+        return authHeader.replace("Bearer ", "");
+    }
 }
