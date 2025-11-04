@@ -15,7 +15,7 @@ function MyFavoritesPage() {
       setLoading(true);
       setError(null);
       try {
-        const response = await api.get('/api/favorites/my-favorites');
+        const response = await api.get('/favorites/my-favorites');
         setFavorites(response.data);
       } catch (err) {
         console.error("Erro ao buscar favoritos:", err);
