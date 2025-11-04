@@ -48,7 +48,6 @@ public class SecurityConfig {
                         // Permite login e registro
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll() // <<< Rota de registro correta
-                        // .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // <<< Rota antiga e insegura REMOVIDA
 
                         // Permite GETs públicos para visualização
                         .requestMatchers(HttpMethod.GET, "/api/search").permitAll()

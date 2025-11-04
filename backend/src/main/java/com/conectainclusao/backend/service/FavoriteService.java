@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.List;
-import java.util.Map; // Para o DTO de favoritos
+import java.util.Map;
+import java.util.HashMap; // 👈 ADICIONE ESTE IMPORT
 
 @Service
 public class FavoriteService {
@@ -29,19 +29,16 @@ public class FavoriteService {
     @Autowired
     private HealthResourceRepository healthResourceRepository;
 
-    // --- LÓGICA PARA OPORTUNIDADES ---
+    // --- (Os métodos add/remove continuam os mesmos) ---
 
     @Transactional
     public void addOpportunityToFavorites(Long userId, Long opportunityId) {
-        // Encontra o usuário e a oportunidade no banco
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Oportunidade não encontrada"));
-
-        // Adiciona a oportunidade à lista de favoritos do usuário
         user.getFavoriteOpportunities().add(opportunity);
-        userRepository.save(user); // Salva a mudança no usuário (o JPA cuida da tabela de join)
+        userRepository.save(user);
     }
 
     @Transactional
@@ -50,13 +47,9 @@ public class FavoriteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
         Opportunity opportunity = opportunityRepository.findById(opportunityId)
                 .orElseThrow(() -> new ResourceNotFoundException("Oportunidade não encontrada"));
-
-        // Remove a oportunidade da lista
         user.getFavoriteOpportunities().remove(opportunity);
         userRepository.save(user);
     }
-
-    // --- LÓGICA PARA RECURSOS DE SAÚDE ---
 
     @Transactional
     public void addHealthResourceToFavorites(Long userId, Long healthResourceId) {
@@ -64,8 +57,6 @@ public class FavoriteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
         HealthResource resource = healthResourceRepository.findById(healthResourceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso de saúde não encontrado"));
-
-        // Adiciona o recurso à lista de favoritos
         user.getFavoriteHealthResources().add(resource);
         userRepository.save(user);
     }
@@ -76,38 +67,42 @@ public class FavoriteService {
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
         HealthResource resource = healthResourceRepository.findById(healthResourceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Recurso de saúde não encontrado"));
-
-        // Remove o recurso da lista
         user.getFavoriteHealthResources().remove(resource);
         userRepository.save(user);
     }
 
-    // --- LÓGICA PARA LISTAR "MEUS FAVORITOS" ---
+    // --- LÓGICA PARA LISTAR "MEUS FAVORITOS" (CORRIGIDA) ---
 
     @Transactional(readOnly = true)
     public List<Map<String, Object>> getAllFavoritesByUserId(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado"));
 
-        // Converte as oportunidades favoritas para o mesmo formato do 'Search'
+        // Converte as oportunidades favoritas (MODO SEGURO)
         Stream<Map<String, Object>> favoriteOpportunities = user.getFavoriteOpportunities().stream()
-                .map(opp -> Map.of(
-                        "id", opp.getId(),
-                        "type", "opportunity",
-                        "titulo", opp.getTitulo(),
-                        "descricao", opp.getDescricao(),
-                        "localizacao", opp.getLocalizacao()
-                ));
+                .map(opp -> {
+                    // Usamos HashMap para permitir valores nulos
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", opp.getId());
+                    map.put("type", "opportunity");
+                    map.put("titulo", opp.getTitulo());
+                    map.put("descricao", opp.getDescricao());
+                    map.put("localizacao", opp.getLocalizacao());
+                    return map;
+                });
 
-        // Converte os recursos de saúde favoritos para o mesmo formato do 'Search'
+        // Converte os recursos de saúde favoritos (MODO SEGURO)
         Stream<Map<String, Object>> favoriteHealthResources = user.getFavoriteHealthResources().stream()
-                .map(hr -> Map.of(
-                        "id", hr.getId(),
-                        "type", "health",
-                        "nome", hr.getNome(),
-                        "endereco", hr.getEndereco(),
-                        "especialidade", hr.getEspecialidade()
-                ));
+                .map(hr -> {
+                    // Usamos HashMap para permitir valores nulos
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", hr.getId());
+                    map.put("type", "health"); // Usando 'health' (corrigido)
+                    map.put("nome", hr.getNome());
+                    map.put("endereco", hr.getEndereco());
+                    map.put("especialidade", hr.getEspecialidade()); // Esta linha pode ser nula
+                    return map;
+                });
 
         // Junta as duas listas
         return Stream.concat(favoriteOpportunities, favoriteHealthResources)
