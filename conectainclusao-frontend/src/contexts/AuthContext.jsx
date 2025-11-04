@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
             response.data.forEach(item => {
             if (item.type === 'opportunity') {
                     oppIds.add(item.id);
-                } else if (item.type === 'health') { // Usando 'health'
+                } else if (item.type === 'health_resource') {
                     healthIds.add(item.id);
                 }
             });
@@ -37,23 +37,23 @@ export const AuthProvider = ({ children }) => {
     // Efeito para carregar o token e o perfil
     useEffect(() => {
         const loadUserFromToken = async () => {
-        const storedToken = localStorage.getItem('jwtToken');
+            const storedToken = localStorage.getItem('jwtToken');
 
-        if (storedToken) {
-            try {
-                api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-                const response = await api.get('/auth/profile'); 
-                setUser(response.data); 
-                await fetchFavorites();
-            } catch (error) {
-                console.error("Token inválido ou expirado. Removendo autenticação.", error);
-                localStorage.removeItem('jwtToken');
-                localStorage.removeItem('tipoPerfil');
+            if (storedToken) {
+                try {
+                    api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+                    const response = await api.get('/auth/profile'); 
+                    setUser(response.data); 
+                    await fetchFavorites();
+                } catch (error) {
+                    console.error("Token inválido ou expirado. Removendo autenticação.", error);
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('tipoPerfil');
+                }
             }
-        }
-        setLoading(false); 
-    };
-    loadUserFromToken();
+            setLoading(false); 
+        };
+        loadUserFromToken();
     }, []);
 
     // Função para login
@@ -128,7 +128,6 @@ export const AuthProvider = ({ children }) => {
     const removeFavorite = async (type, id) => {
         if (!isAuthenticated()) return;
         try {
-            // 👇 CORRIGIDO: Removido /api
             await api.delete(`/favorites/${type}/${id}`);
             const stateKey = type === 'opportunity' ? 'opportunities' : 'healthResources';
             setFavorites(prev => {
