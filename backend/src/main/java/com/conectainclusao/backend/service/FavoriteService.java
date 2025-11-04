@@ -103,7 +103,7 @@ public class FavoriteService {
         Stream<Map<String, Object>> favoriteHealthResources = user.getFavoriteHealthResources().stream()
                 .map(hr -> Map.of(
                         "id", hr.getId(),
-                        "type", "health_resource",
+                        "type", "health",
                         "nome", hr.getNome(),
                         "endereco", hr.getEndereco(),
                         "especialidade", hr.getEspecialidade()
