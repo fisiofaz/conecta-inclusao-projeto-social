@@ -2,7 +2,9 @@ package com.conectainclusao.backend.model;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,16 +12,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "users")
@@ -63,6 +71,24 @@ public class User implements UserDetails {
 
     @Column(length = 500)
     private String bio;
+    
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_favorite_opportunities", // Nome da nova tabela no banco
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "opportunity_id")
+    )
+    @JsonIgnore // Impede que os favoritos sejam enviados em loops infinitos no JSON
+    private Set<Opportunity> favoriteOpportunities = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "user_favorite_health_resources", // Nome da nova tabela no banco
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "health_resource_id")
+    )
+    @JsonIgnore
+    private Set<HealthResource> favoriteHealthResources = new HashSet<>();
 
     // Construtor sem argumentos (NoArgsConstructor)
     public User() {
@@ -168,5 +194,8 @@ public class User implements UserDetails {
     public void setEstado(String estado) { this.estado = estado; }
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
-    
+    public Set<Opportunity> getFavoriteOpportunities() {return favoriteOpportunities;}    
+    public void setFavoriteOpportunities(Set<Opportunity> favoriteOpportunities) {this.favoriteOpportunities = favoriteOpportunities;}
+    public Set<HealthResource> getFavoriteHealthResources() {return favoriteHealthResources;}
+    public void setFavoriteHealthResources(Set<HealthResource> favoriteHealthResources) {this.favoriteHealthResources = favoriteHealthResources;}
 }
