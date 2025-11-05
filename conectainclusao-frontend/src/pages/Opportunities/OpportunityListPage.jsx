@@ -142,7 +142,7 @@ function OpportunityListPage() {
 
       {/* --- Barra de Filtros --- */}
       <div className="p-4 mb-8 bg-white rounded-lg shadow-md">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:items-end">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {/* Filtro por Tipo */}
           <FormSelect
             label="Filtrar por Tipo"
@@ -161,6 +161,9 @@ function OpportunityListPage() {
           />
           {/* Botão de Limpar */}
           <div >
+            <label className="block mb-2 text-sm font-bold text-transparent">
+              Ação
+            </label>
             <Button
               variant="secondary"
               onClick={clearFilters}
