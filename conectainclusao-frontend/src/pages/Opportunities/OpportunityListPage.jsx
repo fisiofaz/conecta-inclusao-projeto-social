@@ -160,10 +160,7 @@ function OpportunityListPage() {
             placeholder="Ex: São Paulo, Remoto"
           />
           {/* Botão de Limpar */}
-          <div >
-            <label className="block mb-2 text-sm font-bold text-transparent">
-              Ação
-            </label>
+          <div className="flex flex-col justify-end h-full" >
             <Button
               variant="secondary"
               onClick={clearFilters}
