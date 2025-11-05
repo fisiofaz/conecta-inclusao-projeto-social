@@ -6,10 +6,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import org.springframework.data.jpa.repository.Query; 
 import org.springframework.data.repository.query.Param; 
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 
 @Repository
-public interface OpportunityRepository extends JpaRepository<Opportunity, Long> {
+public interface OpportunityRepository extends JpaRepository<Opportunity, Long>, JpaSpecificationExecutor<Opportunity> {
 	
     @Query("SELECT o FROM Opportunity o WHERE " +
            "LOWER(o.titulo) LIKE LOWER(concat('%', :query, '%')) OR " +

@@ -5,7 +5,6 @@ import com.conectainclusao.backend.dto.ComplaintReportResponseDTO;
 import com.conectainclusao.backend.exception.ResourceNotFoundException; 
 import com.conectainclusao.backend.model.ComplaintReport;
 import com.conectainclusao.backend.model.User;
-import com.conectainclusao.backend.model.StatusDenuncia;
 import com.conectainclusao.backend.repository.ComplaintReportRepository;
 import com.conectainclusao.backend.repository.UserRepository;
 import org.springframework.beans.BeanUtils;

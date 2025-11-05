@@ -5,8 +5,10 @@ import com.conectainclusao.backend.dto.OpportunityResponseDTO;
 import com.conectainclusao.backend.exception.ResourceNotFoundException;
 import com.conectainclusao.backend.model.Opportunity;
 import com.conectainclusao.backend.repository.OpportunityRepository;
+import com.conectainclusao.backend.repository.OpportunitySpecification;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,8 +38,13 @@ public class OpportunityService {
 
     // --- LISTAR TODAS AS OPORTUNIDADES ---
     @Transactional(readOnly = true)
-    public List<OpportunityResponseDTO> getAllOpportunities() {
-        return opportunityRepository.findAll().stream()
+    public List<OpportunityResponseDTO> getAllOpportunities(String tipo, String localizacao) {
+        
+        // Cria a 'Specification' usando a nossa nova classe
+        Specification<Opportunity> spec = OpportunitySpecification.getByFilters(tipo, localizacao);
+
+        // Usa o novo método 'findAll(spec)' que ganhamos do JpaSpecificationExecutor
+        return opportunityRepository.findAll(spec).stream()
                 .map(this::mapEntityToResponseDTO)
                 .collect(Collectors.toList());
     }

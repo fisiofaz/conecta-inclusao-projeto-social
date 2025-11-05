@@ -38,9 +38,13 @@ public class OpportunityController {
 
     // --- LISTAR TODOS ---
     @GetMapping
-    public ResponseEntity<List<OpportunityResponseDTO>> getAllOpportunities() {
-        // Delega para o Serviço >>>
-        List<OpportunityResponseDTO> opportunitiesDTO = opportunityService.getAllOpportunities();
+    public ResponseEntity<List<OpportunityResponseDTO>> getAllOpportunities(
+            //Adiciona os parâmetros da URL (não obrigatórios)
+            @RequestParam(required = false) String tipo,
+            @RequestParam(required = false) String localizacao
+    ) {
+        //Passa os filtros para o serviço
+        List<OpportunityResponseDTO> opportunitiesDTO = opportunityService.getAllOpportunities(tipo, localizacao);
         return ResponseEntity.ok(opportunitiesDTO);
     }
 
