@@ -141,8 +141,8 @@ function OpportunityListPage() {
       </div>
 
       {/* --- Barra de Filtros --- */}
-      <div className="p-4 mb-8 bg-white rounded-lg shadow-md">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div  className="p-6 mb-8 bg-white shadow-md rounded-xl">
+        <div className="grid items-end grid-cols-1 gap-4 md:grid-cols-3">
           {/* Filtro por Tipo */}
           <FormSelect
             label="Filtrar por Tipo"
@@ -160,22 +160,21 @@ function OpportunityListPage() {
             placeholder="Ex: São Paulo, Remoto"
           />
           {/* Botão de Limpar */}
-          <div >
+          <div className="flex flex-col">
             <label className="block mb-2 text-sm font-bold text-transparent">
               Ação
             </label>
             <Button
               variant="secondary"
               onClick={clearFilters}
-              className="w-full h-10" // Ajusta altura
+              className="flex items-center justify-center gap-2 w-full h-[42px] bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
             >
-              <X size={16} className="mr-2" />
+              <X size={16} />
               Limpar Filtros
             </Button>
           </div>
         </div>
       </div>
-      {/* --- Fim da Modificação 5 --- */}
 
       <FeedbackMessage type={feedback.type} message={feedback.message} />
 
