@@ -140,7 +140,7 @@ function OpportunityListPage() {
         )}
       </div>
 
-      {/* --- MODIFICAÇÃO 5: Barra de Filtros --- */}
+      {/* --- Barra de Filtros --- */}
       <div className="p-4 mb-8 bg-white rounded-lg shadow-md">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {/* Filtro por Tipo */}
@@ -160,7 +160,7 @@ function OpportunityListPage() {
             placeholder="Ex: São Paulo, Remoto"
           />
           {/* Botão de Limpar */}
-          <div className="flex items-end">
+          <div className="flex flex-col justify-end">
             <Button
               variant="secondary"
               onClick={clearFilters}
