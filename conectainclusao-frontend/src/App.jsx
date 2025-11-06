@@ -16,6 +16,7 @@ import RegisterPage from './pages/Auth/RegisterPage';
 import MyComplaintsPage from './pages/MyComplaintsPage';
 import MyFavoritesPage from './pages/MyFavoritesPage';
 import MyApplicationsPage from './pages/MyApplicationsPage';
+import ApplicantsListPage from './pages/ApplicantsListPage';
 
 // Páginas de Oportunidades
 import OpportunityListPage from './pages/Opportunities/OpportunityListPage';
@@ -61,6 +62,7 @@ function App() {
           <Route path="/my-complaints" element={<MyComplaintsPage />} />
           <Route path="/my-favorites" element={<MyFavoritesPage />} />
           <Route path="/my-applications" element={<MyApplicationsPage />} />
+          <Route path="/opportunities/:id/applicants" element={<ApplicantsListPage />} />
 
           {/* Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, Clock, FileText } from 'lucide-react';
 
-// Função para dar cor ao Status (similar ao que fizemos no ComplaintCard)
+// Função para dar cor ao Status
 const getStatusClasses = (status) => {
     if (!status) return 'bg-gray-100 text-gray-800';
         switch (status.toUpperCase()) {
@@ -21,7 +21,7 @@ const getStatusClasses = (status) => {
 };
 
 function ApplicationCard({ application }) {
-    // Pega os dados do DTO que o backend enviou
+   
     const {
         status,
         dataCandidatura,

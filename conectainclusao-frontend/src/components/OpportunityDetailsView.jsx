@@ -34,6 +34,12 @@ function OpportunityDetailsView({ opportunity, canManage, onDelete, isPCD, isApp
         {canManage && (
           <>
             <Link
+              to={`/opportunities/${opportunity.id}/applicants`}
+              className="flex-1 w-full px-4 py-2 text-center text-white transition-colors duration-300 bg-blue-600 rounded-md hover:bg-blue-700 sm:flex-none sm:w-auto"
+            >
+              Ver Candidatos
+            </Link>
+            <Link
               to={`/opportunities/edit/${opportunity.id}`}
               className="flex-1 w-full px-4 py-2 text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600 sm:flex-none sm:w-auto"
             >

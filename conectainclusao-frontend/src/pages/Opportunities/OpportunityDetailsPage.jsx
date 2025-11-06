@@ -139,11 +139,11 @@ function OpportunityDetailsPage() {
         <p className="mb-4 text-lg text-gray-600">Oportunidade não encontrada.</p>
         <Button onClick={() => navigate('/opportunities')} variant="primary">
           Voltar para a lista
-        </Button>
+        </Button>        
       </div>
     );
   }
-
+  
   // Renderização dos detalhes da oportunidade
   return (
     <OpportunityDetailsView 
