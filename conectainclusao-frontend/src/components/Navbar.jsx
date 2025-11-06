@@ -67,6 +67,13 @@ function Navbar() {
               </Link>
             </li>
           )}
+          {isAuthenticated() && (
+            <li>
+              <Link to="/my-applications" className="block px-4 py-2 text-lg text-yellow-300 hover:text-white md:px-0" onClick={() => setIsMenuOpen(false)}>
+                Minhas Candidaturas
+              </Link>
+            </li>
+          )}
           <li>
             <Link to="/saude" className="block px-4 py-2 text-lg text-white hover:text-blue-200 md:px-0" onClick={() => setIsMenuOpen(false)}>Saúde & Bem-Estar</Link>
           </li>

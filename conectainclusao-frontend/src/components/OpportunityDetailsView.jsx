@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { LoaderCircle } from 'lucide-react';
 
-function OpportunityDetailsView({ opportunity, canManage, onDelete }) {
+function OpportunityDetailsView({ opportunity, canManage, onDelete, isPCD, isApplying, isApplied, applyError, onApply }) {
+  
   const navigate = useNavigate();
 
   return (
@@ -22,13 +24,13 @@ function OpportunityDetailsView({ opportunity, canManage, onDelete }) {
         <h3 className="mb-3 text-xl font-semibold text-gray-800">Descrição Detalhada:</h3>
         <p className="text-gray-700">{opportunity.descricao}</p>
       </div>
-
       <p className="text-base text-gray-700 sm:text-lg"><strong>Contato:</strong> {opportunity.contato}</p>
 
       <div className="flex flex-col items-center justify-between mt-8 space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
         <button onClick={() => navigate('/opportunities')} className="flex-1 w-full px-4 py-2 text-white transition-colors duration-300 bg-gray-500 rounded-md hover:bg-gray-600 sm:flex-none sm:w-auto">
           Voltar para a lista
         </button>
+        {/* Mostra "Editar/Excluir" SE for Admin/Empresa */}
         {canManage && (
           <>
             <Link
@@ -44,6 +46,32 @@ function OpportunityDetailsView({ opportunity, canManage, onDelete }) {
               Excluir
             </button>
           </>
+        )}
+        
+        {/* Mostra "Candidatar-se" SE for PCD (ROLE_USER) */}
+        {isPCD && (
+          <div className="flex-1 w-full sm:w-auto"> {/* Wrapper para o botão e o erro */}
+            <button
+              onClick={onApply}
+              disabled={isApplying || isApplied} // Desabilita se estiver carregando ou já se candidatou
+              className={`
+                flex-1 w-full px-4 py-2 text-center text-white transition-colors duration-300 rounded-md sm:flex-none sm:w-auto
+                flex items-center justify-center 
+                ${isApplied ? 'bg-gray-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}
+                ${isApplying ? 'bg-green-700 opacity-75 cursor-wait' : ''}
+              `}
+            >
+              {isApplying && <LoaderCircle size={18} className="mr-2 animate-spin" />}
+              
+              {/* Muda o texto do botão baseado no estado */}
+              {isApplying ? "Enviando..." : (isApplied ? "Candidatura Enviada" : "Candidatar-se")}
+            </button>
+            
+            {/* Mostra a mensagem de erro (Ex: "Você já se candidatou") */}
+            {applyError && (
+              <p className="mt-2 text-sm text-center text-red-600">{applyError}</p>
+            )}
+          </div>
         )}
       </div>
     </div>

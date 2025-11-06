@@ -15,6 +15,7 @@ import LoginPage from './pages/Auth/LoginPage';
 import RegisterPage from './pages/Auth/RegisterPage';
 import MyComplaintsPage from './pages/MyComplaintsPage';
 import MyFavoritesPage from './pages/MyFavoritesPage';
+import MyApplicationsPage from './pages/MyApplicationsPage';
 
 // Páginas de Oportunidades
 import OpportunityListPage from './pages/Opportunities/OpportunityListPage';
@@ -59,6 +60,7 @@ function App() {
           <Route path="/search-results" element={<SearchResultsPage />} />
           <Route path="/my-complaints" element={<MyComplaintsPage />} />
           <Route path="/my-favorites" element={<MyFavoritesPage />} />
+          <Route path="/my-applications" element={<MyApplicationsPage />} />
 
           {/* Oportunidades */}
           <Route path="/opportunities" element={<OpportunityListPage />} />
