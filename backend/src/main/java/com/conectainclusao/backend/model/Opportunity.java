@@ -12,6 +12,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table; 
 
@@ -66,6 +68,12 @@ public class Opportunity {
     @Column(nullable = false, length = 255)
     private String contato;
     
+    // Relação: Muitas (Opportunities) para Um (User)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_user_id") // Nome da nova coluna no banco
+    @JsonIgnore // Ignora no JSON para não causar loops
+    private User owner;
+    
     // Lista de candidaturas que esta vaga recebeu
     @OneToMany(
         mappedBy = "opportunity", // "opportunity" é o nome do campo na classe Candidatura.java
@@ -105,7 +113,7 @@ public class Opportunity {
     public LocalDate getDataPublicacao() { return dataPublicacao; }
     public String getContato() { return contato; }
     public Set<Candidatura> getCandidaturas() {return candidaturas;}
-    
+  
     // Setters
     public void setId(Long id) { this.id = id; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
@@ -115,6 +123,8 @@ public class Opportunity {
     public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
     public void setRequisitosAcessibilidade(String requisitosAcessibilidade) { this.requisitosAcessibilidade = requisitosAcessibilidade; }
     public void setDataPublicacao(LocalDate dataPublicacao) { this.dataPublicacao = dataPublicacao; }
-    public void setContato(String contato) { this.contato = contato; }    
+    public void setContato(String contato) { this.contato = contato; } 
+    public User getOwner() {return owner; }
+    public void setOwner(User owner) {this.owner = owner;}
     public void setCandidaturas(Set<Candidatura> candidaturas) {this.candidaturas = candidaturas;}
 }

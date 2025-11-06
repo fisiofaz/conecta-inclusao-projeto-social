@@ -1,5 +1,7 @@
 package com.conectainclusao.backend.service;
 
+import com.conectainclusao.backend.model.User;
+
 import com.conectainclusao.backend.dto.OpportunityRequestDTO;
 import com.conectainclusao.backend.dto.OpportunityResponseDTO;
 import com.conectainclusao.backend.exception.ResourceNotFoundException;
@@ -28,10 +30,11 @@ public class OpportunityService {
 
     // --- CRIAR OPORTUNIDADE ---
     @Transactional
-    public OpportunityResponseDTO createOpportunity(OpportunityRequestDTO dto) {
+    public OpportunityResponseDTO createOpportunity(OpportunityRequestDTO dto, User owner) {
         Opportunity opportunity = new Opportunity();
         BeanUtils.copyProperties(dto, opportunity);
         opportunity.setDataPublicacao(LocalDate.now()); 
+        opportunity.setOwner(owner);
         Opportunity savedOpportunity = opportunityRepository.save(opportunity);
         return mapEntityToResponseDTO(savedOpportunity);
     }

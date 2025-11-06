@@ -67,6 +67,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/complaints").authenticated() 
                         .requestMatchers(HttpMethod.GET, "/api/auth/profile").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/complaints/my-complaints").authenticated()
+                        .requestMatchers("/api/favorites/**").authenticated()
+                        .requestMatchers("/api/candidaturas/**").authenticated()
                         
                         // 👇 ADICIONE ESTAS NOVAS ROTAS DE FAVORITOS 👇
                         .requestMatchers(HttpMethod.GET, "/api/favorites/my-favorites").authenticated()

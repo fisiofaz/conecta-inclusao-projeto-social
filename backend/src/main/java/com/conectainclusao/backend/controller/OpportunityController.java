@@ -5,12 +5,14 @@ package com.conectainclusao.backend.controller;
 import com.conectainclusao.backend.dto.OpportunityRequestDTO;
 import com.conectainclusao.backend.dto.OpportunityResponseDTO;
 import com.conectainclusao.backend.service.OpportunityService;
+import com.conectainclusao.backend.model.User;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,9 +32,11 @@ public class OpportunityController {
     // --- CRIAR ---
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_EMPRESA', 'ROLE_ADMIN')")
-    public ResponseEntity<OpportunityResponseDTO> createOpportunity(@RequestBody @Valid OpportunityRequestDTO opportunityRequestDTO) {
+    public ResponseEntity<OpportunityResponseDTO> createOpportunity(
+    		@RequestBody @Valid OpportunityRequestDTO opportunityRequestDTO,
+    		@AuthenticationPrincipal User authenticatedUser) {
         // Delega para o Serviço 
-        OpportunityResponseDTO createdOpportunityDTO = opportunityService.createOpportunity(opportunityRequestDTO);
+        OpportunityResponseDTO createdOpportunityDTO = opportunityService.createOpportunity(opportunityRequestDTO, authenticatedUser);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdOpportunityDTO);
     }
 
