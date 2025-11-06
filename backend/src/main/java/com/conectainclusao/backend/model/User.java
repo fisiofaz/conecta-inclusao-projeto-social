@@ -10,6 +10,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -89,6 +91,17 @@ public class User implements UserDetails {
     )
     @JsonIgnore
     private Set<HealthResource> favoriteHealthResources = new HashSet<>();
+    
+    // Lista de candidaturas que este usuário fez
+    @OneToMany(
+        mappedBy = "user", // "user" é o nome do campo na classe Candidatura.java
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true, 
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<Candidatura> candidaturas = new HashSet<>();
+    
 
     // Construtor sem argumentos (NoArgsConstructor)
     public User() {
@@ -198,4 +211,6 @@ public class User implements UserDetails {
     public void setFavoriteOpportunities(Set<Opportunity> favoriteOpportunities) {this.favoriteOpportunities = favoriteOpportunities;}
     public Set<HealthResource> getFavoriteHealthResources() {return favoriteHealthResources;}
     public void setFavoriteHealthResources(Set<HealthResource> favoriteHealthResources) {this.favoriteHealthResources = favoriteHealthResources;}
+    public Set<Candidatura> getCandidaturas() {return candidaturas; }
+    public void setCandidaturas(Set<Candidatura> candidaturas) { this.candidaturas = candidaturas; }
 }

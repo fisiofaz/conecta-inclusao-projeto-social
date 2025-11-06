@@ -1,11 +1,20 @@
 package com.conectainclusao.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import java.util.Set;
+import java.util.HashSet;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table; 
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -56,6 +65,16 @@ public class Opportunity {
     @Size(max = 255, message = "O contato deve ter no máximo 255 caracteres")
     @Column(nullable = false, length = 255)
     private String contato;
+    
+    // Lista de candidaturas que esta vaga recebeu
+    @OneToMany(
+        mappedBy = "opportunity", // "opportunity" é o nome do campo na classe Candidatura.java
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true, 
+        fetch = FetchType.LAZY
+    )
+    @JsonIgnore
+    private Set<Candidatura> candidaturas = new HashSet<>();
 
     // Construtor sem argumentos
     public Opportunity() {}
@@ -85,7 +104,8 @@ public class Opportunity {
     public String getRequisitosAcessibilidade() { return requisitosAcessibilidade; }
     public LocalDate getDataPublicacao() { return dataPublicacao; }
     public String getContato() { return contato; }
-
+    public Set<Candidatura> getCandidaturas() {return candidaturas;}
+    
     // Setters
     public void setId(Long id) { this.id = id; }
     public void setTitulo(String titulo) { this.titulo = titulo; }
@@ -95,5 +115,6 @@ public class Opportunity {
     public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
     public void setRequisitosAcessibilidade(String requisitosAcessibilidade) { this.requisitosAcessibilidade = requisitosAcessibilidade; }
     public void setDataPublicacao(LocalDate dataPublicacao) { this.dataPublicacao = dataPublicacao; }
-    public void setContato(String contato) { this.contato = contato; }
+    public void setContato(String contato) { this.contato = contato; }    
+    public void setCandidaturas(Set<Candidatura> candidaturas) {this.candidaturas = candidaturas;}
 }
