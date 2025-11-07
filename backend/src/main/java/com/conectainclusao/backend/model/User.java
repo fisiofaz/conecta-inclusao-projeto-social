@@ -102,6 +102,17 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Candidatura> candidaturas = new HashSet<>();
     
+    // Lista de reviews que este usuário escreveu
+    @OneToMany(
+        mappedBy = "author", // "author" é o nome do campo na classe Review.java
+        cascade = CascadeType.ALL, 
+        orphanRemoval = true, 
+        fetch = FetchType.LAZY
+    )
+    
+    @JsonIgnore
+    private Set<Review> reviews = new HashSet<>();
+    
 
     // Construtor sem argumentos (NoArgsConstructor)
     public User() {
@@ -213,4 +224,6 @@ public class User implements UserDetails {
     public void setFavoriteHealthResources(Set<HealthResource> favoriteHealthResources) {this.favoriteHealthResources = favoriteHealthResources;}
     public Set<Candidatura> getCandidaturas() {return candidaturas; }
     public void setCandidaturas(Set<Candidatura> candidaturas) { this.candidaturas = candidaturas; }
+    public Set<Review> getReviews() {return reviews; }
+    public void setReviews(Set<Review> reviews) {this.reviews = reviews; }
 }
