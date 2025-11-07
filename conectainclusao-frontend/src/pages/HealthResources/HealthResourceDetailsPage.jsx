@@ -68,7 +68,7 @@ function HealthResourceDetailsPage() {
     return (
       <div className="container p-4 mx-auto text-center">
         <p className="mb-4 font-bold text-red-600">{error || 'Recurso de saúde não encontrado.'}</p>
-        <Button onClick={() => navigate('/health-resources')} variant="primary">
+        <Button onClick={() => navigate('/saude')} variant="primary">
           Voltar para a lista
         </Button>
       </div>

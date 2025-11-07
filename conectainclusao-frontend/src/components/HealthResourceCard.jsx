@@ -77,7 +77,7 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
         {canManage && (
           <div className="flex w-full gap-2 sm:w-auto">
             <Link
-              to={`/health-resources/edit/${resource.id}`}
+              to={`/saude/edit/${resource.id}`}
               className="flex-1 px-4 py-2 text-sm font-semibold text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600"
             >
               Editar
