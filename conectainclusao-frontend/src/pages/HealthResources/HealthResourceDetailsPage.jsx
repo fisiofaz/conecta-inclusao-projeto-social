@@ -4,11 +4,12 @@ import api from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import HealthResourceDetailsView from '../../components/HealthResourceDetailsView';
 import Button from '../../components/Button';
+import { LoaderCircle } from 'lucide-react';
 
 function HealthResourceDetailsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { getTipoPerfil } = useAuth();
+  const { user } = useAuth();
   const [resource, setResource] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -50,12 +51,17 @@ function HealthResourceDetailsPage() {
     }
   };
 
-  const userTipoPerfil = getTipoPerfil();
-  const canManageHealthResources = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'ORGAO_APOIO';
+  const userTipoPerfil = user?.tipoPerfil;
+  const canManageHealthResources = userTipoPerfil === 'ROLE_ADMIN' || userTipoPerfil === 'ROLE_ORGAO_APOIO';
 
   // Renderização condicional baseada nos estados de carregamento e erro
   if (loading) {
-    return <div className="container p-4 mx-auto text-center">Carregando detalhes do recurso de saúde...</div>;
+   return (
+      <div className="flex items-center justify-center py-20">
+        <LoaderCircle size={32} className="mr-3 text-blue-500 animate-spin" />
+        <span className="text-lg text-gray-600">Carregando detalhes...</span>
+      </div>
+    );
   }
 
   if (error || !resource) {
