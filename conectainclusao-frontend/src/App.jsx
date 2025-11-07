@@ -85,8 +85,9 @@ function App() {
 
           {/* Gerenciamento de Usuários (Admin) */}
           <Route path="/users" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserListPage /></PrivateRoute>} />
-          <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
-          
+          <Route path="/users/new" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
+          <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}> <HealthResourceForm /> </PrivateRoute>} 
+/>
           {/* Rota 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
