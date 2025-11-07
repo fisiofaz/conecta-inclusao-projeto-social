@@ -18,6 +18,7 @@ import MyFavoritesPage from './pages/MyFavoritesPage';
 import MyApplicationsPage from './pages/MyApplicationsPage';
 import ApplicantsListPage from './pages/ApplicantsListPage';
 
+
 // Páginas de Oportunidades
 import OpportunityListPage from './pages/Opportunities/OpportunityListPage';
 import OpportunityDetailsPage from './pages/Opportunities/OpportunityDetailsPage';

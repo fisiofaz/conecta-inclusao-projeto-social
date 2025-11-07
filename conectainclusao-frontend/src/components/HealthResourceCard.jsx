@@ -69,7 +69,7 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
 
       <div className="flex flex-col items-center justify-between gap-2 mt-4 sm:flex-row">
         <Link
-          to={`/health-resources/${resource.id}`}
+          to={`/saude/${resource.id}`}
           className="w-full px-4 py-2 text-sm font-semibold text-center text-white transition-colors duration-300 bg-green-500 rounded-md sm:w-auto hover:bg-green-600"
         >
           Ver Detalhes

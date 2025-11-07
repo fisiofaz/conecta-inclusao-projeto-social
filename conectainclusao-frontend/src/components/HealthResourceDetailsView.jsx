@@ -45,7 +45,7 @@ function HealthResourceDetailsView({ resource, canManage, onDelete }) {
           {canManage && (
             <div className="flex flex-col w-full gap-4 sm:flex-row sm:w-auto">
               <Link
-                to={`/health-resources/edit/${resource.id}`}
+                to={`/saude/edit/${resource.id}`}
                 className="w-full px-4 py-3 font-semibold text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md sm:w-auto hover:bg-yellow-600"
               >
                 Editar
