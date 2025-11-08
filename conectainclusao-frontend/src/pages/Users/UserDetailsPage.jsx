@@ -51,13 +51,26 @@ function UserDetailsPage() {
     fetchUserDetails();
   }, [userId]);
 
-  
-  const renderFavoriteCard = (item) => {
+   const renderFavoriteCard = (item) => {
+    // Recriamos os dados para os cards (o DTO do backend é simples)
+    const opportunityData = {
+        id: item.id,
+        titulo: item.titulo,
+        descricao: item.descricao,
+        localizacao: item.localizacao
+    };
+    const resourceData = {
+        id: item.id,
+        nome: item.nome,
+        endereco: item.endereco,
+        especialidade: item.especialidade
+    };
+
     switch (item.type) {
       case 'opportunity':
-        return <OpportunityCard key={`fav-opp-${item.id}`} opportunity={item} canManage={false} icon={<Briefcase size={20} className="flex-shrink-0 mr-2 text-blue-500" />} />;
-      case 'health': // Lembre-se que usamos 'health' no backend
-        return <HealthResourceCard key={`fav-hr-${item.id}`} resource={item} canManage={false} icon={<HeartHandshake size={20} className="flex-shrink-0 mr-2 text-green-500" />} />;
+        return <OpportunityCard key={`fav-opp-${item.id}`} opportunity={opportunityData} canManage={false} icon={<Briefcase size={20} className="flex-shrink-0 mr-2 text-blue-500" />} />;
+      case 'health': // O backend envia 'health'
+        return <HealthResourceCard key={`fav-hr-${item.id}`} resource={resourceData} canManage={false} icon={<HeartHandshake size={20} className="flex-shrink-0 mr-2 text-green-500" />} />;
       default:
         return null;
     }
@@ -67,7 +80,7 @@ function UserDetailsPage() {
     return (
       <div className="flex items-center justify-center py-20">
         <LoaderCircle size={32} className="mr-3 text-blue-500 animate-spin" />
-        <span className="text-lg text-gray-600">Carregando detalhes do usuário...</span>
+        <span className="text-lg text-gray-600">Carregando detalhes do utilizador...</span>
       </div>
     );
   }
@@ -87,7 +100,7 @@ function UserDetailsPage() {
   if (!user) {
     return (
       <div className="py-10 text-center text-gray-500">
-        <p>Usuário não encontrado.</p>
+        <p>Utilizador não encontrado.</p>
       </div>
     );
   }

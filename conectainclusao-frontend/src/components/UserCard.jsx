@@ -25,16 +25,19 @@ function UserCard({ user, onDelete }) {
       </div>
 
       <div className="flex items-center justify-between gap-2 mt-4">
+        {/* Botão NOVO para Detalhes/Atividade */}
         <Link to={`/users/details/${user.id}`} className="w-full">
           <Button variant="primary" className="w-full text-sm">
             Atividade
           </Button>
         </Link>
+        {/* Botão Editar */}
         <Link to={`/users/edit/${user.id}`} className="w-full">
           <Button variant="secondary" className="w-full text-sm">
             Editar
           </Button>
         </Link>
+        {/* Botão Excluir*/}
         <Button onClick={() => onDelete(user.id)} variant="danger" className="w-full text-sm">
           Excluir
         </Button>
