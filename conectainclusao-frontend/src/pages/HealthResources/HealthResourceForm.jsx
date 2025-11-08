@@ -69,7 +69,7 @@ function HealthResourceForm() {
         setFeedback({ type: 'success', message: 'Recurso de saúde cadastrado com sucesso!' });
       }
 
-      setTimeout(() => navigate('/health-resources'), 2000);
+      setTimeout(() => navigate('/saude'), 2000);
     } catch (err) {
       console.error('Erro ao salvar recurso de saúde:', err);
       setFeedback({ type: 'error', message: 'Não foi possível salvar o recurso. Tente novamente.' });
@@ -164,7 +164,7 @@ function HealthResourceForm() {
           <Button
             type="button"
             variant="secondary"
-            onClick={() => navigate('/health-resources')}
+            onClick={() => navigate('/saude')}
           >
             Cancelar
           </Button>
