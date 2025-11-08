@@ -7,6 +7,7 @@ import PasswordInput from '../../components/PasswordInput';
 import FormSelect from '../../components/FormSelect';
 import FormTextarea from '../../components/FormTextarea';
 import Button from '../../components/Button';
+import { LoaderCircle } from 'lucide-react';
 
 function UserForm() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ function UserForm() {
     nome: '',
     email: '',
     senha: '',
-    TipoPerfil: 'PCD',
+    tipoPerfil: 'ROLE_USER',
     dataNascimento: '',
     deficiencia: '',
     cidade: '',
@@ -95,11 +96,20 @@ function UserForm() {
   }
 
   const profileTypes = [
-    { value: 'PCD', label: 'Pessoa com Deficiência' },
-    { value: 'Empresa', label: 'Empresa' },
-    { value: 'ORGAO_APOIO', label: 'Órgão de Apoio' },
-    { value: 'ADMIN', label: 'Administrador' },
+    { value: 'ROLE_USER', label: 'Pessoa com Deficiência (PCD)' },
+    { value: 'ROLE_EMPRESA', label: 'Empresa' },
+    { value: 'ROLE_ORGAO_APOIO', label: 'Órgão de Apoio' },
+    { value: 'ROLE_ADMIN', label: 'Administrador' },
   ];
+
+  if (loading) { // Removido '&& id' para mostrar o loader
+    return (
+      <div className="flex items-center justify-center py-20">
+        <LoaderCircle size={32} className="mr-3 text-blue-500 animate-spin" />
+        <span className="text-lg text-gray-600">Carregando usuário...</span>
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-center min-h-screen p-6 bg-gray-100">
@@ -109,21 +119,21 @@ function UserForm() {
         </h2>
         <FeedbackMessage type={feedback.type} message={feedback.message} />
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <FormInput name="nome" value={formData.nome} onChange={handleChange} placeholder="Nome Completo" required className="col-span-full" />
-          <FormInput name="email" type="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="col-span-full" />
-          <PasswordInput name="senha" value={formData.senha} onChange={handleChange} placeholder="Nova Senha (deixe em branco para manter)" className="col-span-full" />
-          
+          <FormInput name="nome" label="Nome Completo" value={formData.nome} onChange={handleChange} placeholder="Nome Completo" required className="col-span-full" />
+          <FormInput name="email" label="Email" type="email" value={formData.email} onChange={handleChange} placeholder="Email" required className="col-span-full" />
+          <PasswordInput name="senha" label="Nova Senha" value={formData.senha} onChange={handleChange} placeholder="Nova Senha (deixe em branco para manter)" className="col-span-full" />
+
           <FormSelect name="tipoPerfil" label="Tipo de Perfil:" value={formData.tipoPerfil} onChange={handleChange} options={profileTypes} className="col-span-full" />
           
           <FormInput name="dataNascimento" type="date" label="Data de Nascimento:" value={formData.dataNascimento} onChange={handleChange} />
-          <FormInput name="deficiencia" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" />
-          
-          <FormInput name="cidade" value={formData.cidade} onChange={handleChange} placeholder="Cidade" />
-          <FormInput name="estado" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" />
+          <FormInput name="deficiencia" label="Tipo de Deficiência:" value={formData.deficiencia} onChange={handleChange} placeholder="Tipo de Deficiência (se aplicável)" />
 
-          <FormTextarea name="bio" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows={4} className="col-span-full" />
-          
-          <div className="col-span-full">
+          <FormInput name="cidade" label="Cidade:" value={formData.cidade} onChange={handleChange} placeholder="Cidade" />
+          <FormInput name="estado" label="Estado (UF):" value={formData.estado} onChange={handleChange} placeholder="Estado (UF)" />
+
+          <FormTextarea name="bio" label="Biografia:" value={formData.bio} onChange={handleChange} placeholder="Biografia" rows={4} className="col-span-full" />
+
+          <div className="flex items-center justify-between col-span-full pt-4 mt-6 border-t">
             <Button type="submit" variant="primary" disabled={loading} className="w-full">
               {loading ? 'Salvando...' : 'Atualizar Usuário'}
             </Button>
