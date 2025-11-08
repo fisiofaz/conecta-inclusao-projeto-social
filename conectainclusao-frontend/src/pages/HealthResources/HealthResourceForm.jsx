@@ -10,7 +10,7 @@ import FeedbackMessage from '../../components/FeedbackMessage';
 function HealthResourceForm() {
   const { id } = useParams(); // usado para edição
   const navigate = useNavigate();
-  const { getTipoPerfil } = useAuth();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     tipoRecurso: '',
@@ -25,8 +25,9 @@ function HealthResourceForm() {
   const [loading, setLoading] = useState(false);
   const [feedback, setFeedback] = useState({ type: '', message: '' });
 
-  const userTipoPerfil = getTipoPerfil();
-  const canManageHealthResources = userTipoPerfil === 'ADMIN' || userTipoPerfil === 'ORGAO_APOIO';
+  const userTipoPerfil = user?.tipoPerfil;
+  const canManageHealthResources = userTipoPerfil === 'ROLE_ADMIN' || userTipoPerfil === 'ROLE_ORGAO_APOIO';
+  
   // Buscar dados se for edição
   useEffect(() => {
     if (id) {
