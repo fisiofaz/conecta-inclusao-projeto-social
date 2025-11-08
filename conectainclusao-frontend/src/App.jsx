@@ -9,6 +9,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Home from './pages/Home';
 import DashboardPage from './pages/DashboardPage';
 import NotFoundPage from './pages/NotFoundPage';
+import AccessDeniedPage from './components/AccessDeniedPage';
 
 // Páginas de Autenticação
 import LoginPage from './pages/Auth/LoginPage';
@@ -88,8 +89,14 @@ function App() {
           <Route path="/users/new" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
           <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>}/>
           <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}> <HealthResourceForm /> </PrivateRoute>}/>
+          
+          {/* Página de acesso negado */}
+          <Route path="/access-denied" element={<AccessDeniedPage />} />
+          
           {/* Rota 404 */}
           <Route path="*" element={<NotFoundPage />} />
+          
+
         </Routes>
       </main>
       <Footer />

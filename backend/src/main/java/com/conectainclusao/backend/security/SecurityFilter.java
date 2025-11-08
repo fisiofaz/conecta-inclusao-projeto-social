@@ -1,5 +1,6 @@
 package com.conectainclusao.backend.security;
 
+
 import com.conectainclusao.backend.service.AuthorizationService; 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,6 +22,7 @@ public class SecurityFilter extends OncePerRequestFilter {
     @Autowired
     TokenService tokenService;
 
+    // --- PASSO 1: Injetar o AuthorizationService (DE VOLTA) ---
     @Autowired
     AuthorizationService authorizationService;
 
@@ -47,12 +49,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                         var authentication = new UsernamePasswordAuthenticationToken(
                                 userDetails, null, userDetails.getAuthorities());
                         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                        // Opcional: Log de sucesso (agora limpo)
-                        // System.out.println(String.format(
-                        //    "DEBUG (SecurityFilter): Auth OK! User: %s | URI: %s",
-                        //    userDetails.getUsername(), request.getRequestURI()
-                        // ));
                     }
                 }
             } catch (Exception e) {
