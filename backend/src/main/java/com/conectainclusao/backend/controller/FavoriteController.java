@@ -66,4 +66,13 @@ public class FavoriteController {
         List<Map<String, Object>> favorites = favoriteService.getAllFavoritesByUserId(user.getId());
         return ResponseEntity.ok(favorites);
     }
+    
+    // --- NOVO ENDPOINT (PARA O ADMIN) ---
+    @GetMapping("/user/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<List<Map<String, Object>>> getFavoritesForUser(@PathVariable Long userId) {
+        // O FavoriteService já aceitava um ID, então podemos reutilizá-lo
+        List<Map<String, Object>> favorites = favoriteService.getAllFavoritesByUserId(userId);
+        return ResponseEntity.ok(favorites);
+    }
 }

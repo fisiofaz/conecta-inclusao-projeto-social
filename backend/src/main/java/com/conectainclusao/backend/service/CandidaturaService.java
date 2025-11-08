@@ -54,6 +54,15 @@ public class CandidaturaService {
                 .map(this::mapEntityToDTO)
                 .collect(Collectors.toList());
     }
+    
+    // --- LÓGICA NOVA: LISTAR CANDIDATURAS DE UM USUÁRIO (Para o Admin) ---
+    @Transactional(readOnly = true)
+    public List<CandidaturaDTO> getApplicationsByUserId(Long userId) {
+        // O repositório já tem o método 'findByUserId'
+        return candidaturaRepository.findByUserId(userId).stream()
+                .map(this::mapEntityToDTO)
+                .collect(Collectors.toList());
+    }
 
     // --- LÓGICA PARA LISTAR CANDIDATOS DE UMA VAGA (para a Empresa) ---
     @Transactional(readOnly = true)
