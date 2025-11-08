@@ -25,6 +25,11 @@ function UserCard({ user, onDelete }) {
       </div>
 
       <div className="flex items-center justify-between gap-2 mt-4">
+        <Link to={`/users/details/${user.id}`} className="w-full">
+          <Button variant="primary" className="w-full text-sm">
+            Atividade
+          </Button>
+        </Link>
         <Link to={`/users/edit/${user.id}`} className="w-full">
           <Button variant="secondary" className="w-full text-sm">
             Editar

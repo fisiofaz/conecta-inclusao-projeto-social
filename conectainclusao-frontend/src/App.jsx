@@ -40,6 +40,7 @@ import HealthResourceListPage from './pages/HealthResources/HealthResourceListPa
 // Páginas de Admin
 import UserListPage from './pages/Users/UserListPage';
 import UserForm from './pages/Users/UserForm';
+import UserDetailsPage from './pages/Users/UserDetailsPage';
 
 // Página de Busca
 import SearchResultsPage from './pages/SearchResultsPage';
@@ -88,6 +89,7 @@ function App() {
           <Route path="/users" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserListPage /></PrivateRoute>} />
           <Route path="/users/new" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
           <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>}/>
+          <Route path="/users/details/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserDetailsPage /></PrivateRoute>} />
           <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}> <HealthResourceForm /> </PrivateRoute>}/>
           
           {/* Página de acesso negado */}
