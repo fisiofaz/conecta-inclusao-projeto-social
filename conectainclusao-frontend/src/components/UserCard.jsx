@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Button from './Button';
 
 function UserCard({ user, onDelete }) {
+  console.log("--- DEBUG: RENDERIZANDO UserCard.jsx (VERSÃO 3 BOTÕES) ---", user.nome);
   if (!user) {
     return null;
   }
