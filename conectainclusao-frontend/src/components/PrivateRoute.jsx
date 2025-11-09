@@ -21,15 +21,14 @@ function PrivateRoute({ allowedRoles }) {
 
   // Normaliza o tipo de perfil (remove ROLE_ se existir)
   const userRole = user.tipoPerfil?.replace(/^ROLE_/, '').toUpperCase();
-  console.log("✅ userRole normalizado:", userRole);
-
-  // Normaliza também os allowedRoles (para comparar de forma consistente)
   const normalizedAllowedRoles = allowedRoles?.map(role => role.replace(/^ROLE_/, '').toUpperCase());
+
+  console.log("🔎 userRole normalizado:", userRole);
+  console.log("🔎 allowedRoles normalizados:", normalizedAllowedRoles);
 
   if (normalizedAllowedRoles && !normalizedAllowedRoles.includes(userRole)) {
     console.warn(
-      `🚫 Acesso negado: ${user.tipoPerfil || "desconhecido"} em ${location.pathname}.
-       Perfis permitidos: ${allowedRoles.join(", ")}`
+      `🚫 Acesso negado: ${user.tipoPerfil || "desconhecido"} em ${location.pathname}.Perfis permitidos: ${allowedRoles.join(", ")}`
     );
     return <Navigate to="/access-denied" replace />;
   }
