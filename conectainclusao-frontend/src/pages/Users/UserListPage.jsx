@@ -6,6 +6,9 @@ import Button from '../../components/Button';
 import FeedbackMessage from '../../components/FeedbackMessage';
 
 function UserListPage() {
+
+  console.log("🧩 Entrou em UserListPage");
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [feedback, setFeedback] = useState({ type: '', message: '' });
@@ -52,6 +55,8 @@ function UserListPage() {
       </div>
     );
   }
+
+  console.log("📊 Renderizando UserListPage — usuários:", users.length, "loading:", loading, "feedback:", feedback);
 
   return (
     <div className="container p-6 mx-auto my-8">
