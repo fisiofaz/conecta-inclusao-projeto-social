@@ -71,7 +71,7 @@ function App() {
 
           {/* --- Rotas Protegidas (Exigem Login) --- */}
           <Route element={<PrivateRoute />}>
-            <Route path="/dashboard" element={<PrivateRoute> <DashboardPage /> </PrivateRoute>} />
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/my-complaints" element={<MyComplaintsPage />} />
             <Route path="/my-favorites" element={<MyFavoritesPage />} />
             <Route path="/my-applications" element={<MyApplicationsPage />} />
