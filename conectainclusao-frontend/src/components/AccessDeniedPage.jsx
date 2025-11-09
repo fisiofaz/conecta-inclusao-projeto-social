@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ShieldAlert } from "lucide-react";
-import { motion } from "framer-motion";
 import { useAuth } from "../contexts/AuthContext";
 
 function AccessDeniedPage() {
