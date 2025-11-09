@@ -90,13 +90,14 @@ function App() {
 
           {/* Saúde (Órgão de Apoio ou Admin) */}
           <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ORGAO_APOIO", "ADMIN"]}><HealthResourceForm /></PrivateRoute>} />
-
-          {/* Admin: Gerenciamento de Usuários */}
-          <Route path="/users" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserListPage /></PrivateRoute>} />
-          <Route path="/users/new" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserForm /></PrivateRoute>} />
-          <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserForm /></PrivateRoute>} />
-          <Route path="/users/details/:id" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserDetailsPage /></PrivateRoute>} />
-
+          <Route path="/saude/new" element={<PrivateRoute allowedRoles={["ORGAO_APOIO", "ADMIN"]}><HealthResourceForm /></PrivateRoute>} />{/* Admin: Gerenciamento de Usuários */}
+          <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
+            <Route path="/users" element={<UserListPage />} />
+            <Route path="/users/new" element={<UserForm />} />
+            <Route path="/users/edit/:id" element={<UserForm />} />
+            <Route path="/users/details/:id" element={<UserDetailsPage />} />
+          </Route>
+          
           {/* Rota 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
