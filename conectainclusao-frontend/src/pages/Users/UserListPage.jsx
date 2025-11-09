@@ -84,6 +84,14 @@ function UserListPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700">{user.tipoPerfil}</td>
                   <td className="flex items-center justify-end gap-2 px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                    {/* Botão Atividades */}
+                    <Link
+                      to={`/users/details/${user.id}`}
+                      className="flex items-center gap-1 p-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                      title="Ver Atividades"
+                    >
+                      <Users size={16} />
+                    </Link>
                     {/* Botão Editar (leva para a outra página) */}
                     <Link
                       to={`/users/edit/${user.id}`}

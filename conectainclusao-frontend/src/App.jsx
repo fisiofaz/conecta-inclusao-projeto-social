@@ -81,21 +81,21 @@ function App() {
           {/* --- Rotas de Criação/Edição (Permissões Específicas) --- */}
 
           {/* Oportunidades (Empresa ou Admin) */}
-          <Route path="/opportunities/new" element={<PrivateRoute allowedRoles={["ROLE_EMPRESA", "ROLE_ADMIN"]}><OpportunityForm /></PrivateRoute>} />
-          <Route path="/opportunities/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_EMPRESA", "ROLE_ADMIN"]}><OpportunityForm /></PrivateRoute>} />
+          <Route path="/opportunities/new" element={<PrivateRoute allowedRoles={["EMPRESA", "ADMIN"]}><OpportunityForm /></PrivateRoute>} />
+          <Route path="/opportunities/edit/:id" element={<PrivateRoute allowedRoles={["EMPRESA", "ADMIN"]}><OpportunityForm /></PrivateRoute>} />
 
           {/* Denúncias (Qualquer um logado) */}
-          <Route path="/complaints/new" element={<PrivateRoute allowedRoles={["ROLE_USER", "ROLE_EMPRESA", "ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute>} />
-          <Route path="/complaints/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute>} />
+          <Route path="/complaints/new" element={<PrivateRoute allowedRoles={["USER", "EMPRESA", "ORGAO_APOIO", "ADMIN"]}><ComplaintForm /></PrivateRoute>} />
+          <Route path="/complaints/edit/:id" element={<PrivateRoute allowedRoles={["ADMIN"]}><ComplaintForm /></PrivateRoute>} />
 
-          {/* Saúde (Orgão de Apoio ou Admin) */}
-          <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><HealthResourceForm /></PrivateRoute>} />
-          
+          {/* Saúde (Órgão de Apoio ou Admin) */}
+          <Route path="/saude/edit/:id" element={<PrivateRoute allowedRoles={["ORGAO_APOIO", "ADMIN"]}><HealthResourceForm /></PrivateRoute>} />
+
           {/* Admin: Gerenciamento de Usuários */}
-          <Route path="/users" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserListPage /></PrivateRoute>} />
-          <Route path="/users/new" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
-          <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserForm /></PrivateRoute>} />
-          <Route path="/users/details/:id" element={<PrivateRoute allowedRoles={["ROLE_ADMIN"]}><UserDetailsPage /></PrivateRoute>} />
+          <Route path="/users" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserListPage /></PrivateRoute>} />
+          <Route path="/users/new" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserForm /></PrivateRoute>} />
+          <Route path="/users/edit/:id" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserForm /></PrivateRoute>} />
+          <Route path="/users/details/:id" element={<PrivateRoute allowedRoles={["ADMIN"]}><UserDetailsPage /></PrivateRoute>} />
 
           {/* Rota 404 */}
           <Route path="*" element={<NotFoundPage />} />
