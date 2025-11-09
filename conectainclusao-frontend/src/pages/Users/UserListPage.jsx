@@ -29,23 +29,38 @@ function UserListPage() {
 
   // Carrega os usuários quando a página é montada
   useEffect(() => {
+    console.log("🚀 Entrou em UserListPage — iniciando fetchUsers()");
     fetchUsers();
   }, []);
 
   // Função para deletar um usuário
   const handleDelete = async (userId) => {
+    console.log("📡 Chamando API DELETE /users/${userId}...");
     if (window.confirm('Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.')) {
       try {
-        await api.delete(`/users/${userId}`);
+        setLoading(true);
+        const response = await api.delete(`/users/${userId}`);
+        console.log("✅ Resposta da API DELETE /users/${userId}:", response.data);
         setFeedback({ type: 'success', message: 'Usuário excluído com sucesso!' });
         // Recarrega a lista após a exclusão
         fetchUsers();
       } catch (err) {
-        console.error('Erro ao excluir usuário:', err);
+        console.error("❌ Erro ao excluir usuário:", err);
         setFeedback({ type: 'error', message: 'Não foi possível excluir o usuário.' });
+      } finally {
+        setLoading(false);
       }
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <LoaderCircle size={32} className="mr-3 text-blue-500 animate-spin" />
+        <span className="text-lg text-gray-600">Carregando usuários...</span>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
