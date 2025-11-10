@@ -18,4 +18,6 @@ public interface OpportunityRepository extends JpaRepository<Opportunity, Long>,
            "LOWER(o.localizacao) LIKE LOWER(concat('%', :query, '%')) OR " +
            "LOWER(CAST(o.tipoOportunidade AS string)) LIKE LOWER(concat('%', :query, '%'))")
     List<Opportunity> searchByQuery(@Param("query") String query);
+    // --- MÉTODO PARA O SELO ---
+    long countByOwnerId(Long ownerId);
 }

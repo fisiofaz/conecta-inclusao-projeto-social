@@ -4,6 +4,8 @@ import com.conectainclusao.backend.model.EntityType;
 import com.conectainclusao.backend.model.Review;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,14 +13,10 @@ import java.util.Optional;
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
-    /**
-     * Encontra todas as avaliações para um item específico (ex: todas as avaliações da Oportunidade 5).
-     */
+    /* Encontra todas as avaliações para um item específico (ex: todas as avaliações da Oportunidade 5). */
     List<Review> findByEntityTypeAndEntityId(EntityType entityType, Long entityId);
 
-    /**
-     * Encontra todas as avaliações escritas por um usuário específico.
-     */
+    /* Encontra todas as avaliações escritas por um usuário específico. */
     List<Review> findByAuthorId(Long authorId);
 
     /**
@@ -26,4 +24,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
      * Isso impede que o mesmo usuário avalie o mesmo item duas vezes.
      */
     Optional<Review> findByAuthorIdAndEntityTypeAndEntityId(Long authorId, EntityType entityType, Long entityId);
+    
+    // --- MÉTODO PARA O SELO ---
+    /*
+     * Calcula a média de 'rating' (avaliação) para todas as Oportunidades que pertencem a um 'ownerId' (dono) específico.
+     * Esta é uma consulta nativa (SQL) para performance.
+     */
+    @Query(value = "SELECT AVG(r.rating) " +
+                   "FROM reviews r " +
+                   "JOIN opportunities o ON r.entity_id = o.id " +
+                   "WHERE r.entity_type = 'OPPORTUNITY' " +
+                   "AND o.owner_user_id = :ownerId",
+           nativeQuery = true)
+    Double findAverageRatingForOpportunityOwner(@Param("ownerId") Long ownerId);
 }
