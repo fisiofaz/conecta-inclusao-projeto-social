@@ -14,7 +14,7 @@ const infoCardData = [
     altText: "Exercícios adaptados",
     title: "Exercícios Adaptados",
     description: "Atividades físicas adaptadas ajudam a melhorar a mobilidade, fortalecer músculos e promover bem-estar.",
-    linkHref: "https://www.youtube.com/playlist?list=PLn-6v5XJ0DQVE1V4RJZDXvF5Xc9yCzYlb",
+    linkHref: "https://www.youtube.com/watch?v=09sqYInEKXI",
     linkText: "Ver exercícios adaptados",
   },
   {
@@ -22,7 +22,7 @@ const infoCardData = [
     altText: "Alimentação saudável",
     title: "Alimentação Saudável",
     description: "Uma dieta equilibrada contribui para mais energia, melhor imunidade e qualidade de vida. Pequenas mudanças nos hábitos alimentares podem fazer toda a diferença.",
-    linkHref: "https://www.tuasaude.com/alimentacao-saudavel/",
+    linkHref: "https://amigosmultiplos.org.br/noticia/a-importancia-da-alimentacao-balanceada-para-a-pessoa-com-deficiencia/#:~:text=Quais%20os%20alimentos%20n%C3%A3o%20podem,as%20necessidades%20de%20cada%20pessoa.&text=Al%C3%A9m%20de%20serem%20ricos%20em,e%20tamb%C3%A9m%20previne%20doen%C3%A7as%20cardiovasculares.&text=Os%20ovos%20s%C3%A3o%20prote%C3%ADnas%20magras,e%20no%20combate%20%C3%A0%20hipertens%C3%A3o.&text=Ingerir%20grandes%20quantidades%20de%20folhas,sals%C3%A3o",
     linkText: "Ver alimentação saudável",
   },
   {
@@ -92,10 +92,6 @@ export default function SaudeBemEstar() {
           </Button>
         )}
 
-        {/* Botão de Emergência no canto direito */}
-        <Button onClick={() => setShowHelp(true)} variant="danger">
-          🚨 Preciso de Ajuda
-        </Button>
       </div>
 
       <h1 className="mb-6 text-4xl font-extrabold text-center">
