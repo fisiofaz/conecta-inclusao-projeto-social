@@ -15,7 +15,7 @@ function OpportunityForm() {
   const [formData, setFormData] = useState({
     titulo: '',
     descricao: '',
-    tipoOportunidade: 'emprego',
+    tipoOportunidade: 'EMPREGO',
     empresaOuOrgResponsavel: '',
     cep: '',
     localizacao: '',
@@ -54,7 +54,11 @@ function OpportunityForm() {
   }, [id]); // Depende do ID da URL
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: name === 'tipoOportunidade' ? value.toUpperCase() : value,
+    });
   };
 
   const handleCepBlur = async (e) => {
@@ -165,7 +169,7 @@ function OpportunityForm() {
           </div>
           
           <div className="md:col-span-2">
-            <FormSelect name="tipoOportunidade" label="Tipo de Oportunidade:" value={formData.tipoOportunidade} onChange={handleChange} options={opportunityTypes} />
+            <FormSelect name="tipoOportunidade" label="Tipo de Oportunidade:" value={(formData.tipoOportunidade || '').toUpperCase()} onChange={handleChange} options={opportunityTypes} />
           </div>
 
           <FormInput name="empresaOuOrgResponsavel" value={formData.empresaOuOrgResponsavel} onChange={handleChange} placeholder="Empresa/Organização" required />
