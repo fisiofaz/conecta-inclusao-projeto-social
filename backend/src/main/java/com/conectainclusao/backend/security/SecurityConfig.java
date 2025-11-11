@@ -49,13 +49,11 @@ public class SecurityConfig {
                         // --- 1. ROTAS PÚBLICAS (PERMITALL) ---
                 		
                 		.requestMatchers(SWAGGER_WHITELIST).permitAll()
-                        
-                        // Permite requisições OPTIONS (para CORS pre-flight)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() 
                         
                         // Permite login e registro
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll() // <<< Rota de registro correta
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll() 
 
                         // Permite GETs públicos para visualização
                         .requestMatchers(HttpMethod.GET, "/api/search").permitAll()
@@ -63,23 +61,28 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/complaints", "/api/complaints/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/health-resources", "/api/health-resources/**").permitAll()
                         
+                        // Rota pública para LER avaliações
+                        .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/inclusion-score/**").permitAll()
+                        
                         // --- 2. ROTAS AUTENTICADAS (NÍVEL GERAL) ---
+                        // (Rotas que exigem login, mas qualquer perfil pode acessar)                        
                         .requestMatchers(HttpMethod.POST, "/api/complaints").authenticated() 
                         .requestMatchers(HttpMethod.GET, "/api/auth/profile").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/complaints/my-complaints").authenticated()
+                        
+                        // Rotas de Favoritos Simplificado 
                         .requestMatchers("/api/favorites/**").authenticated()
+                        
+                        // Rotas de Candidaturas Simplificado
                         .requestMatchers("/api/candidaturas/**").authenticated()
+                        
+                        // Rotas de Avaliação Privadas
                         .requestMatchers(HttpMethod.POST, "/api/reviews").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/reviews/my-reviews").authenticated()
                         
-                        // 👇 ADICIONE ESTAS NOVAS ROTAS DE FAVORITOS 👇
-                        .requestMatchers(HttpMethod.GET, "/api/favorites/my-favorites").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/favorites/opportunity/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/favorites/opportunity/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/favorites/health/**").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/favorites/health/**").authenticated()
-
                         // --- 3. ROTAS COM AUTORIZAÇÃO ESPECÍFICA (ROLE/AUTHORITY) ---
+                        // (Rotas que exigem perfis específicos)
 
                         // Gerenciamento de Usuários (só ADMIN)
                         .requestMatchers(HttpMethod.GET, "/api/users", "/api/users/**").hasAuthority("ROLE_ADMIN")

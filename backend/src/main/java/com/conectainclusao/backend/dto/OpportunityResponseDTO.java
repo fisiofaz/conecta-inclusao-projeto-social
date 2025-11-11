@@ -13,6 +13,7 @@ public class OpportunityResponseDTO {
     private String requisitosAcessibilidade;
     private LocalDate dataPublicacao;
     private String contato;
+    private Long ownerId; 
 
     // Construtor sem argumentos
     public OpportunityResponseDTO() {}
@@ -42,6 +43,7 @@ public class OpportunityResponseDTO {
     public String getRequisitosAcessibilidade() { return requisitosAcessibilidade; }
     public LocalDate getDataPublicacao() { return dataPublicacao; }
     public String getContato() { return contato; }
+    public Long getOwnerId() { return ownerId; }
 
     // Setters (gerar manualmente)
     public void setId(Long id) { this.id = id; }
@@ -53,4 +55,5 @@ public class OpportunityResponseDTO {
     public void setRequisitosAcessibilidade(String requisitosAcessibilidade) { this.requisitosAcessibilidade = requisitosAcessibilidade; }
     public void setDataPublicacao(LocalDate dataPublicacao) { this.dataPublicacao = dataPublicacao; }
     public void setContato(String contato) { this.contato = contato; }
+    public void setOwnerId(Long ownerId) { this.ownerId = ownerId; }
 }
