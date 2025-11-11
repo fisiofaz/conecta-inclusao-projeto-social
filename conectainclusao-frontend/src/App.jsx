@@ -63,56 +63,14 @@ function App() {
           </Route>
 
           {/* Edição */}
-          <Route
-            path="/opportunities/new"
-            element={
-              <PrivateRoute allowedRoles={["EMPRESA", "ADMIN"]}>
-                <OpportunityForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/opportunities/edit/:id"
-            element={
-              <PrivateRoute allowedRoles={["EMPRESA", "ADMIN"]}>
-                <OpportunityForm />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/opportunities/new" element={ <PrivateRoute allowedRoles={["ROLE_EMPRESA", "ROLE_ADMIN"]}><OpportunityForm /></PrivateRoute> }/>
+          <Route path="/opportunities/edit/:id" element={ <PrivateRoute allowedRoles={["ROLE_EMPRESA", "ROLE_ADMIN"]}><OpportunityForm /></PrivateRoute> }/>
 
-          <Route
-            path="/complaints/new"
-            element={
-              <PrivateRoute allowedRoles={["USER", "EMPRESA", "ORGAO_APOIO", "ADMIN"]}>
-                <ComplaintForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/complaints/edit/:id"
-            element={
-              <PrivateRoute allowedRoles={["ADMIN"]}>
-                <ComplaintForm />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/complaints/new" element={ <PrivateRoute allowedRoles={["ROLE_USER", "ROLE_EMPRESA", "ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute> }/>
+          <Route path="/complaints/edit/:id" element={ <PrivateRoute allowedRoles={["ROLE_ADMIN"]}><ComplaintForm /></PrivateRoute> }/>
+          <Route path="/saude/edit/:id" element={ <PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><HealthResourceForm /></PrivateRoute> }/>
 
-          <Route
-            path="/saude/edit/:id"
-            element={
-              <PrivateRoute allowedRoles={["ORGAO_APOIO", "ADMIN"]}>
-                <HealthResourceForm />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/saude/new"
-            element={
-              <PrivateRoute allowedRoles={["ORGAO_APOIO", "ADMIN"]}>
-                <HealthResourceForm />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/saude/new" element={ <PrivateRoute allowedRoles={["ROLE_ORGAO_APOIO", "ROLE_ADMIN"]}><HealthResourceForm /></PrivateRoute> }/>
 
           {/* Admin */}
           <Route element={<PrivateRoute allowedRoles={["ADMIN"]} />}>
