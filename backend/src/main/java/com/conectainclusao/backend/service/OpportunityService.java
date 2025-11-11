@@ -71,16 +71,26 @@ public class OpportunityService {
         return mapEntityToResponseDTO(updatedOpportunity);
     }
 
-    // --- DELETAR OPORTUNIDADE ---
+   
+    // --- DELETAR OPORTUNIDADE -
     @Transactional
+    public void deleteOpportunity(Long id) {
+    	if (!opportunityRepository.existsById(id)) {
+    		throw new ResourceNotFoundException("Oportunidade não encontrada com ID: " + id);
+    	}
+    opportunityRepository.deleteById(id);
+    }
+
+    // --- Mapeamento Auxiliar 
     private OpportunityResponseDTO mapEntityToResponseDTO(Opportunity opportunity) {
     	OpportunityResponseDTO dto = new OpportunityResponseDTO();
-    	BeanUtils.copyProperties(opportunity, dto);    	        
-    		
-    	if (opportunity.getOwner() != null) {
-    		dto.setOwnerId(opportunity.getOwner().getId());
-    	}
-    	 	        
-    	return dto;
-   }
+    	BeanUtils.copyProperties(opportunity, dto);
+            
+            // Adiciona o ownerId (que precisávamos para o "Selo")
+            if (opportunity.getOwner() != null) {
+                dto.setOwnerId(opportunity.getOwner().getId());
+            }
+            
+            return dto;
+    }
 }
