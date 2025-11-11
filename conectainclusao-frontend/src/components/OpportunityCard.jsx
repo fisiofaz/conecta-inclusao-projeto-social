@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { Heart } from 'lucide-react';
+import InclusionSeal from './InclusionSeal';
 
 function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
   // Pegamos as funções do nosso Contexto de Autenticação
@@ -54,7 +55,12 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
           )}
         </div>
         <p className="mb-2 text-sm text-gray-700"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>
-        <p className="mb-2 text-sm text-gray-700"><strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}</p>
+        <div className="flex items-center gap-2 mb-2">
+          <p className="text-sm text-gray-700">
+            <strong>Empresa:</strong> {opportunity.empresaOuOrgResponsavel}
+          </p>
+          <InclusionSeal ownerId={opportunity.ownerId} />
+        </div>
         <p className="mb-4 text-sm text-gray-700"><strong>Local:</strong> {opportunity.localizacao}</p>
         <p className="flex-grow mb-4 text-xs text-gray-500">
           {opportunity.requisitosAcessibilidade}
