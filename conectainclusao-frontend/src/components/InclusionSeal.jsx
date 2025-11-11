@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import { Medal, Shield, XCircle, LoaderCircle } from 'lucide-react';
+import StarRating from './StarRating';
 
 const Tooltip = ({ message, children }) => (
   <div className="relative group">
@@ -88,6 +89,11 @@ function InclusionSeal({ ownerId }) {
         <span className={`text-xs font-semibold ${seal.textColor}`}>
           {seal.text}
         </span>
+        {scoreData?.averageRating ? (
+            <StarRating rating={scoreData.averageRating} readOnly={true} />
+        ) : (
+            <span className="text-xs text-gray-500">Sem avaliações</span>
+        )}
       </div>
     </Tooltip>
   );
