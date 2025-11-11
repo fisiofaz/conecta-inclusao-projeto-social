@@ -83,16 +83,19 @@ function InclusionSeal({ ownerId }) {
   }
 
   return (
-    <Tooltip message={seal.tooltip}>
-      <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full ${seal.bgColor}`}>
-        {seal.icon}
-        <span className={`text-xs font-semibold ${seal.textColor}`}>
-          {seal.text}
-        </span>
+    <Tooltip
+      message={`${seal.text}: ${scoreData.opportunityCount} vagas | Média ${scoreData.averageRating?.toFixed(1) || 'N/A'} ★`}
+    >
+      <div className={`flex flex-col items-start gap-1 px-2 py-1 rounded-lg ${seal.bgColor}`}>
+        <div className="flex items-center gap-1.5">
+          {seal.icon}
+          <span className={`text-xs font-semibold ${seal.textColor}`}>{seal.text}</span>
+        </div>
+
         {scoreData?.averageRating ? (
-            <StarRating rating={scoreData.averageRating} readOnly={true} />
+          <StarRating rating={scoreData.averageRating} readOnly={true} />
         ) : (
-            <span className="text-xs text-gray-500">Sem avaliações</span>
+          <span className="text-xs text-gray-500">Sem avaliações</span>
         )}
       </div>
     </Tooltip>
