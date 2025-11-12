@@ -23,6 +23,22 @@ function OpportunityDetailsView({ opportunity, canManage, onDelete, isPCD, isApp
         <h2 className="mb-6 text-3xl font-bold text-center text-blue-700 sm:text-4xl">
           {opportunity.titulo}
         </h2>
+
+        {/* ⭐️ Exibir média de avaliação e selo */}
+        {opportunity.empresa?.inclusionScore && (
+          <div className="flex items-center justify-center gap-3 mb-6">
+            <StarRating rating={opportunity.empresa.inclusionScore.averageRating || 0} />
+            <span className="ml-2 text-gray-700 text-sm">
+              ({opportunity.empresa.inclusionScore.averageRating?.toFixed(1) || "0.0"})
+            </span>
+            <span className="text-sm font-semibold text-gray-600">
+              {opportunity.empresa.inclusionScore.sealLevel === 'OURO' && '🏅 Selo Ouro'}
+              {opportunity.empresa.inclusionScore.sealLevel === 'PRATA' && '🥈 Selo Prata'}
+              {opportunity.empresa.inclusionScore.sealLevel === 'BRONZE' && '🥉 Selo Bronze'}
+              {opportunity.empresa.inclusionScore.sealLevel === 'NENHUM' && 'Sem selo'}
+            </span>
+          </div>
+        )}
       
         <div className="text-base text-gray-700 sm:text-lg">
           <p className="mb-2"><strong>Tipo:</strong> {opportunity.tipoOportunidade}</p>

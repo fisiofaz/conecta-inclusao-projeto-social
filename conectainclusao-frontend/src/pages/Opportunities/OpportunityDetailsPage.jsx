@@ -5,6 +5,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import OpportunityDetailsView from '../../components/OpportunityDetailsView';
 import Button from '../../components/Button';
 import { LoaderCircle } from 'lucide-react';
+import ReviewForm from '../../components/ReviewForm';
+import StarRating from '../../components/StarRating';
 
 function OpportunityDetailsPage() {
   const { id } = useParams();
@@ -21,6 +23,7 @@ function OpportunityDetailsPage() {
 
   // O usuário é um PCD? (Somente PCDs podem se candidatar)
   const isPCD = user?.tipoPerfil === 'ROLE_USER';
+  const [averageRating, setAverageRating] = useState(null);
 
   // useEffect para buscar os detalhes da oportunidade quando o componente é montado ou o ID muda
   useEffect(() => {
@@ -39,6 +42,15 @@ function OpportunityDetailsPage() {
         }
       } finally {
         setLoading(false);
+      }
+    };
+
+    const fetchAverageRating = async () => {
+      try {
+        const response = await api.get(`/reviews/average/${id}`);
+        setAverageRating(response.data);
+      } catch (err) {
+        console.error("Erro ao buscar média de avaliações:", err);
       }
     };
 
@@ -62,6 +74,7 @@ function OpportunityDetailsPage() {
     
     fetchOpportunity();
     checkApplicationStatus();
+    fetchAverageRating();
   }, [id, isPCD]); // Depende do ID e do status de PCD
 
   // Função para lidar com a exclusão (similar ao da lista)
@@ -146,19 +159,38 @@ function OpportunityDetailsPage() {
   
   // Renderização dos detalhes da oportunidade
   return (
+  <div className="container mx-auto px-4 py-8 space-y-8">
+    {/* Detalhes da Oportunidade */}
     <OpportunityDetailsView 
       opportunity={opportunity}
       canManage={canManage}
       onDelete={handleDelete}
-      
-      // --- (NOVAS PROPS PARA O BOTÃO) ---
       isPCD={isPCD}
       isApplying={isApplying}
       isApplied={isApplied}
       applyError={applyError}
       onApply={handleApply}
     />
-  );
+
+    {/* Seção de Avaliação */}
+    <section className="mt-10">
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Avaliações</h2>      
+      {averageRating !== null && (
+        <div className="flex items-center gap-2 mb-4">
+          <StarRating rating={averageRating} readOnly />
+          <span className="text-gray-700 text-sm">
+            ({averageRating.toFixed(1)} de 5)
+          </span>
+        </div>
+      )}
+      <ReviewForm
+        entityId={opportunity.id}
+        entityType="OPPORTUNITY"
+        onReviewSubmit={() => console.log("Avaliação enviada com sucesso!")}
+      />
+    </section>
+  </div>
+);
 }
 
 export default OpportunityDetailsPage;

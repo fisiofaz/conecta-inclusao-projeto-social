@@ -2,42 +2,53 @@ import React, { useState } from 'react';
 import { Star } from 'lucide-react';
 
 /*
- * Componente de Avaliação por Estrelas
- * * Props:
- * - rating (Number): A nota atual (de 1 a 5).
- * - setRating (Function): Uma função (do useState) para definir a nota quando o usuário clicar.
- * - readOnly (Boolean): Se for true, as estrelas não serão clicáveis (usado para exibir médias).
+ * ⭐ Componente de Avaliação por Estrelas
+ * Props:
+ * - rating (Number): nota atual (de 0 a 5, pode ter decimais)
+ * - setRating (Function): função para atualizar nota (caso interativo)
+ * - readOnly (Boolean): se true, apenas exibe (sem clique)
  */
-function StarRating({ rating, setRating, readOnly = false }) {
-  // Estado 'hover' para o efeito de "passar o mouse"
+function StarRating({ rating = 0, setRating = () => {}, readOnly = false }) {
   const [hover, setHover] = useState(0);
 
   return (
     <div className="flex items-center space-x-1">
       {[...Array(5)].map((_, index) => {
-        const ratingValue = index + 1; // Valor da estrela (1, 2, 3, 4, 5)
+        const ratingValue = index + 1;
+
+        // Valor exibido (hover tem prioridade sobre rating normal)
+        const displayValue = hover || rating;
+
+        // Cálculo da porcentagem de preenchimento
+        const fillPercentage =
+          displayValue >= ratingValue
+            ? 100
+            : displayValue + 1 > ratingValue
+            ? (displayValue % 1) * 100
+            : 0;
 
         return (
-          <label key={ratingValue}>
-            {/* O input radio real fica escondido, usamos o label (a estrela) para controlá-lo */}
-            <input
-              type="radio"
-              name="rating"
-              value={ratingValue}
-              onClick={readOnly ? null : () => setRating(ratingValue)}
-              className="sr-only" // "Screen-reader only" (esconde o input visualmente)
-              disabled={readOnly}
-            />
+          <label key={ratingValue} className="relative">
+            {/* Ícone da estrela */}
             <Star
-              className={`cursor-pointer transition-colors ${
-                readOnly ? 'cursor-default' : 'hover:text-yellow-500'
+              size={20}
+              className={`transition-all ${
+                readOnly ? '' : 'cursor-pointer hover:scale-110'
               }`}
-              color={ratingValue <= (hover || rating) ? "#FFC107" : "#e4e5e9"}
-              fill={ratingValue <= (hover || rating) ? "#FFC107" : "none"}
-              size={24}
+              color="#e4e5e9"
+              fill={`url(#grad-${ratingValue})`}
               onMouseEnter={readOnly ? null : () => setHover(ratingValue)}
               onMouseLeave={readOnly ? null : () => setHover(0)}
+              onClick={readOnly ? null : () => setRating(ratingValue)}
             />
+
+            {/* Gradiente para simular meia estrela */}
+            <svg width="0" height="0">
+              <linearGradient id={`grad-${ratingValue}`}>
+                <stop offset={`${fillPercentage}%`} stopColor="#FFC107" />
+                <stop offset={`${fillPercentage}%`} stopColor="transparent" />
+              </linearGradient>
+            </svg>
           </label>
         );
       })}
