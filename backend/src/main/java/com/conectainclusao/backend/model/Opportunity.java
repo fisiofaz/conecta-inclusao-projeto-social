@@ -15,7 +15,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table; 
+import jakarta.persistence.Table;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -83,6 +85,16 @@ public class Opportunity {
     )
     @JsonIgnore
     private Set<Candidatura> candidaturas = new HashSet<>();
+    
+    // Relação: Uma Vaga pode ser afirmativa para Muitas Etiquetas
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+        name = "opportunity_target_groups", // Nova tabela de ligação
+        joinColumns = @JoinColumn(name = "opportunity_id"),
+        inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @JsonIgnore
+    private Set<DiversityTag> targetGroups = new HashSet<>();
 
     // Construtor sem argumentos
     public Opportunity() {}
@@ -113,6 +125,7 @@ public class Opportunity {
     public LocalDate getDataPublicacao() { return dataPublicacao; }
     public String getContato() { return contato; }
     public Set<Candidatura> getCandidaturas() {return candidaturas;}
+    public Set<DiversityTag> getTargetGroups() {return targetGroups;}
   
     // Setters
     public void setId(Long id) { this.id = id; }
@@ -127,4 +140,5 @@ public class Opportunity {
     public User getOwner() {return owner; }
     public void setOwner(User owner) {this.owner = owner;}
     public void setCandidaturas(Set<Candidatura> candidaturas) {this.candidaturas = candidaturas;}
+    public void setTargetGroups(Set<DiversityTag> targetGroups) {this.targetGroups = targetGroups;}
 }
