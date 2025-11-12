@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LoaderCircle } from 'lucide-react';
 import ReviewForm from './ReviewForm';
 import ReviewList from './ReviewList';
+import Button from './Button';
+import InclusionSeal from './InclusionSeal';
 
 function OpportunityDetailsView({ opportunity, canManage, onDelete, isPCD, isApplying, isApplied, applyError, onApply }) {
   
@@ -25,18 +27,9 @@ function OpportunityDetailsView({ opportunity, canManage, onDelete, isPCD, isApp
         </h2>
 
         {/* ⭐️ Exibir média de avaliação e selo */}
-        {opportunity.empresa?.inclusionScore && (
+        {opportunity.ownerId && (
           <div className="flex items-center justify-center gap-3 mb-6">
-            <StarRating rating={opportunity.empresa.inclusionScore.averageRating || 0} />
-            <span className="ml-2 text-gray-700 text-sm">
-              ({opportunity.empresa.inclusionScore.averageRating?.toFixed(1) || "0.0"})
-            </span>
-            <span className="text-sm font-semibold text-gray-600">
-              {opportunity.empresa.inclusionScore.sealLevel === 'OURO' && '🏅 Selo Ouro'}
-              {opportunity.empresa.inclusionScore.sealLevel === 'PRATA' && '🥈 Selo Prata'}
-              {opportunity.empresa.inclusionScore.sealLevel === 'BRONZE' && '🥉 Selo Bronze'}
-              {opportunity.empresa.inclusionScore.sealLevel === 'NENHUM' && 'Sem selo'}
-            </span>
+            <InclusionSeal ownerId={opportunity.ownerId} />
           </div>
         )}
       

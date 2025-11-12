@@ -29,13 +29,13 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
   };
 
   return (
-    <div className="flex flex-col justify-between h-full p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
+    <div role="article" aria-labelledby={`opp-title-${opportunity.id}`} className="flex flex-col justify-between h-full p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
       <div> {/* Div para agrupar o conteúdo principal */}
         <div className="flex items-start justify-between mb-3"> 
           {/* Div para agrupar ícone e título */}
           <div className="flex items-center">
-            {icon} 
-            <h3 className="text-xl font-semibold text-blue-600 sm:text-lg">
+            <span aria-hidden="true">{icon}</span>
+            <h3 id={`opp-title-${opportunity.id}`} className="text-xl font-semibold text-blue-600 sm:text-lg">
               {opportunity.titulo}
             </h3>
           </div>
@@ -44,7 +44,7 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
             <button
               onClick={handleFavoriteClick}
               className="p-1 text-gray-400 rounded-full hover:bg-red-50"
-              aria-label={isFav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+              aria-label={isFav ? `Remover ${opportunity.titulo} dos favoritos` : `Adicionar ${opportunity.titulo} aos favoritos`}
             >
               <Heart
                 size={20}
@@ -69,6 +69,7 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
       <div className="flex flex-col items-center justify-between mt-4 space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
         <Link
           to={`/opportunities/${opportunity.id}`}
+          aria-label={`Ver detalhes da vaga ${opportunity.titulo}`}
           className="w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-blue-500 rounded-md hover:bg-blue-600 sm:w-auto"
         >
           Ver Detalhes
@@ -77,12 +78,14 @@ function OpportunityCard({ opportunity, canManage, onDelete, icon = null }) {
           <>
             <Link
               to={`/opportunities/edit/${opportunity.id}`}
+              aria-label={`Editar vaga ${opportunity.titulo}`}
               className="w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600 sm:w-auto"
             >
               Editar
             </Link>
             <button
               onClick={() => onDelete(opportunity.id)}
+              aria-label={`Excluir vaga ${opportunity.titulo}`}
               className="w-full px-4 py-2 text-sm text-center text-white transition-colors duration-300 bg-red-500 rounded-md hover:bg-red-600 sm:w-auto"
             >
               Excluir

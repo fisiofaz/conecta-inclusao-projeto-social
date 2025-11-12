@@ -32,8 +32,8 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
         <div className="flex items-start justify-between mb-3">
           {/* Div para agrupar ícone e título */}
           <div className="flex items-center">
-            {icon} 
-            <h3 className="mb-3 text-xl font-semibold text-green-600">
+            <span aria-hidden="true">{icon}</span>
+            <h3 id={`hr-title-${resource.id}`} className="mb-3 text-xl font-semibold text-green-600">
               {resource.nome}
             </h3>
           </div>
@@ -43,7 +43,7 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
             <button
               onClick={handleFavoriteClick}
               className="p-1 text-gray-400 rounded-full hover:bg-red-50"
-              aria-label={isFav ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+              aria-label={isFav ? `Remover ${resource.nome} dos favoritos` : `Adicionar ${resource.nome} aos favoritos`}
             >
               <Heart
                 size={20}
@@ -78,6 +78,7 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
           <div className="flex w-full gap-2 sm:w-auto">
             <Link
               to={`/saude/edit/${resource.id}`}
+              aria-label={`Editar serviço ${resource.nome}`}
               className="flex-1 px-4 py-2 text-sm font-semibold text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600"
             >
               Editar
@@ -85,6 +86,7 @@ function HealthResourceCard({ resource, canManage, onDelete, icon = null }) {
             <Button 
               onClick={() => onDelete(resource.id)} 
               variant="danger" 
+              aria-label={`Excluir serviço ${resource.nome}`}
               className="flex-1 text-sm"
             >
               Excluir
