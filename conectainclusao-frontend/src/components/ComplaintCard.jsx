@@ -22,9 +22,13 @@ function ComplaintCard({ complaint, canManage, onDelete }) {
   }
 
   return (
-    <div className="flex flex-col justify-between h-full p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl">
+    <div
+      role="article"
+      aria-labelledby={`complaint-title-${complaint.id}`}
+      className="flex flex-col justify-between h-full p-6 transition-shadow duration-300 bg-white border border-gray-200 rounded-lg shadow-md hover:shadow-xl"
+    >
       <div>
-        <h3 className="mb-3 text-xl font-semibold text-red-600">{complaint.titulo}</h3>
+        <h3 id={`complaint-title-${complaint.id}`} className="mb-3 text-xl font-semibold text-red-600">{complaint.titulo}</h3>
         <p className="mb-2 text-sm text-gray-700">
           <strong>Tipo:</strong> {complaint.tipoProblema}
         </p>
@@ -42,6 +46,7 @@ function ComplaintCard({ complaint, canManage, onDelete }) {
       <div className="flex flex-col items-center justify-between gap-2 mt-4 sm:flex-row">
         <Link
           to={`/complaints/${complaint.id}`}
+          aria-label={`Ver detalhes da reclamação ${complaint.titulo}`}
           className="w-full px-4 py-2 text-sm font-semibold text-center text-white transition-colors duration-300 bg-red-500 rounded-md sm:w-auto hover:bg-red-600"
         >
           Ver Detalhes
@@ -50,11 +55,17 @@ function ComplaintCard({ complaint, canManage, onDelete }) {
           <div className="flex w-full gap-2 sm:w-auto">
             <Link
               to={`/complaints/edit/${complaint.id}`}
+              aria-label={`Editar reclamação ${complaint.titulo}`}
               className="flex-1 px-4 py-2 text-sm font-semibold text-center text-white transition-colors duration-300 bg-yellow-500 rounded-md hover:bg-yellow-600"
             >
               Editar
             </Link>
-            <Button onClick={() => onDelete(complaint.id)} variant="secondary" className="flex-1 text-sm">
+            <Button 
+              onClick={() => onDelete(complaint.id)} 
+              variant="secondary"
+              aria-label={`Excluir reclamação ${complaint.titulo}`}
+              className="flex-1 text-sm"
+            >
               Excluir
             </Button>
           </div>
