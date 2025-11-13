@@ -74,7 +74,6 @@ public class User implements UserDetails {
     @Column(length = 500)
     private String bio;
     
-    // Relação: Favoritos (Oportunidades)
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "user_favorite_opportunities", // Nome da nova tabela no banco
@@ -83,27 +82,17 @@ public class User implements UserDetails {
     )
     @JsonIgnore // Impede que os favoritos sejam enviados em loops infinitos no JSON
     private Set<Opportunity> favoriteOpportunities = new HashSet<>();
-    
-    // Relação: Favoritos Saúde
+
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
-            name = "user_favorite_health_resources", // Corrigido
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "health_resource_id") // Corrigido
+        name = "user_favorite_health_resources", // Nome da nova tabela no banco
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "health_resource_id")
     )
     @JsonIgnore
     private Set<HealthResource> favoriteHealthResources = new HashSet<>();
-
-    // Relação: DE&I (Etiquetas de Diversidade)
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-    	name = "user_diversity_tags", 
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    @JsonIgnore
-    private Set<DiversityTag> diversityTags = new HashSet<>();
     
-    // Relação: Candidaturas
+    // Lista de candidaturas que este usuário fez
     @OneToMany(
         mappedBy = "user", // "user" é o nome do campo na classe Candidatura.java
         cascade = CascadeType.ALL, 
@@ -113,9 +102,9 @@ public class User implements UserDetails {
     @JsonIgnore
     private Set<Candidatura> candidaturas = new HashSet<>();
     
-    // Relação: Avaliações Reviews
+    // Lista de reviews que este usuário escreveu
     @OneToMany(
-        mappedBy = "author", 
+        mappedBy = "author", // "author" é o nome do campo na classe Review.java
         cascade = CascadeType.ALL, 
         orphanRemoval = true, 
         fetch = FetchType.LAZY
@@ -237,6 +226,4 @@ public class User implements UserDetails {
     public void setCandidaturas(Set<Candidatura> candidaturas) { this.candidaturas = candidaturas; }
     public Set<Review> getReviews() {return reviews; }
     public void setReviews(Set<Review> reviews) {this.reviews = reviews; }
-    public Set<DiversityTag> getDiversityTags() { return diversityTags;}
-    public void setDiversityTags(Set<DiversityTag> diversityTags) { this.diversityTags = diversityTags;}
 }

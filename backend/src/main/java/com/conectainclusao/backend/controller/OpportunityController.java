@@ -28,7 +28,7 @@ public class OpportunityController {
     public OpportunityController(OpportunityService opportunityService) {
         this.opportunityService = opportunityService;
     }
- 
+
     // --- CRIAR ---
     @PostMapping
     @PreAuthorize("hasAnyAuthority('ROLE_EMPRESA', 'ROLE_ADMIN')")
